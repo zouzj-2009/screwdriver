@@ -1,0 +1,5 @@
+#!/bin/bash
+[ $# -lt 1 ] && echo "need rpm package name" && exit 1
+./tools/getrpmfiles ${1} |tee list.${1}
+./tools/gen_init_cpio list.${1} >${1}.cpio
+

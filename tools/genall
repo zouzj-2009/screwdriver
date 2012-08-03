@@ -1,0 +1,27 @@
+#!/bin/bash
+[ -z "$1" ] && pkg=`basename $PWD` || pkg=$1
+[ -z "$1" ] && dir=$PWD || dir=`dirname $PWD`"$1"
+[ -z "$1" ] && out=all || out=$1.all
+if [ -z "$1" ];then
+	rm ./initramfs/* -rf
+	rm ./deplibs/* -rf
+fi
+echo "@@ Generating package $pkg file list ..." >&2
+./tools/genlistall.sh $1> list.$out
+./tools/gen_init_cpio list.$out >$out.cpio 
+[ $? -ne 0 ] && ( echo "gen_init_cpio list.$out fail!" >&2 ) && exit 1
+echo "@@ Checking package $pkg cpio ..." >&2
+./tools/checkcpio $out.cpio >&2
+
+[ ! -z "$1" ] && ( echo "@@ Generate $pkg done" >&2 ) && exit 0
+#finanal round
+echo "@@ Check package $pkg lib depdence ..." >&2
+./tools/checkdep initramfs >&2
+./tools/checkdep initramfs >&2
+echo "@@ Appending package $pkg lib list ..." >&2
+./tools/getdir $PWD/deplibs/ |tee list.libs >> list.$out
+./tools/gen_init_cpio list.libs >libs.cpio
+chroot $PWD/initramfs/ ldconfig >&2
+./tools/getdir $PWD/initramfs/ > list.real.$out
+echo "@@ Generate final $pkg cpio archive ..." >&2
+./tools/gen_init_cpio list.real.$out >$out.cpio

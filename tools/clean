@@ -1,0 +1,8 @@
+#!/bin/bash
+pkg=`basename $PWD`
+echo "clean $pkg ..."
+rm ../$pkg/*.cpio 2>/dev/null
+rm ../$pkg/list.* 2>/dev/null
+rm ../$pkg/*.trace 2>/dev/null
+rm ../$pkg/initramfs/* -rf 2>/dev/null
+rm ../$pkg/deplibs/* -rf 2>/dev/null

@@ -1,0 +1,25 @@
+#!/bin/bash
+debug=0
+[ $# -lt 1 ] && echo "need dir" && exit 1
+echo "check lib dependence of dir ${1} ..."
+dir=${1}
+for file in `find "${dir}/"`
+do
+	[ ! -f $file ] && continue
+	[ ! -x $file ] && continue
+	[ -z "`file $file|grep "ELF"`" ] && continue
+	[ $debug -eq 1 ] && echo "strip file $file ..."
+	strip -g -S -d $file
+	for lib in `ldd $file|awk '{print $3}'`
+	do
+		[ ! -f $lib ] && continue
+		[ $debug -eq 1 ] && echo "check need lib $lib ..."
+		dirname=`dirname $lib`
+		[ -f $dir/$lib ] && continue
+		mkdir -p deplibs/$dirname/
+		cp $lib deplibs/$dirname/
+		echo ">>>add lib $lib"
+		mkdir -p "$dir/$dirname/"
+		cp $lib $dir/$dirname/
+	done
+done
