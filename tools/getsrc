@@ -1,0 +1,20 @@
+#!/bin/bash
+[ -z $1 ] && echo "need src list file" && exit 1
+[ ! -f ../buildsrc.meta/$1/customize-install ] && echo "@@ $1: nothing to install" >&2 && exit
+echo "@@ $1: installfiles" >&2
+cat ../buildsrc.meta/$1/customize-install >&2
+src=../build-from-source/$1/
+dest=$PWD/customized
+pkg=$1
+custom-install(){
+	[ ! -f $src/$1 ] && echo "@@ install from source/$pkg: $1 miss!" && exit 2
+	echo "@@ install from source/$pkg: $1 to $2 $3 $4 $5" >&2
+	mkdir -p $dest/`dirname $2`
+	cp -a $src/$1 $dest/$2
+	[ ! -z $3 ] && chmod $3 $dest/$2
+	#todo chown ...
+	 
+}
+
+cat ../buildsrc.meta/$1/customize-install|awk '{print "custom-install "$1" "$2" "$3" "$4" "$5}' >/tmp/$1.src.install
+. /tmp/$1.src.install

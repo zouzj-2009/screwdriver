@@ -1,0 +1,124 @@
+Index: busybox-1.20.2/networking/httpd.c
+===================================================================
+--- busybox-1.20.2.orig/networking/httpd.c	2012-07-02 22:08:25.000000000 +0800
++++ busybox-1.20.2/networking/httpd.c	2012-08-01 12:35:11.000000000 +0800
+@@ -271,8 +271,10 @@
+ 	smallint flg_deny_all;
+ 
+ 	unsigned rmt_ip;        /* used for IP-based allow/deny rules */
++	unsigned svr_ip;        /* used for IP-based allow/deny rules */
+ 	time_t last_mod;
+ 	char *rmt_ip_str;       /* for $REMOTE_ADDR and $REMOTE_PORT */
++	char *svr_ip_str;       /* for $SERVER_ADDR and $SERVER_PORT */
+ 	const char *bind_addr_or_port;
+ 
+ 	const char *g_query;
+@@ -325,6 +327,7 @@
+ #define verbose           (G.verbose          )
+ #define flg_deny_all      (G.flg_deny_all     )
+ #define rmt_ip            (G.rmt_ip           )
++#define svr_ip            (G.svr_ip           )
+ #define bind_addr_or_port (G.bind_addr_or_port)
+ #define g_query           (G.g_query          )
+ #define opt_c_configFile  (G.opt_c_configFile )
+@@ -354,6 +357,7 @@
+ };
+ #endif
+ #define rmt_ip_str        (G.rmt_ip_str       )
++#define svr_ip_str        (G.svr_ip_str       )
+ #define g_auth            (G.g_auth           )
+ #define mime_a            (G.mime_a           )
+ #define script_i          (G.script_i         )
+@@ -1362,6 +1366,34 @@
+ #endif
+ 		}
+ 	}
++	{
++		char *p = svr_ip_str ? svr_ip_str : (char*)"";
++		char *cp = strrchr(p, ':');
++		if (ENABLE_FEATURE_IPV6 && cp && strchr(cp, ']'))
++			cp = NULL;
++		if (cp) *cp = '\0'; /* delete :PORT */
++		setenv1("SERVER_ADDR", p);
++		if (cp) {
++			*cp = ':';
++#if ENABLE_FEATURE_HTTPD_SET_SERVER_PORT_TO_ENV
++			setenv1("SERVER_PORT", cp + 1);
++#endif
++		}
++	}
++	{
++		char *p = svr_ip_str ? svr_ip_str : (char*)"";
++		char *cp = strrchr(p, ':');
++		if (ENABLE_FEATURE_IPV6 && cp && strchr(cp, ']'))
++			cp = NULL;
++		if (cp) *cp = '\0'; /* delete :PORT */
++		setenv1("SERVER_ADDR", p);
++		if (cp) {
++			*cp = ':';
++#if ENABLE_FEATURE_HTTPD_SET_REMOTE_PORT_TO_ENV
++			setenv1("SERVER_PORT", cp + 1);
++#endif
++		}
++	}
+ 	setenv1("HTTP_USER_AGENT", user_agent);
+ 	if (http_accept)
+ 		setenv1("HTTP_ACCEPT", http_accept);
+@@ -1935,19 +1967,24 @@
+ 	iobuf = xmalloc(IOBUF_SIZE);
+ 
+ 	rmt_ip = 0;
++	svr_ip = 0;
+ 	if (fromAddr->u.sa.sa_family == AF_INET) {
+ 		rmt_ip = ntohl(fromAddr->u.sin.sin_addr.s_addr);
++		svr_ip = ntohl(fromAddr->u.din.din_addr.d_addr);
+ 	}
+ #if ENABLE_FEATURE_IPV6
+ 	if (fromAddr->u.sa.sa_family == AF_INET6
+ 	 && fromAddr->u.sin6.sin6_addr.s6_addr32[0] == 0
+ 	 && fromAddr->u.sin6.sin6_addr.s6_addr32[1] == 0
+-	 && ntohl(fromAddr->u.sin6.sin6_addr.s6_addr32[2]) == 0xffff)
++	 && ntohl(fromAddr->u.sin6.sin6_addr.s6_addr32[2]) == 0xffff){
+ 		rmt_ip = ntohl(fromAddr->u.sin6.sin6_addr.s6_addr32[3]);
++		svr_ip = ntohl(fromAddr->u.din6.din6_addr.d6_addr32[3]);
++	}
+ #endif
+ 	if (ENABLE_FEATURE_HTTPD_CGI || DEBUG || verbose) {
+ 		/* NB: can be NULL (user runs httpd -i by hand?) */
+ 		rmt_ip_str = xmalloc_sockaddr2dotted(&fromAddr->u.sa);
++		svr_ip_str = xmalloc_sockaddr2dotted(&fromAddr->u.da);
+ 	}
+ 	if (verbose) {
+ 		/* this trick makes -v logging much simpler */
+@@ -2328,9 +2365,11 @@
+ 	while (1) {
+ 		int n;
+ 		len_and_sockaddr fromAddr;
++		len_and_sockaddr toAddr;
+ 
+ 		/* Wait for connections... */
+ 		fromAddr.len = LSA_SIZEOF_SA;
++		toAddr.len = LSA_SIZEOF_SA;
+ 		n = accept(server_socket, &fromAddr.u.sa, &fromAddr.len);
+ 		if (n < 0)
+ 			continue;
+@@ -2345,8 +2384,8 @@
+ 			close(server_socket);
+ 			xmove_fd(n, 0);
+ 			xdup2(0, 1);
+-
+-			handle_incoming_and_exit(&fromAddr);
++			getsockname(0, &toAddr.u.sa, &toAddr.len);
++			handle_incoming_and_exit(&fromAddr, &toAddr);
+ 		}
+ 		/* parent, or fork failed */
+ 		close(n);
+@@ -2413,7 +2452,7 @@
+ 	fromAddr.len = LSA_SIZEOF_SA;
+ 	/* NB: can fail if user runs it by hand and types in http cmds */
+ 	getpeername(0, &fromAddr.u.sa, &fromAddr.len);
+-	handle_incoming_and_exit(&fromAddr);
++	handle_incoming_and_exit(&fromAddr, &fromAddr);
+ }
+ 
+ static void sighup_handler(int sig UNUSED_PARAM)

@@ -1,4 +1,6 @@
 #!/bin/bash
+#todo:
+#refresh, build-from-source files? when includes, src things should be igonred
 [ -z "$1" ] && pkg=`basename $PWD` || pkg=$1
 [ -z "$1" ] && dir=$PWD || dir=`dirname $PWD`"$1"
 [ -z "$1" ] && out=all || out=$1.all

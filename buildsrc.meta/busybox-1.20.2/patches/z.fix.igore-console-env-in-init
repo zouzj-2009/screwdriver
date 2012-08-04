@@ -1,0 +1,15 @@
+Index: busybox-1.11.2/init/init.c
+===================================================================
+--- busybox-1.11.2.orig/init/init.c
++++ busybox-1.11.2/init/init.c
+@@ -208,8 +208,8 @@ static void console_init(void)
+ 	struct serial_struct sr;
+ 	char *s;
+ 
+-	s = getenv("CONSOLE");
+-	if (!s) s = getenv("console");
++	s = getenv("CONSOLEX");
++	if (!s) s = getenv("consolex");
+ 	if (s) {
+ 		int fd = open(s, O_RDWR | O_NONBLOCK | O_NOCTTY);
+ 		if (fd >= 0) {

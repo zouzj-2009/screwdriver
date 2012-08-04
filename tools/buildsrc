@@ -1,0 +1,46 @@
+#!/bin/bash
+[ -z $1 ] && echo "need source-package name" && exit 1
+cd ../build-from-source/
+file=`ls -d ../source-pkgs/$1*`
+meta="../../buildsrc.meta/$1"
+fail=0
+[ "$2" = "refresh" ] && ( #unpack source
+	echo "@@ source package $1 refresh install" >&2
+	echo "@@ extra source $file ..." >&2
+	[ ! -z `echo $file|grep bz2` ] && tar jxf $file || tar zxf $file
+	cd $1
+	echo "@@ PWD=$PWD" >&2
+	mkdir -p  $meta/patches
+	for f in `ls -a $meta/|grep -v '^[\.]*$'`
+	do
+		[ -e $f ] && mv $f $f.metabef && echo "@@Warn: $f exists, rename to $f.metabef! " >&2
+		echo "@@ link $f to $meta/$f" >&2
+		ln -s $meta/$f $f -f
+	done
+	[ -x $meta/autoconfig ] && $meta/autocnfig >&2
+	cd -
+)
+echo "@@ Check patches for $1 ..." >&2
+cd $1
+echo "@@ PWD=$PWD" >&2
+
+quilt app >/tmp/$1.app.now
+[ ! -z "`diff /tmp/$1.app.now $meta/patch-app`" ] && ( #repatch
+	echo "@@ repatch need: now patched:" >&2
+	cat /tmp/$1.app.now >&2
+	echo "@@ topatch:" >&2
+	cat $meta/patch-app >&2
+	[ ! -z "`cat /tmp/$1.app.now`" ] && quilt pop -a 
+	[ -z "`cat $meta/patch-app`" ] && echo "@@ $1 needn't patches." >&2 && exit
+	echo "@@ push patches to `tail -n 1 $meta/patch-app`" >&2
+	quilt push `tail -n 1 $meta/patch-app` >&2
+	[ $? -ne 0 ] && echo "@@ $1 push patch fail, manual check need!" >&2
+) && [ $? -ne 0 ] && fail=1
+
+[ $fail -ne 0 ] && echo "@@ $1 build-preparation fail, check log" >&2 && exit 4
+
+make 
+
+cd -
+
+
