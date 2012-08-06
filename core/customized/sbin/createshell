@@ -1,0 +1,15 @@
+#!/bin/bash
+pdir=`dirname $0`
+[ -z $1 ] && echo "need rootdir" && exit 1
+[ "$1" = "/" ] && echo "rootdir should not be '/'" && exit 2
+dir=$1
+mkdir -p $dir
+mkdir -p $dir/bin
+mkdir $dir/usr/sbin $dir/usr/bin/ $dir/sbin $dir/dev $dir/proc $dir/sys $dir/etc -p
+$pdir/hardlink /lib64 $dir
+$pdir/hardlink /bin/busybox $dir/bin
+$pdir/hardlink /bin/bash $dir/bin
+chroot $dir/ /bin/busybox --install -s
+cat /etc/mtab|head -n 1 > $dir/etc/mtab
+cat /etc/fstab|head -n 5 > $dir/etc/fstab
+cp -a /dev/* $dir/dev
