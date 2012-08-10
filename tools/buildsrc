@@ -17,7 +17,7 @@ fail=0
 		echo "@@ link $f to $meta/$f" >&2
 		ln -s $meta/$f $f -f
 	done
-	[ -x $meta/autoconfig ] && $meta/autocnfig >&2
+	[ -x $meta/autoconfig ] && $meta/autoconfig >&2
 	cd -
 )
 echo "@@ Check patches for $1 ..." >&2
@@ -38,6 +38,8 @@ quilt app >/tmp/$1.app.now
 ) && [ $? -ne 0 ] && fail=1
 
 [ $fail -ne 0 ] && echo "@@ $1 build-preparation fail, check log" >&2 && exit 4
+
+[ -x $meta/postpatch ] && $meta/postpatch >&2
 
 make 
 

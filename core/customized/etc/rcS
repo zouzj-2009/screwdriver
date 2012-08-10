@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "Bootup `cat /rootpkg` ..."
 
 mount -t proc /proc /proc
 echo Mounting proc filesystem
@@ -37,22 +38,22 @@ mknod /dev/ttyS2 c 4 66
 mknod /dev/ttyS3 c 4 67
 
 #modlues && udev stuff
-[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before udev) ..." && /bin/cttyhack /bin/bash
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before udev) ..." && /bin/cttyhack /bin/xsh
 
 echo -n "Setup modules ..." && tar zxf /etc/modules.tgz -C / 2>/dev/null >/dev/null && echo " OK!" || echo " Fail!"
 
 start_udev
 
 #check rootdisk
-[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before rootcheck) ..." && /bin/cttyhack /bin/bash
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before rootcheck) ..." && /bin/cttyhack /bin/xsh
 #check configured disks
 
 #start services
-[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before service start) ..." && /bin/cttyhack /bin/bash
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before service start) ..." && /bin/cttyhack /bin/xsh
 /etc/rc.sysinit
 /etc/rc.d/rc 3
 
 #login
-[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before login) ..." && /bin/cttyhack /bin/bash || clear
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before login) ..." && /bin/cttyhack /bin/xsh || clear
 cat /etc/welcome 2>/dev/null
 /bin/busybox setconsole /dev/tty0

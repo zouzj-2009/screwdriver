@@ -1,0 +1,72 @@
+Index: dbus-0.1.1/dbus.c
+===================================================================
+--- dbus-0.1.1.orig/dbus.c	2011-06-15 19:36:22.000000000 +0800
++++ dbus-0.1.1/dbus.c	2012-06-25 01:53:45.685768415 +0800
+@@ -54,6 +54,7 @@
+ 	PHP_ME(Dbus, __construct, NULL, ZEND_ACC_CTOR|ZEND_ACC_PUBLIC)
+ 	PHP_ME(Dbus, addWatch,    NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME(Dbus, waitLoop,    NULL, ZEND_ACC_PUBLIC)
++	PHP_ME(Dbus, waitLoopx,   NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME(Dbus, requestName, NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME(Dbus, registerObject, NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME(Dbus, createProxy, NULL, ZEND_ACC_PUBLIC)
+@@ -1258,6 +1259,47 @@
+ 	}
+ }
+ 
++/* {{{ proto Dbus::waitLoopx()
++   Checks for received signals or method calls, return singals array
++*/
++PHP_METHOD(Dbus, waitLoopx)
++{
++	zval *object;
++	zval *msg_return;
++	long timeout = 0;
++	int count=0;
++	DBusMessage *msg;
++	php_dbus_obj *dbus;
++
++	dbus_set_error_handling(EH_THROW, NULL TSRMLS_CC);
++	if (FAILURE == zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(),
++		"O|l", &object, dbus_ce_dbus, &timeout)) {
++		RETURN_FALSE;
++	}
++
++	dbus = (php_dbus_obj *) zend_object_store_get_object(object TSRMLS_CC);
++
++	dbus_connection_read_write(dbus->con, timeout);
++
++	array_init(return_value);
++	while((msg = dbus_connection_pop_message(dbus->con)) != NULL){
++		MAKE_STD_ZVAL(msg_return);
++		switch (dbus_message_get_type(msg)) {
++			case DBUS_MESSAGE_TYPE_SIGNAL:
++				php_dbus_accept_incoming_signal(msg, &msg_return TSRMLS_CC);
++				add_next_index_zval(return_value, msg_return);
++				count++;
++				break;
++			case DBUS_MESSAGE_TYPE_METHOD_CALL:
++				php_dbus_accept_incoming_method_call(dbus, msg, &msg_return TSRMLS_CC);
++				//add_next_index_zval(return_value, msg_return);
++				break;
++		}
++	}
++	if (!count) ZVAL_NULL(return_value);
++	dbus_set_error_handling(EH_NORMAL, NULL TSRMLS_CC);
++}
++
+ /* {{{ proto Dbus::waitLoop()
+    Checks for received signals or method calls.
+ */
+Index: dbus-0.1.1/php_dbus.h
+===================================================================
+--- dbus-0.1.1.orig/php_dbus.h	2011-06-15 19:36:22.000000000 +0800
++++ dbus-0.1.1/php_dbus.h	2012-06-25 01:53:45.685768415 +0800
+@@ -35,6 +35,7 @@
+ PHP_METHOD(Dbus, __construct);
+ PHP_METHOD(Dbus, addWatch);
+ PHP_METHOD(Dbus, waitLoop);
++PHP_METHOD(Dbus, waitLoopx);
+ PHP_METHOD(Dbus, requestName);
+ PHP_METHOD(Dbus, registerObject);
+ PHP_METHOD(Dbus, createProxy);

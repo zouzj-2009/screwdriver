@@ -19,11 +19,14 @@ echo "@@ Checking package $pkg cpio ..." >&2
 #finanal round
 echo "@@ Check package $pkg lib depdence ..." >&2
 ./tools/checkdep initramfs >&2
+[ $? -ne 0 ] && exit
 ./tools/checkdep initramfs >&2
+[ $? -ne 0 ] && exit
 echo "@@ Appending package $pkg lib list ..." >&2
 ./tools/getdir $PWD/deplibs/ |tee list.libs >> list.$out
 ./tools/gen_init_cpio list.libs >libs.cpio
 chroot $PWD/initramfs/ ldconfig >&2
+[ -z $1 ] && echo "$pkg" >initramfs/rootpkg
 ./tools/getdir $PWD/initramfs/ > list.real.$out
 echo "@@ Generate final $pkg cpio archive ..." >&2
 ./tools/gen_init_cpio list.real.$out >$out.cpio

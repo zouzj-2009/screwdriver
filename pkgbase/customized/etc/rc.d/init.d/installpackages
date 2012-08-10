@@ -1,0 +1,33 @@
+#!/bin/bash
+
+installpkg(){
+	pkgname=`basename $1|sed 's/^pkg\.//g'`
+	[ -d /etc/pkgs/$pkgname ] && refresh=0 || refresh=1
+	[ $refresh -ne 0 ] && echo "Install package $pkgname ..." || echo "Update package $pkgname ..."
+	#check sign
+	headersize=`dd if=$1 bs=1k count=128 2>/dev/null|gpg -u XOSTE 2>/tmp/.trace.gpg.$pkgname |wc -c`
+	[ $headersize -lt 65536 ] && echo ">> Fail, bad signature: `md5sum $1|awk '{print $1}'`, header:$headersize." && return 1
+	cd / >/dev/null
+	(
+		dd if=$1 bs=1k count=128 2>/dev/null|gpg -u XOSTE 2>/tmp/.trace.gpg.$pkgname
+		dd if=$1 bs=1k skip=128 2>/dev/null
+	)| gzip -dc |cpio -iu 2>/tmp/.trace.inst.$pkgname
+	[ $refresh -eq 1 -a -x /etc/pkgs/$pkgname/bootup ] && /etc/pkgs/$pkgname/bootup
+	[ $refresh -eq 0 -a -x /etc/pkgs/$pkgname/update ] && /etc/pkgs/$pkgname/update
+	cd - >/dev/null
+}
+
+pkgsrc=/dev/"`cat /etc/rootdisk`"1
+mkdir -p /pkgsrc
+mount -o ro $pkgsrc  /pkgsrc
+[ $? -ne 0 ] && echo "mount $pkgsrc fail! packages will not be installed." && exit 1
+for pkg in `cat /etc/rootsig|grep ^pkg\.`
+do
+	if [ -f /pkgsrc/$pkg ]; then
+		installpkg /pkgsrc/$pkg
+	else
+		echo "$pkg not found, skip installation."
+		continue
+	fi
+done
+umount $pkgsrc

@@ -1,0 +1,2 @@
+/sapi/cli/php /usr/bin/php 0755
+/sapi/cgi/php-cgi /usr/bin/php-cgi 0755

@@ -1,0 +1,23 @@
+#!/bin/bash
+[ -z "$1" ] && echo "need reference package dir" >&2 && exit 1
+[ ! -d $1 -o ! -d $1/deplibs ] && echo "$1 or $1/deplibs not found!" >&2 && exit 1
+pkg=`basename $PWD`
+basepkg=`basename $1`
+found=0
+for lib in `find deplibs`
+do
+	[ -d $lib ] && continue
+	#echo "  check $lib ..." >&2
+	[ ! -f $1/$lib ] && continue
+	echo ">>>remove duplicate "`echo $lib|sed 's/^deplibs\///g'`"." >&2
+	found=1
+	rm $lib
+	rm initramfs/"`echo $lib|sed 's/^deplibs\///g'`"
+done
+[ $found -eq 0 ] && echo "nothing change." >&2 && exit 0
+echo "@@ Re-packing ..." >&2
+./tools/getdir $PWD/deplibs/ |tee list.libs.base-$basepkg 
+./tools/gen_init_cpio list.libs.base-$basepkg >libs.base-$basepkg.cpio
+./tools/getdir $PWD/initramfs/ > list.real.base-$basepkg
+echo "@@ Generate final $pkg cpio archive ..." >&2
+./tools/gen_init_cpio list.real.base-$basepkg >all.base-$basepkg.cpio

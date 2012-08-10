@@ -6,3 +6,5 @@ rm ../$pkg/list.* 2>/dev/null
 rm ../$pkg/*.trace 2>/dev/null
 rm ../$pkg/initramfs/* -rf 2>/dev/null
 rm ../$pkg/deplibs/* -rf 2>/dev/null
+rm ../$pkg/boot-cd/isolinux/vmlinuz
+rm ../$pkg/*.iso

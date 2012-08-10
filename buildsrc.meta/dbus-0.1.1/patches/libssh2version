@@ -1,0 +1,14 @@
+Index: ssh2-0.11.0/configure
+===================================================================
+--- ssh2-0.11.0.orig/configure	2012-08-08 18:32:37.000000000 +0800
++++ ssh2-0.11.0/configure	2012-08-08 18:36:48.000000000 +0800
+@@ -3754,7 +3754,8 @@
+ 
+     { { echo "$as_me:$LINENO: error: libssh2 version >= 0.4 not found" >&5
+ echo "$as_me: error: libssh2 version >= 0.4 not found" >&2;}
+-   { (exit 1); exit 1; }; }
++   #{ (exit 1); exit 1; }; 
++}
+ 
+ 
+ fi

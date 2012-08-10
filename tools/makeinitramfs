@@ -1,0 +1,23 @@
+#!/bin/bash
+[ -z $1 ] && echo "need initramfs dir!" && exit 1
+/lib/modules/`uname -r`/build/usr/updatekey.sh
+[ $? -ne 0 ] && echo "update key fail!" && exit 2
+exec 2>list.checksum
+tools=/lib/modules/`uname -r`/build/usr/sign_initramfs_file
+for file in `find $1`
+do
+	[ -d $file ] && continue
+	[ -L $file ] && continue
+	[ -S $file ] && continue
+	[ -p $file ] && continue
+	[ -c $file ] && continue
+	[ -b $file ] && continue
+	[ ! -f $file ] && continue
+	echo ">>sign $file"
+	$tools $file >/tmp/.lastsigned
+	[ $? -ne 0 ] && echo "sign $file fail!" && exit 1
+	cat /tmp/.lastsigned >$file
+done
+echo "@@ Re-gen signed cpio ..."
+./tools/getdir $1 >list.signed.all
+./tools/gen_init_cpio list.signed.all >all.signed.cpio

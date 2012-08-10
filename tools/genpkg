@@ -1,0 +1,12 @@
+#!/bin/bash
+[ -z $1 ] && echo "need reference package dir name" && exit 1
+[ ! -d $1 ] && echo "reference dir not exist" && exit 1
+pkg=`basename $PWD`
+basepkg=`basename $1`
+./tools/clean
+./tools/genall
+./tools/packlibs $1
+echo "@@ Make package $pkg ..."
+mv all.base-$basepkg.cpio $pkg.cpio
+gzip -9 $pkg.cpio
+./tools/signpackage $pkg.cpio.gz

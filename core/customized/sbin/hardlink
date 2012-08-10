@@ -25,7 +25,9 @@ elif [ -L $src ]; then
 		exit 0
 	) || die "link symbol $src fail"
 elif [ -f $src ]; then 
-	ln $src $destdir/$srcname -f && (
+	cp $src $destdir/$srcname -a && (
+#it's not safe to use hardlink
+#	ln $src $destdir/$srcname -f && (
 		echo "link $src->$destdir/$srcname" 
 		exit 0 
 	) || die "link $src to $destdir/$srcname fail"

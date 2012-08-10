@@ -3,6 +3,7 @@ debug=0
 [ $# -lt 1 ] && echo "need dir" && exit 1
 echo "check lib dependence of dir ${1} ..."
 dir=${1}
+export LD_LIBRARY_PATH="$dir/lib;$dir/usr/lib;$dir/usr/local/lib"
 for file in `find "${dir}/"`
 do
 	[ ! -f $file ] && continue
@@ -10,11 +11,18 @@ do
 	[ -z "`file $file|grep "ELF"`" ] && continue
 	[ $debug -eq 1 ] && echo "strip file $file ..."
 	strip -g -S -d $file
+	notfound=`ldd $file|grep 'not found'`
+	if [ ! -z "$notfound" ];then
+		echo "Lack libs:"
+		echo $notfound
+		exit 2
+	fi
 	for lib in `ldd $file|awk '{print $3}'`
 	do
 		[ ! -f $lib ] && continue
 		[ $debug -eq 1 ] && echo "check need lib $lib ..."
 		dirname=`dirname $lib`
+		[ -z "`echo $lib|grep ^/`"   -a -f $lib ] && continue
 		[ -f $dir/$lib ] && continue
 		mkdir -p deplibs/$dirname/
 		cp $lib deplibs/$dirname/

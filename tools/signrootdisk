@@ -1,0 +1,16 @@
+#!/bin/bash
+[ -z $1 ] && echo "need root disk name" && exit 1
+[ -z $2 ] && echo "need sign file" && exit 1
+[ ! -f $2 ] && echo "sign file not exists" && exit 1
+root=$1
+[ ! -z "`cat /proc/mounts|grep ^/dev/$root`" ] && echo "dev $root mounted!" && exit 2
+read -p "May destroy all data on disk '$root', are your sure(y/N)? " cfm
+if [ "$cfm" = 'y' ]; then
+	echo "Sign /dev/$root"
+	cat $2|gpg -u XOSTE -sa|dd of=/dev/$root bs=1k seek=16 2>/dev/null
+	echo "Check sign..."
+	dd if=/dev/$root skip=16 bs=1k count=16 2>/dev/null|gpg -u XOSTE
+	exit 0
+fi
+echo "Sign cancelled."
+exit 1

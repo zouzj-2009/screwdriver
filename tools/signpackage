@@ -1,0 +1,16 @@
+#!/bin/bash
+[ ! -f $1 ] && echo "need package file name, or not exists" && exit 1
+pkg=`basename $1|sed 's/\.cpio.gz$//g'`
+pkged=`dirname $1`"/pkg.$pkg"
+dd if=$1 bs=1k count=64 2>/dev/null|gpg -u XOSTE -s >/tmp/.head.$pkg
+headersize=`cat /tmp/.head.$pkg|wc -c`
+echo "headersize=$headersize"
+if [ $headersize -gt $((128*1024)) ];then
+	echo "headersize overflow, sign package fail!"
+	exit 2
+fi
+dd if=/dev/zero of=$pkged bs=1k count=128 2>/dev/null
+dd if=/tmp/.head.$pkg of=$pkged bs=1k 2>/dev/null 
+dd if=$1 of=$pkged bs=1k skip=64 seek=128 2>/dev/null
+echo "pkg $1 signed as: $pkged."
+

@@ -1,0 +1,1 @@
+./configure --enable-pcntl --enable-cgi --with-readline
