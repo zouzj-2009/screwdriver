@@ -14,7 +14,7 @@ do
 	rm $lib
 	rm initramfs/"`echo $lib|sed 's/^deplibs\///g'`"
 done
-[ $found -eq 0 ] && echo "nothing change." >&2 && exit 0
+[ $found -eq 0 ] && echo "nothing change." && cp all.cpio all.base-$basepkg.cpio >&2 && exit 0
 echo "@@ Re-packing ..." >&2
 ./tools/getdir $PWD/deplibs/ |tee list.libs.base-$basepkg 
 ./tools/gen_init_cpio list.libs.base-$basepkg >libs.base-$basepkg.cpio

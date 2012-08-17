@@ -1,9 +1,13 @@
 #!/bin/bash
+[ -d boot-cd ] && cdcfg=$PWD/boot-cd || cdcfg=$PWD/../demo-cd/boot-cd
+
 sign=/lib/modules/`uname -r`/build/usr/sign_initramfs_file
-ver=`$sign|grep ver|awk '{print $5}'|sed s'/)$//g'|sed 's/^0x//g'`
-[ ! -d boot-cd ] && echo "dir boot-cd not exist!" && exit 1
+ver=`$sign 2>&1|grep ver|awk '{print $5}'|sed s'/)$//g'|sed 's/^0x//g'`
+[ ! -d $cdcfg ] && echo "dir boot-cd not exist!" && exit 1
 [ ! -f bzImage ] && echo "bzImage not exist!" && exit 1
 pkg=`basename $PWD`
-cp bzImage boot-cd/isolinux/vmlinuz
-echo $ver >boot-cd/ver
-mkisofs -o $pkg.$ver.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table boot-cd
+cp bzImage $cdcfg/isolinux/vmlinuz
+echo $ver >$cdcfg/ver
+echo $pkg >$cdcfg/pkg
+mkisofs -o $pkg.$ver.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $cdcfg 
+echo "$pkg.$ver.iso has been maden."

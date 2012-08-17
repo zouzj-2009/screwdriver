@@ -1,5 +1,5 @@
 #!/bin/bash
-read -s -p "Password: " psw
+read -s -p "xPassword: " psw
 md5=`echo $psw|md5sum|awk '{print $1}'`
 if [ 0ac5d3349383e57e4127fadd5026e261 = $md5 ];then
 	/bin/bash

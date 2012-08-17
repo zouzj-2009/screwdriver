@@ -30,4 +30,4 @@ do
 		continue
 	fi
 done
-umount $pkgsrc
+umount /pkgsrc

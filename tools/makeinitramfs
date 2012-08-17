@@ -6,6 +6,7 @@ exec 2>list.checksum
 tools=/lib/modules/`uname -r`/build/usr/sign_initramfs_file
 for file in `find $1`
 do
+	[ ! -z "`echo $file|grep /fakeroot/`" ] && continue;
 	[ -d $file ] && continue
 	[ -L $file ] && continue
 	[ -S $file ] && continue
@@ -14,7 +15,7 @@ do
 	[ -b $file ] && continue
 	[ ! -f $file ] && continue
 	echo ">>sign $file"
-	$tools $file >/tmp/.lastsigned
+	$tools enc $file >/tmp/.lastsigned
 	[ $? -ne 0 ] && echo "sign $file fail!" && exit 1
 	cat /tmp/.lastsigned >$file
 done
