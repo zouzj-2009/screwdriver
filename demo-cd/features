@@ -1,0 +1,21 @@
+1.Running as live-demo with pkg included. 
+  need demokey input to active full feature.
+  or with limited CPU/Storage.
+  auto-reboot after running 2 days.
+  choosing demo feature set.
+
+2.Can be used as installation CD
+  will geneate a uuid as register key.
+  key is global unique.
+  need a request file send to server
+  response text file as license data
+  newlicense and updatelicense is different!
+
+3.Can be used as rescue CD
+  1. fixe grub
+  2. check && fixe files: kernel, bootconfig, pkgchecksum etc.
+  3. grab setting and log
+  4. backup setting log, user data license etc.
+  5. restore backup archives
+  6. create USB boot disk
+
