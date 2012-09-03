@@ -32,3 +32,4 @@ do
 		echo file `getfileloc $file` $file" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
 	fi
 done
+exit 0

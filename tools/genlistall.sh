@@ -10,6 +10,7 @@ do
 		inc=`echo $file|sed 's/^[0-9]*\.inc\.//g'`
 		echo "## Include package $inc ##"
 		./tools/genall $inc >../$pkg/$inc.trace
+		[ $? -ne 0 ] && exit 1
 		cat list.$inc.all
 		continue
 	fi
@@ -17,8 +18,11 @@ do
 	for rpm in `cat $meta/$file|grep -v ^#`
 	do
 		./tools/getrpmfiles $rpm $meta/exclude
+		[ $? -ne 0 ] && exit 1
 	done
 done
 #this is the last one!
 echo "## $pkgpath.Customized ##"
 ./tools/getdir `dirname $PWD`"/$pkgpath/customized" $meta/exclude
+[ $? -ne 0 ] && exit 1
+exit 0

@@ -7,6 +7,8 @@ getfileloc()
 	#file=${file/$search//usr/lib}	
 	echo $file
 }
+rpm -q ${1} >/dev/null
+[ $? -ne 0 ] && exit 1
 echo "#rpm package `rpm -q ${1}`"
 for file in `rpm -ql ${1}| grep -v '^/usr/share\|^/usr/lib/pkgconfig\|^/usr/lib64/pkgconfig'|grep -v '\.h$\|\.a$\|\.static\|/lib[^/]*\.a\.[0-9\.]*'`
 do
@@ -30,3 +32,4 @@ do
 		echo file `getfileloc $file` $file" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
 	fi
 done
+exit 0

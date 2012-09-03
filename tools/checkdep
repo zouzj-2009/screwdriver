@@ -31,3 +31,4 @@ do
 		cp $lib $dir/$dirname/
 	done
 done
+exit 0
