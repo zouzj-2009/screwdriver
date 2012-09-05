@@ -1,0 +1,39 @@
+#!/bin/bash
+[ -z $1 ] && echo "need link source" && exit 1
+[ -z $2 ] && echo "need link destination dir" && exit 1
+src=$1
+srcname=`basename $src`
+destdir=$2
+die(){
+	echo $1
+	exit 2
+}
+if [ -d $src ]; then
+	echo "create dir $destdir/$srcname"
+	mkdir -p $destdir/$srcname 
+	[ $? -ne 0 ] && die "create dir $destdir/$srcname fail"
+	for file in `ls $src`
+	do
+#		echo "trace: linkfile $src/$file $destdir/$srcname"
+		$0 $src/$file $destdir/$srcname
+#		[ $? -ne 0 ] && die "link $src/$file to $destdir/$src  fail"
+	done
+	exit 0
+elif [ -L $src ]; then
+	cp -a $src $destdir && (
+		echo "create symbol $destdir/$src" 
+		exit 0
+	) || die "link symbol $src fail"
+elif [ -f $src ]; then 
+	cp $src $destdir/$srcname -a && (
+#it's not safe to use hardlink
+#	ln $src $destdir/$srcname -f && (
+		echo "link $src->$destdir/$srcname" 
+		exit 0 
+	) || die "link $src to $destdir/$srcname fail"
+else
+	echo "$src is not a regular file"
+	ls -l $src
+fi
+exit 0
+

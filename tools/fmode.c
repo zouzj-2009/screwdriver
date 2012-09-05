@@ -16,7 +16,7 @@ return 1;
 void show_stat_info(char *fname, struct stat *buf)
 {
 printf("%04o ",buf->st_mode&0xfff&~0x800); //clear suid
-printf(" %d ",buf->st_nlink);
+//printf(" %d ",buf->st_nlink);
 printf(" %d ",buf->st_uid);
 printf(" %d ",buf->st_gid);
 printf(" %d ",buf->st_size);

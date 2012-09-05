@@ -1,0 +1,12 @@
+
+file /lib64/ld-linux-x86-64.so.2 /lib64/ld-linux-x86-64.so.2 0755 1 0
+file /usr/bin/ldd /usr/bin/ldd 0755 1 1
+file /etc/ld.so.conf /etc/ld.so.conf 0644 1 1
+dir /etc/ld.so.conf.d 0755 2 2
+file /etc/ld.so.conf.d/ld.so.conf /etc/ld.so.conf.d/ld.so.conf 0644 1 1
+file /sbin/ldconfig /sbin/ldconfig 0755 1 1
+file /lib64/libnss_nisplus.so.2 /lib64/libnss_nisplus.so.2 0755 1 0
+file /lib64/libnss_dns.so.2 /lib64/libnss_dns.so.2 0755 1 0
+file /lib64/libnss_files.so.2 /lib64/libnss_files.so.2 0755 1 0
+file /lib64/libnss_compat.so.2 /lib64/libnss_compat.so.2 0755 1 0
+file /lib64/libnss_nis.so.2 /lib64/libnss_nis.so.2 0755 1 0
