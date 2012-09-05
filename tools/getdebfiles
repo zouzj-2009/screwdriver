@@ -1,0 +1,35 @@
+#!/bin/bash
+[ $# -lt 1 ] && echo "need package name" && exit 1
+getfileloc()
+{
+	file=${1}
+	search="/usr/local/lib"
+	#file=${file/$search//usr/lib}	
+	echo $file
+}
+pkginfo=`dpkg -l ${1} >&2|grep ${1}|sed "s/  \+/\t/g"`
+[ -z "$pkginfo" ] && exit 1
+echo "#rpm package $pkginfo"
+for file in `dpkg -L ${1}| grep -v '^/usr/share/man\|^/usr/share/info\|^/usr/share/awk\|^/usr/share/locale\|^/usr/share/doc\|^/usr/lib/pkgconfig\|^/usr/lib64/pkgconfig'|grep -v '\.h$\|\.a$\|\.static\|/lib[^/]*\.a\.[0-9\.]*'`
+do
+	lfile=`getfileloc $file`
+	[ ! -z $2 ] && [ -f $2 ] && [ ! -z `grep $lfile $2` ] && continue
+	if [ -L $file ];then
+		target=`ls -ld $file|awk '{print $11}'`
+		target=`getfileloc $target`
+		echo slink `getfileloc $file`" "$target" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+	elif [ -d $file ];then
+		echo dir `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+	elif [ -c $file ];then
+		echo nod `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'` c `ls -ld $file|sed 's/,/ /g'|awk '{print $5" "$6}'`	
+	elif [ -b $file ];then
+		echo nod `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'` b `ls -ld $file|sed 's/,/ /g'|awk '{print $5" "$6}'`	
+	elif [ -p $file ];then
+		echo pipe `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+	elif [ -S $file ];then
+		echo sock `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+	elif [ -f $file ];then
+		echo file `getfileloc $file` $file" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+	fi
+done
+exit 0
