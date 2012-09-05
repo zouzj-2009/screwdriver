@@ -10,7 +10,7 @@ link_base(){
 		linkto=`echo $file|sed "s/\.$ver$//g"`
 		[ $linkto = $file ] && continue;
 		echo "line $file to $linkto ..."
-		rm $linkto
+		rm $linkto 
 		ln -s $file $linkto
 	done
 }
@@ -19,3 +19,6 @@ link_base .
 cd tools
 link_base .
 cd -
+
+echo "$ver" >version.base
+echo "$ver" >$ver.based

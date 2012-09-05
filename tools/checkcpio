@@ -3,3 +3,4 @@
 cd initramfs
 [ $? -ne 0 ] && echo "need dir initramfs" && exit 1
 cpio --no-absolute-filenames -ui <../${1} 2>&1|tee /tmp/trace|grep file
+exit ${PIPESTATUS[0]}

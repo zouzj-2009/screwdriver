@@ -7,9 +7,10 @@ getfileloc()
 	#file=${file/$search//usr/lib}	
 	echo $file
 }
-pkginfo=`dpkg -l ${1} >&2|grep ${1}|sed "s/  \+/\t/g"`
+pkginfo=`dpkg -l ${1}|grep ${1}|sed "s/  \+/\t/g"`
 [ -z "$pkginfo" ] && exit 1
-echo "#rpm package $pkginfo"
+echo $pkginfo >&2
+echo "#deb package $pkginfo"
 for file in `dpkg -L ${1}| grep -v '^/usr/share/man\|^/usr/share/info\|^/usr/share/awk\|^/usr/share/locale\|^/usr/share/doc\|^/usr/lib/pkgconfig\|^/usr/lib64/pkgconfig'|grep -v '\.h$\|\.a$\|\.static\|/lib[^/]*\.a\.[0-9\.]*'`
 do
 	lfile=`getfileloc $file`

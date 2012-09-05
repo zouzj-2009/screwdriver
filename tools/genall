@@ -4,11 +4,14 @@
 [ -z "$1" ] && pkg=`basename $PWD` || pkg=$1
 [ -z "$1" ] && dir=$PWD || dir=`dirname $PWD`"$1"
 [ -z "$1" ] && out=all || out=$1.all
+basever=`cat ../version.base`
 if [ -z "$1" ];then
 	rm ./initramfs/* -rf
 	rm ./deplibs/* -rf
 fi
+[ -z "$1" -a ! -z "$basever" ] && echo "$basever" >initramfs/version.base
 echo "@@ Generating package $pkg file list ..." >&2
+set -x
 ./tools/genlistall.sh $1> list.$out
 [ $? -ne 0 ] && exit 1
 ./tools/gen_init_cpio list.$out >$out.cpio 
@@ -16,7 +19,7 @@ echo "@@ Generating package $pkg file list ..." >&2
 echo "@@ Checking package $pkg cpio ..." >&2
 ./tools/checkcpio $out.cpio >&2
 [ $? -ne 0 ] && exit 1
-
+set +x
 [ ! -z "$1" ] && ( echo "@@ Generate $pkg done" >&2 ) && exit 0
 #finanal round
 echo "@@ Check package $pkg lib depdence ..." >&2
