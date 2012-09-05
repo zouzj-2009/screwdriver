@@ -33,6 +33,6 @@ dir /var/log 0755 0 0
 dir /tftproot 0755 0 0
 dir /tmp 0777 0 0
 dir /root 0700 0 0
-dir /fakeroot 0755 2 0
-dir /fakeroot/dev 0755 2 0
-slink /dev fakeroot/dev/ 0755 2 0
+dir /fakeroot 0755 0 0
+dir /fakeroot/dev 0755 0 0
+slink /dev fakeroot/dev/ 0755 0 0

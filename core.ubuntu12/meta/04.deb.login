@@ -1,1 +1,3 @@
 login
+passwd
+libpam-modules

@@ -7,7 +7,7 @@ export LD_LIBRARY_PATH="$dir/lib;$dir/usr/lib;$dir/usr/local/lib"
 for file in `find "${dir}/"`
 do
 	[ ! -f $file ] && continue
-	[ ! -x $file ] && continue
+#	[ ! -x $file ] && continue
 	[ -z "`file $file|grep "ELF"`" ] && continue
 	[ $debug -eq 1 ] && echo "strip file $file ..."
 	strip -g -S -d $file

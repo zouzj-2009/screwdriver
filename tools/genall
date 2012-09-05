@@ -37,4 +37,5 @@ chroot $PWD/initramfs/ ldconfig >&2
 echo "@@ Generate final $pkg cpio archive ..." >&2
 ./tools/gen_init_cpio list.real.$out >$out.cpio
 [ $? -ne 0 ] && ( echo "gen_init_cpio list.real.$out fail!" >&2 ) && exit 1
+echo "@@ Done! @@"
 exit 0

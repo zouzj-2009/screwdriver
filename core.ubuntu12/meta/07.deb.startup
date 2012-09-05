@@ -1,6 +1,8 @@
 #SysVinit
-#sysvinit-tools
-#initscripts
-#procps
-#gawk
+lsb-base
+sysvinit-utils
+initscripts
+procps
+gawk
+upstart
 #setup
