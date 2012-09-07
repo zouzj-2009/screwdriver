@@ -9,7 +9,8 @@ if [ -z "$1" ];then
 	rm ./initramfs/* -rf
 	rm ./deplibs/* -rf
 fi
-[ -z "$1" -a ! -z "$basever" ] && echo "$basever" >initramfs/version.base
+mkdir initramfs/etc -p
+[ -z "$1" -a ! -z "$basever" ] && echo "$basever" >initramfs/etc/version.base
 echo "@@ Generating package $pkg file list ..." >&2
 set -x
 ./tools/genlistall.sh $1> list.$out

@@ -1,8 +1,12 @@
 #SysVinit
+findutils
+hostname
 lsb-base
 sysvinit-utils
 initscripts
 procps
 gawk
 upstart
+ifupdown
+mountall
 #setup

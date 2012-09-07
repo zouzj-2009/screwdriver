@@ -3,7 +3,7 @@
 echo "Updating $1, using '`uname -r`' ..."
 mkdir modules.old -p
 rm modules.old/* -rf
-uname=`uname -r`
+[ ! -z "$2" ] && uname=$2 || uname=`uname -r`
 mkdir modules.new -p
 rm modules.new/* -rf
 >modules.missing
