@@ -21,6 +21,7 @@ if ! mount -t devtmpfs -o mode=0755 udev /dev; then
 	[ -e /dev/console ] || mknod -m 0600 /dev/console c 5 1
 	[ -e /dev/null ] || mknod /dev/null c 1 3
 fi
+[ -e /dev/console ] || mknod -m 0600 /dev/console c 5 1
 mkdir /dev/pts
 mount -t devpts -o noexec,nosuid,gid=5,mode=0620 devpts /dev/pts || true
 mount -t tmpfs -o "nosuid,size=20%,mode=0755" tmpfs /run
@@ -229,6 +230,7 @@ unset BOOT
 
 # Chain to real filesystem
 #exec run-init ${rootmnt} ${init} "$@" ${recovery:+--startup-event=recovery} <${rootmnt}/dev/console >${rootmnt}/dev/console 2>&1
-exec /sbin/init --verbose "$@" ${recovery:+--startup-event=recovery} 
+#exec /sbin/init --verbose "$@" ${recovery:+--startup-event=recovery} 
+exec /sbin/init "$@" ${recovery:+--startup-event=recovery} 
 
 panic "Could not execute run-init."

@@ -9,5 +9,6 @@ pkg=`basename $PWD`
 cp bzImage $cdcfg/isolinux/vmlinuz
 echo $ver >$cdcfg/ver
 echo $pkg >$cdcfg/pkg
-mkisofs -o $pkg.$ver.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $cdcfg 
-echo "$pkg.$ver.iso has been maden."
+name="$pkg"-`cat ../version.base`."$ver"
+mkisofs -o $name.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $cdcfg 
+echo "$name.iso has been maden."
