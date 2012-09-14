@@ -1,0 +1,98 @@
+#!/bin/sh
+
+matched=0;
+do_match()
+{
+	if echo $1|grep "TargetName=" > /dev/null 2>&1; then 
+		return 0;
+	else
+		return 1;
+	fi
+}
+do_prune()
+{
+	i=0;
+	dmesg | tac | while read line
+	do
+		if do_match "$line"; then
+			matched=1;
+			echo $line;
+		else if [ $matched = 1 ];then
+				return;
+			 fi
+		fi
+	done
+}
+
+IP=$1
+
+ISCSI_HOST=`basename /proc/scsi/iscsi_initiator/*`
+cat /proc/scsi/iscsi_initiator/${ISCSI_HOST} > /tmp/tmp_iscsi_init
+
+TARGET_IDS=`gawk '/target id/ {print $3}' /tmp/tmp_iscsi_init | sort -n`
+
+TARGET_ID=0
+prev=0
+counter=0
+
+for i in ${TARGET_IDS} ; do
+	if [ "${counter}" = "0" ]; then
+		if [ ! "${i}" = "0" ]; then
+			TARGET_ID=0
+			break
+		else
+			prev=${i}
+			counter=`expr ${counter} + 1`
+			TARGET_ID=${counter}
+			continue
+		fi
+		
+	fi
+
+	if [ `expr ${i} - ${prev}` -gt "1" ]; then
+		TARGET_ID=`expr ${prev} + 1`
+		break
+	fi
+	
+	prev=${i}
+	counter=`expr ${counter} + 1`
+	TARGET_ID=${counter}
+done
+
+echo
+echo "HOST ID = " ${ISCSI_HOST}
+echo "TARGET ID = " ${TARGET_ID}
+echo "TARGET IP = " ${IP}
+echo 
+
+./iscsi_manage init restore host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_manage init set InitiatorName=iqn.2003-09.cn.edu.tsinghua.iscsi.draft20-initiator host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_manage init set InitialR2T=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init set ImmediateData=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+
+#### performance usually better when everything goes in order
+./iscsi_manage init set DataPDUInOrder=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init set DataSequenceInOrder=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_manage init set SessionType=Discovery host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init setp SendTargets=All host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_manage init force p=4 host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init snack d=y host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init snack s=y host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init force sch=1 host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_config up ip=${IP} lun=0 host=${ISCSI_HOST} target=${TARGET_ID}
+
+
+echo "==============================================================="
+echo "Targets found at ${IP}"
+#while TARGET_NO!=""
+#	set TARGET_NO=`dmesg | select last | sort -u | grep "TargetName="`
+#	echo ${TARGET_NO} 
+
+do_prune | sort -n;
+
+echo "==============================================================="

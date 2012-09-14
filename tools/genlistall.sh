@@ -1,1 +1,1 @@
-genlistall.sh.ubuntu12
+genlistall.sh.redhat5

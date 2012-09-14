@@ -1,0 +1,80 @@
+#!/bin/sh
+
+IP=${1}
+TARGET_NO=${2}
+
+ISCSI_HOST=`basename /proc/scsi/iscsi_initiator/*`
+cat /proc/scsi/iscsi_initiator/${ISCSI_HOST} > /tmp/tmp_iscsi_init
+
+TARGET_IDS=`gawk '/target id/ {print $3}' /tmp/tmp_iscsi_init | sort -n`
+
+TARGET_ID=0
+prev=0
+counter=0
+
+for i in ${TARGET_IDS} ; do
+	if [ "${counter}" = "0" ]; then
+		if [ ! "${i}" = "0" ]; then
+			TARGET_ID=0
+			break
+		else
+			prev=${i}
+			counter=`expr ${counter} + 1`
+			TARGET_ID=${counter}
+			continue
+		fi
+		
+	fi
+
+	if [ `expr ${i} - ${prev}` -gt "1" ]; then
+		TARGET_ID=`expr ${prev} + 1`
+		break
+	fi
+	
+	prev=${i}
+	counter=`expr ${counter} + 1`
+	TARGET_ID=${counter}
+done
+
+
+if [ "${TARGET_ID}" = "16" ]; then
+	echo "**** Max targets reached, exit!"
+	exit
+fi
+
+echo
+echo "TARGET ID = " ${TARGET_ID}
+echo "TARGET IP = " ${IP}
+echo "TARGET NO = " ${TARGET_NO}
+echo 
+
+./iscsi_manage init restore host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_manage init set TargetName=iqn.2003-09.cn.edu.tsinghua.iscsi.${TARGET_NO} host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init set InitiatorName=iqn.2003-09.cn.edu.tsinghua.iscsi.draft20-initiator host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_manage init set InitialR2T=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init set ImmediateData=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+
+#### performance usually better when everything goes in order
+./iscsi_manage init set DataPDUInOrder=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init set DataSequenceInOrder=Yes host=${ISCSI_HOST} target=${TARGET_ID}
+
+
+./iscsi_manage init set ErrorRecoveryLevel=1 host=${ISCSI_HOST} target=${TARGET_ID}
+#
+#	set the command retransmit interval to 4 seconds
+#	(when ErrorRecoverLevel is greater than 0)
+./iscsi_manage init force p=4 host=${ISCSI_HOST} target=${TARGET_ID}
+#
+#	uncomment the following to enable initiator to send SNACKs to target
+#	(when ErrorRecoverLevel is greater than 0)
+./iscsi_manage init snack d=y host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init snack s=y host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_manage init force p=4 host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init snack d=y host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init snack s=y host=${ISCSI_HOST} target=${TARGET_ID}
+./iscsi_manage init force sch=1 host=${ISCSI_HOST} target=${TARGET_ID}
+
+./iscsi_config up ip=${IP} host=${ISCSI_HOST} target=${TARGET_ID}

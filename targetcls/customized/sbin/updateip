@@ -1,0 +1,55 @@
+#!/bin/bash
+[ "$1" = "-v" ] && verbose=1 || verbose=0
+[ -f /etc/userdata/sysconfig/advroute ] && enable=`cat /etc/userdata/sysconfig/advroute` || enable="on"
+[ "$verbose" -eq 1 ] && enable=on
+[ "$enable" == "off" ] && exit
+index=1
+vecho()
+{
+	[ $verbose -eq 1 ] && echo ${*}
+}
+for dev in `cat /proc/net/dev|grep "eth\|bond"|awk -F: '{print $1}'`
+do
+	ip=`ifconfig $dev|grep 'inet addr'|awk '{print $2}'|awk -F: '{print $2}'`
+	if [ -z "$ip" ];then
+		let index++
+		continue
+	fi
+	board=`ifconfig $dev|grep 'inet addr'|awk '{print $3}'|awk -F: '{print $2}'`
+	mask=`ifconfig $dev|grep 'inet addr'|awk '{print $4}'|awk -F: '{print $2}'`
+	if [ -z "$mask" ];then
+		let index++
+		continue
+	fi
+	prefix=`ipcalc -p $ip $mask|awk -F= '{print $2}'`
+	net=`ipcalc -n $ip $mask|awk -F= '{print $2}'`
+	vecho "check $dev:  $ip $board $mask $prefix $net"
+	
+	old=`ip route show table $index|head -n 1`
+	old_prefix=`echo $old|awk '{print $1}'`
+	old_gw=`echo $old|awk '{print $3}'`
+	old_dev=`echo $old|awk '{print $5}'`
+	old_rule=`ip rule show|grep "lookup $index *$"|awk '{print $3}'`
+	vecho "old table $index: $old_prefix $old_gw $old_dev $old_rule" 	
+	if [ -z "$old" ];then 
+		ip route add $net/$prefix via $ip dev $dev tab $index
+		ip rule add from $ip/32 tab $index
+		act=add
+	else
+		if [ "$old_prefix" != "$net/$prefix" -o "$old_gw" != "$ip" -o "$old_dev" != "$dev" ];then
+			ip route del $old_prefix tab $index 
+			ip rule del from $old_rule/32 
+			ip rule del from $ip/32 
+			ip route add $net/$prefix via $ip dev $dev tab $index
+			ip rule add from $ip/32 tab $index
+			act=change
+		else
+			act=keep
+		fi
+	fi
+	new=`ip route show table $index`
+	vecho "$act route: $new"
+	vecho "$act rule: `ip rule show|grep \"lookup $index *$\"`"
+	let index++
+
+done

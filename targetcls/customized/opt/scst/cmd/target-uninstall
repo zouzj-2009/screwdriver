@@ -1,0 +1,27 @@
+#!/bin/bash
+. /etc/product.cfg 2>/dev/null
+
+rmmod umx_iscsi_target
+
+if [ "$PRO_SUPPORT_FCTGT" = "yes" ];then #in /etc/product.cfg
+/sbin/fctgt.sh unload
+rmmod umx_qt
+fi
+
+
+if [ "$PRO_SUPPORT_DISKIO" = "yes" ];then #in /etc/product.cfg
+rmmod scst_disk
+fi
+
+if [ "$PRO_SUPPORT_VSNAP" != "yes" ];then #in /etc/product.cfg
+	if [ "$PRO_SUPPORT_FILEIO" = "yes" ];then #in /etc/product.cfg
+	rmmod scst_disk_fileio
+	fi
+fi
+
+if [ "$PRO_SUPPORT_VSNAP" = "yes" ];then #in /etc/product.cfg
+[ -x /sbin/snap.sh ] && /sbin/snap.sh unload
+rmmod umx_snap
+fi
+
+rmmod umx_scst

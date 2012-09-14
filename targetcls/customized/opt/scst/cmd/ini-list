@@ -1,0 +1,20 @@
+#!/bin/sh
+
+
+
+if [ ! -e /proc/scsi/iscsi_initiator ]; then
+	echo "iSCSI Initiator not loaded."
+	exit
+fi
+
+ISCSI_HOST=`basename /proc/scsi/iscsi_initiator/*`
+cat /proc/scsi/iscsi_initiator/${ISCSI_HOST} > /tmp/iscsi_ini_list
+ 
+result=`gawk '/target id|Target Address|TargetName/ {print $0}' /tmp/iscsi_ini_list`
+result_test=`echo ${result} |sed --quiet /NULL/p`
+
+if [ ! "${result_test}" = "" ]; then
+	exit
+fi 
+ 
+gawk '/target id|Target Address|TargetName/ {print $0}' /tmp/iscsi_ini_list

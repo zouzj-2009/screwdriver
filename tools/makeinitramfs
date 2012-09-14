@@ -4,7 +4,7 @@
 [ $? -ne 0 ] && echo "update key fail!" && exit 2
 exec 2>list.checksum
 tools=/lib/modules/`uname -r`/build/usr/sign_initramfs_file
-for file in `find $1`
+for file in `find $1/encrypted`
 do
 	[ ! -z "`echo $file|grep /fakeroot/`" ] && continue;
 	[ -d $file ] && continue

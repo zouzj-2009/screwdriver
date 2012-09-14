@@ -12,16 +12,45 @@ installpkg(){
 		dd if=$1 bs=1k count=128 2>/dev/null|gpg -u XOSTE 2>/tmp/.trace.gpg.$pkgname
 		dd if=$1 bs=1k skip=128 2>/dev/null
 	)| gzip -dc |cpio -iu 2>/tmp/.trace.inst.$pkgname
-	[ $refresh -eq 1 -a -x /etc/pkgs/$pkgname/bootup ] && /etc/pkgs/$pkgname/bootup
-	[ $refresh -eq 0 -a -x /etc/pkgs/$pkgname/update ] && /etc/pkgs/$pkgname/update
 	cd - >/dev/null
 }
 
-pkgsrc=/dev/"`cat /etc/rootdisk`"1
-mkdir -p /pkgsrc
-mount -o ro $pkgsrc  /pkgsrc
-[ $? -ne 0 ] && echo "mount $pkgsrc fail! packages will not be installed." && exit 1
-for pkg in `cat /etc/rootsig|grep ^pkg\.`
+if [ ! -z "`grep CDBOOT /proc/cmdline`" ]; then
+	[ ! -e /dev/cdrom ] && echo "CD-Boot, but cdrom not found!" && exit 1	
+	pkgsrc=/dev/cdrom
+	mkdir /mnt/media -p
+	mount -o ro $pkgsrc /mnt/media
+	[ $? -ne 0 ] && echo "mount $pkgsrc fail! packages will not be installed." && exit 1
+	ln -sf /mnt/media/packages/ /pkgsrc 2>/dev/null
+	[ ! -e /mnt/media/demo.sig ] && echo "No demo.sig, packages will not be installed" && exit 1
+	/encrypted/checksig.sh /mnt/media/demo.sig demopkg >/etc/packages
+	/encrypted/checksig.sh /mnt/media/demo.sig demoulic >/etc/sysconfig/license.txt
+	/encrypted/checksig.sh /mnt/media/demo.sig demoklic >/etc/sysconfig/license.dat
+	/encrypted/checksig.sh /mnt/media/demo.sig demopcfg >/etc/product.cfg
+	[ $? -ne 0 ] && echo "Bad sig file demo.sig, check your CD!" && exit 1
+	echo "Demo CD, enabled pkgs:"
+	cat /etc/packages|sed "s/^/\t/g"
+	[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt
+	read -p "Press Enter to continue (Agree License) ..."
+	[ -x /sbin/democd-setup.sh ] && /sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
+	mkdir -p /etc/userdata/sysconfig
+	cp -a /etc/default.config/* /etc/userdata/sysconfig 
+else
+	[ ! -e /etc/sys.sig ] && echo "No package enabled." && exit 1
+	pkgsrc=/dev/"`cat /etc/rootdisk`"1
+	mkdir -p /pkgsrc
+	mount -o ro $pkgsrc  /pkgsrc
+	[ $? -ne 0 ] && echo "mount $pkgsrc fail! packages will not be installed." && exit 1
+	/encrypted/checksig.sh /etc/sys.sig pkg >/etc/packages
+	echo "Enabled pkgs:"
+	cat /etc/packages|sed "s/^/\t/g"
+	[ -e /etc/sys.sig ] && /encrypted/checksig.sh /etc/sys.sig klic >/etc/sysconfig/license.dat
+	[ -e /etc/sys.sig ] && /encrypted/checksig.sh /etc/sys.sig ulic >/etc/sysconfig/license.txt
+	[ -e /etc/sys.sig ] && /encrypted/checksig.sh /etc/sys.sig pcfg >/etc/product.cfg
+	[ $? -ne 0 ] && echo "Bad sys sig, check your rootdisk: $pkgsrc!" && exit 1
+	[ -x /sbin/rootdisk-setup.sh ] && /sbin/rootdisk-setup.sh `cat /etc/rootdisk`
+fi
+for pkg in `cat /etc/packages|grep ^pkg\.`
 do
 	if [ -f /pkgsrc/$pkg ]; then
 		installpkg /pkgsrc/$pkg
@@ -30,4 +59,4 @@ do
 		continue
 	fi
 done
-umount /pkgsrc
+[ -L /pkgsrc ] && umount /mnt/media || umount /pkgsrc

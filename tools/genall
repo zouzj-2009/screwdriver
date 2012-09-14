@@ -13,7 +13,7 @@ mkdir initramfs/etc -p
 [ -z "$1" -a ! -z "$basever" ] && echo "$basever" >initramfs/etc/version.base
 echo "@@ Generating package $pkg file list ..." >&2
 set -x
-./tools/genlistall.sh $1> list.$out
+./tools/genlistall.sh $1|sed "s/\/\//\//"> list.$out
 [ $? -ne 0 ] && exit 1
 ./tools/gen_init_cpio list.$out >$out.cpio 
 [ $? -ne 0 ] && ( echo "gen_init_cpio list.$out fail!" >&2 ) && exit 1

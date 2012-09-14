@@ -1,0 +1,129 @@
+#!/bin/bash
+exec 2>/tmp/nbcheck.err
+set -x
+#configuration vars
+[ -f /etc/userdata/sysconfig/hbcheck.mindiff ] && min_diff_speed=`cat /etc/sysconfig/hbcheck.mindiff` || min_diff_speed=10	#MB/s
+
+#input param
+#ethX(highest overmark one) RECV|SEND HIGH|LOW speed mark = ethX(lowest recv/send one) speed = ethX(lowest both one) speed = eth0 recv_speed send_speed eth1 recv_speed send_speed ...
+logger -t NBCHECK "params=${*}"
+
+[ $# -lt 13 ] && exit 
+#get input parameters
+eth_tosharp=$1
+[ "$2" = "RECV" ] && is_recv=1 || is_recv=0
+[ "$3" = "HIGH" ] && is_high=1 || is_high=0
+sharp_speed=$4
+sharp_mark=$5
+
+shift 6
+eth_x_lowest=$1
+eth_x_low_speed=$2
+
+shift 3
+eth_b_lowest=$1
+eth_b_low_speed=$2
+
+shift 3
+i=0;
+while [ $# -gt 1 ]
+do
+	declare eth_recv_$i=$2
+	declare eth_send_$i=$3
+	let i++
+	shift 3
+done
+
+set >/tmp/nbcheck.vars
+if [ ! -f /etc/userdata/sysconfig/nbcheck ];then
+	logger -t NBCHECK "nbcheck disabled, exit daemon."
+	killall netbalance 2>/dev/null
+	exit 0
+fi
+
+if [ "$eth_x_lowest" = "$eth_tosharp" ];then
+	logger -t NBCHECK "no other NIC to use, no kick."
+	exit 1
+fi
+
+diff_speed=$((sharp_speed-eth_x_low_speed))
+if [ $diff_speed -le $min_diff_speed ];then
+	logger -t NBCHECK "too samll diff-speed, no kick."
+	exit 2
+fi
+
+
+#get the eth_x's ip, set group weight for it!
+get_ip()
+{
+	cat /etc/userdata/sysconfig/startnet.sh|grep "ifconfig ${1} "|awk '{print $3}'
+}
+
+eth_x_ip=`get_ip $eth_x_lowest`
+
+#clear weight of this ip
+logger -t NBCHECK "set weight of $eth_x_lowest($eth_x_ip) to 0"
+for tgt in `cat /proc/scsi_target/iscsi_target/groups|grep 'tgn:'|awk '{print $2}'`
+do
+	echo set $tgt include $eth_x_ip 0 >/proc/scsi_target/iscsi_target/groups
+done
+
+#use shell info speed to get per connection speed
+#initiaotr_ip target_ip target_id recv(B/s) send(B/s) rx_pid
+
+shell info ispeed >/tmp/nbcheck.speed
+
+#find the one who's speed nearest to diff_speed/2 and >0
+#exclude ip need out of this
+ex_ips="asdfghi193jklmn"
+for ip in `cat /etc/userdata/sysconfig/ipgroups 2>/dev/null|grep '^ ex:'|sed 's/ex://g'`
+do
+	ex_ips="$ex_ips\|$ip"
+done
+set >/tmp/nbcheck.vars
+cat /tmp/nbcheck.speed|grep -v $ex_ips|grep -v '^$'|grep -v '^\-'|grep -v '^init'|awk -v diff_speed=$diff_speed -v is_recv=$is_recv 'BEGIN{
+min_diff=1000*1024*1024
+min_one=0
+diff_speed=diff_speed*1024*1024/2
+limit_speed=diff_speed*2*2/3 #less than 2/3 origin speed
+}
+{
+	if (is_recv){
+		this_speed=$4
+	}else{
+		this_speed=$5
+	}
+	if (this_speed>0 && this_speed >= diff_speed && (this_speed-diff_speed) <= min_diff){
+		min_diff=this_speed-diff_speed
+		min_one=$6
+		min_line=$0
+		min_speed=this_speed
+	}
+	if (this_speed>0 && this_speed < diff_speed && (diff_speed-this_speed) <= min_diff){
+		min_diff=diff_speed-this_speed
+		min_one=$6
+		min_line=$0
+		min_speed=this_speed
+	}
+	#print "check "diff_speed" with "this_speed"("$4","$5") ="this_speed-diff_speed": min_diff="min_diff
+}
+END{
+	print "rxpid="min_one
+	print "check_diff_speed="diff_speed
+	print "check_speed="min_speed
+	print "check_limit="limit_speed
+	print "checked_diff="min_diff/2
+	print "checked_line=\""min_line"\""
+}' >/tmp/nbcheck.out
+
+. /tmp/nbcheck.out
+if [ ! -z "$rxpid" -a "$rxpid" != 0 ];then
+	if [ "$check_speed" -lt "$check_limit" ];then
+		logger -t NBCHECK "kick: $checked_line"
+		kill -1 $rxpid
+	else
+		logger -t NBCHECK "not kick too fast one: $checked_line"
+	fi
+else
+	logger -t NBCHECK "not found, no kick."
+fi

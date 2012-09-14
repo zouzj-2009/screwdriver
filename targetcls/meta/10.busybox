@@ -1,0 +1,1 @@
+slink /etc/ifconfig ../bin/busybox 0755 1 0

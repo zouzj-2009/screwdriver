@@ -1,0 +1,19 @@
+#!/bin/tcsh
+
+set IP=${1}
+set TARGET_ID=${2}
+set ISCSI_HOST=`basename /proc/scsi/iscsi_initiator/*`
+
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 0" > /proc/scsi/scsi
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 1" > /proc/scsi/scsi
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 2" > /proc/scsi/scsi
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 3" > /proc/scsi/scsi
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 4" > /proc/scsi/scsi
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 5" > /proc/scsi/scsi
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 6" > /proc/scsi/scsi
+#echo "scsi remove-single-device ${ISCSI_HOST} 0 ${TARGET_ID} 7" > /proc/scsi/scsi
+#echo "iscsi_initiator ip 0 port 0 target 3 lun 0 cid 0" > /proc/scsi/iscsi_initiator/2
+
+./iscsi_config down ip=${IP} target=${TARGET_ID} host=${ISCSI_HOST}
+
+

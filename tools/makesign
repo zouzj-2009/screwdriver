@@ -1,0 +1,3 @@
+#!/bin/bash
+[ -z $1 ] && echo "need sign file" && exit 1
+cat $1|gpg -u XOSTE -sa

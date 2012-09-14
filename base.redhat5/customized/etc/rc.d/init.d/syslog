@@ -24,8 +24,8 @@ start() {
 	if [ -f /etc/sysconfig/syslog ] ; then
 		. /etc/sysconfig/syslog
 	else
-		SYSLOGD_OPTIONS="-m 0 -b 20 -S -D"
-		KLOGD_OPTIONS="-c 6 "
+		SYSLOGD_OPTIONS="-m 0 -b 20 -S -D "
+		KLOGD_OPTIONS="-c 1 "
 	fi
 
 	if [ -z "$SYSLOG_UMASK" ] ; then

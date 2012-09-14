@@ -1,0 +1,177 @@
+#!/bin/bash
+SYSCONFIG=/etc/userdata/sysconfig
+[ -f $SYSCONFIG/myset ] && myset=`cat $SYSCONFIG/myset` || myset=setp
+
+if [ -x $SYSCONFIG/target-install -a "$0" != "$SYSCONFIG/target-install" ]; then
+$SYSCONFIG/target-install
+exit
+fi
+DRIVERPATH=/opt/scst/
+
+#       change the max and default read/write socket buffer sizes to 1 Megabyte
+echo "1048575" > /proc/sys/net/core/rmem_max
+echo "1048575" > /proc/sys/net/core/rmem_default
+echo "1048575" > /proc/sys/net/core/wmem_max
+echo "1048575" > /proc/sys/net/core/wmem_default
+
+#       disable the TCP RTT calculation
+echo "0" > /proc/sys/net/ipv4/tcp_timestamps
+
+. /etc/product.cfg 2>/dev/null
+
+if [ ! -z "`strings $DRIVERPATH/modules/umx_scst.ko|grep 'parm=scst_idmap:'`" ];then
+	idmap=`cat $SYSCONFIG/scst_idmap 2>/dev/null`
+	[ -z "$idmap" ] && idmap=0
+	logger "umx-idmap:$idmap"
+	idmap="scst_idmap=$idmap"	
+else
+	idmap=
+fi
+insmod  $DRIVERPATH/modules/umx_scst.ko $idmap
+if [ -f /proc/scsi_target/params ];then
+	for param in `ls $SYSCONFIG/scsi* 2>/dev/null`
+	do
+		param=`basename $param`
+		echo -n "$param = `cat $SYSCONFIG/$param`" > /proc/scsi_target/params
+	done
+fi
+
+if [ "$PRO_SUPPORT_ISCSIUDP" = "yes" ];then
+	if [ -f $SYSCONFIG/customdrv/scst_config ];then
+		echo -n "scst_config = `cat $SYSCONFIG/customdrv/scst_config`" > /proc/scsi_target/config 2>/dev/null
+	fi
+fi
+
+if [ "$PRO_SUPPORT_DISKIO" = "yes" ];then #in /etc/product.cfg
+	[ -f $SYSCONFIG/exportall ] && exportall='exportall=1' || exportall=
+	insmod  $DRIVERPATH/modules/scst_disk.ko $exportall
+	[ -x /sbin/setupdiskio.sh ] && /sbin/setupdiskio.sh
+fi
+
+psn=`cat $SYSCONFIG/psn 2>/dev/null`
+[ -z "$psn" ] && psn=umxvdisk
+
+if [ "$PRO_SUPPORT_VSNAP" = "yes" ];then #in /etc/product.cfg
+	if [ ! -z "`strings $DRIVERPATH/modules/umx_snap.ko|grep 'parm=psn:serialnumber'`" ];then
+		logger "umx-snap:$psn"
+		psn="psn=$psn"	
+	else
+		psn=
+	fi
+	insmod  $DRIVERPATH/modules/umx_snap.ko $psn
+	major=`cat /proc/devices |grep snap |awk '{print \$1}'`
+	if [ -n "$major" ]; then
+		if [ -e /dev/snap0 ]; then
+			rm /dev/snap0 -f
+		fi
+		echo "mknod snap0"
+		mknod /dev/snap0 c $major 0
+	fi
+	[ -x /sbin/snap.sh ] && /sbin/snap.sh load
+
+fi
+
+if [ "$PRO_SUPPORT_FCTGT" = "yes" ];then
+	insmod $DRIVERPATH/modules/qla2xxx.ko
+	insmod $DRIVERPATH/modules/umx_qt.ko 
+	for param in `ls $SYSCONFIG/umxqt_* 2>/dev/null`
+	do
+		param=`basename $param|sed 's/umxqt_//g'`
+		echo -n "$param = `cat $SYSCONFIG/umxqt_$param`" > /proc/scsi_target/umx_qt/param
+	done
+	/sbin/fctgt.sh setup
+fi
+
+if [ "$PRO_DUAL_CONTROLLER" != "no" -a ! -f $SYSCONFIG/noreset ];then
+	[ -f /proc/scsi_target/params ] && echo "realreset = 1" >/proc/scsi_target/params 2>/dev/null
+fi
+#scsi dbg
+if [ -f /proc/scsi_target/params ];then
+#	[ -f $SYSCONFIG/scsiretry ] && echo -n "scsiretry = `cat $SYSCONFIG/scsiretry`" >/proc/scsi_target/params
+#	[ -f $SYSCONFIG/scsitmout ] && echo -n "scsitmout = `cat $SYSCONFIG/scsitmout`" >/proc/scsi_target/params
+#	[ -f $SYSCONFIG/scsififo ] && echo -n "scsififo = `cat $SYSCONFIG/scsififo`" >/proc/scsi_target/params
+	[ -f $SYSCONFIG/checkrecovery ] && echo -n "checkrecovery = `cat $SYSCONFIG/checkrecovery`" >/proc/scsi_target/params
+	[ -f $SYSCONFIG/auto_online ] && echo -n "auto_online = `cat $SYSCONFIG/auto_online`" >/proc/scsi_target/params
+#	[ -f $SYSCONFIG/scsi_debug ] && echo -n "scsi_debug = `cat $SYSCONFIG/scsi_debug`" >/proc/scsi_target/params
+fi
+if [ "$PRO_SUPPORT_VSNAP" != "yes" ];then #in /etc/product.cfg
+	if [ ! -z "`strings $DRIVERPATH/modules/scst_disk_fileio.ko|grep 'parm=psn:serialnumber'`" ];then
+		logger "fileio:$psn"
+		psn="psn=$psn"	
+	else
+		psn=
+	fi
+	if [ "$PRO_SUPPORT_FILEIO" = "yes" ];then #in /etc/product.cfg
+		insmod  $DRIVERPATH/modules/scst_disk_fileio.ko $psn 2>/dev/null >/dev/null
+		[ -f /volman/vm/sbin/evms -a -x $SYSCONFIG/lvsetting ] && $SYSCONFIG/lvsetting
+		[ -x /sbin/setupfileio.sh ] && /sbin/setupfileio.sh
+	fi
+fi
+#unexport rootdisk
+param=`cat /etc/rootdisk`
+sdev=`basename $param`
+tid=`gettid.sh $sdev|awk '{print $7}'`
+if [ ! -z "$tid" ];then
+	echo set disable -i $tid 2>/dev/null >/proc/scsi_target/config 
+	logger "disable rootdisk $sdev($tid)"
+fi
+[ -x /sbin/scstlm.sh ] && /sbin/scstlm.sh restore
+insmod  $DRIVERPATH/modules/umx_iscsi_target.ko
+[ -f $SYSCONFIG/global_allowed_depth ] && echo -n "queue_depth_allowed = `cat $SYSCONFIG/global_allowed_depth|sed 's/[^0-9]//g'`" >/proc/scsi_target/iscsi_target/params
+
+[ -f $SYSCONFIG/recoverylevel ] && errlevel=`cat $SYSCONFIG/recoverylevel|sed 's/[^0-9]//g'` || errlevel=0
+
+[ -f $SYSCONFIG/nopininterval ] && nopininterval=`cat $SYSCONFIG/nopininterval|sed 's/[^0-9]//g'` || nopininterval=0
+
+set HOST=`basename /proc/scsi_target/iscsi_target/* 2>/dev/null`
+############## Error Recovery #################
+$DRIVERPATH/cmd/iscsi_manage target force n=$nopininterval host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target $myset ErrorRecoveryLevel=$errlevel host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target force r2tp=2 host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target snack d=y host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target snack s=y host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target snack h=1 host=${HOST}
+if [ -f $SYSCONFIG/pcollapse ];then
+	pcollapse="`cat $SYSCONFIG/pcollapse`"
+	$DRIVERPATH/cmd/iscsi_manage target force p=$pcollapse host=${HOST}
+fi
+
+
+############## Configure Target ###############
+$DRIVERPATH/cmd/iscsi_manage target $myset TargetPortalGroupTag=1 host=${HOST}
+if [ -f $SYSCONFIG/usehd ];then
+	$DRIVERPATH/cmd/iscsi_manage target $myset HeaderDigest=CRC32C host=${HOST}
+else
+	$DRIVERPATH/cmd/iscsi_manage target $myset HeaderDigest=None host=${HOST}
+fi
+
+if [ -f $SYSCONFIG/usedata ];then
+	$DRIVERPATH/cmd/iscsi_manage target $myset DataDigest=CRC32C host=${HOST}
+else
+	$DRIVERPATH/cmd/iscsi_manage target $myset DataDigest=None host=${HOST}
+fi
+
+$DRIVERPATH/cmd/iscsi_manage target $myset InitialR2T=No host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target $myset ImmediateData=Yes host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target $myset MaxBurstLength=32768 host=${HOST}
+[ -f $SYSCONFIG/maxconnections ] && maxconn=`cat $SYSCONFIG/maxconnections` || maxconn=1
+$DRIVERPATH/cmd/iscsi_manage target $myset MaxConnections=$maxconn host=${HOST}
+
+$DRIVERPATH/cmd/iscsi_manage target $myset DataPDUInOrder=Yes host=${HOST}
+$DRIVERPATH/cmd/iscsi_manage target $myset DataSequenceInOrder=Yes host=${HOST}
+
+if [ -f $SYSCONFIG/usechap ];then
+	. $SYSCONFIG/usechap
+	$DRIVERPATH/cmd/iscsi_manage target $myset AuthMethod=CHAP host=${HOST}
+	if [ ! -z "$CHAPPEERSECRET" ];then
+		$DRIVERPATH/cmd/iscsi_manage target force b t cl=256 px="$CHAPPEERSECRET" pn="$CHAPPEERNAME" lx="$CHAPLOCALSECRET" ln="$CHAPLOCALNAME" host=${HOST}
+	else
+		$DRIVERPATH/cmd/iscsi_manage target force b t cl=256 lx="$CHAPLOCALSECRET" ln="$CHAPLOCALNAME" host=${HOST}
+	fi
+fi
+
+[ -f $SYSCONFIG/exparams ] && . $SYSCONFIG/exparams
+
+/sbin/lmrestore.sh 2>/dev/null
+#now enable server_thread
+echo -n "server_holdon = 0" >/proc/scsi_target/iscsi_target/params

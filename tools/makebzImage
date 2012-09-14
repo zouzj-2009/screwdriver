@@ -4,5 +4,5 @@ cp all.signed.cpio /tmp/all.cpio
 cd /lib/modules/`uname -r`/build
 make bzImage
 cd - >/dev/null
-#cp /lib/modules/`uname -r`/build/arch/x86_64/boot/bzImage .
-cp /lib/modules/`uname -r`/build/arch/x86/boot/bzImage .
+cp /lib/modules/`uname -r`/build/arch/x86_64/boot/bzImage .
+#cp /lib/modules/`uname -r`/build/arch/x86/boot/bzImage .

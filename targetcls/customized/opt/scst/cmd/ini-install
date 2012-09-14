@@ -1,0 +1,5 @@
+#!/bin/sh
+
+insmod ../initiator/th_iscsi_initiator.o
+
+

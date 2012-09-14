@@ -1,0 +1,2733 @@
+#!/bin/bash
+makedownload()
+{
+	local index
+	index="<html><title>Download</title><body>"
+	for file in `ls ${1}/ 2>/dev/null`
+	do
+		index=$index"<a href=/download/$file>$file</a><br>"
+	done
+	index=$index"</body></html>"
+	echo $index
+}
+
+targetmode()
+{
+	echo "set targetmode ${2} for host${1}"
+	logger "set targetmode ${2} for host${1}"
+	echo ${2} >/sys/class/fc_host/host$1/device/scsi_host*/target_mode_enabled
+	echo ${2} >/etc/userdata/sysconfig/fc_host${1}
+}
+rootdisk=`cat /etc/rootdisk 2>/dev/null`
+[ -z "$rootdisk" ] && rootdisk=hda
+paraN=$#
+shell_help ()
+{
+more <<ENDOFHELP
+These command can be input @ Your choice:('"' is not needed)
+
+"add route"
+apend route entry for specified NIC, more question will be asked.
+
+"chap off"
+disable chap authoritity.
+
+"chap on"
+enabele chap authoritity, username and password will be asked.
+
+"cleanlog"
+clean all log files.
+
+"clean route"
+clean addintional route entry added by 'add route'.
+
+"cleansetting"
+clean customize setting, restore to default value.
+
+"date [MMDDhhmm[[CC]YY][.ss]]"
+show/set system date
+
+"disable jumbo"
+disable jumbo frame.
+
+"disconnect IP"
+force connect on IP break, if this host alive, reconnecting will be performed.
+
+"enable jumbo [N]"
+enabel jumbo frame(mtu to N), if your switch not support jumbo frame, don't do this!
+ 
+"headerdigest off"
+disable header digest, same setting should be set on initiaotrs.
+
+"headerdigest on"
+enable header digest, same setting should be set on initiaotrs.
+
+"help"
+this information.
+
+"link"
+show NIC link status
+
+"nameserver IP"
+set DNS server.
+
+"nopininterval NUMBER"
+set nopin timeout = (NUMBER*5) seconds. NUMBER=0 mean don't use nopin.
+
+"printlog off"
+don't show log on screen.
+
+"printlog on"
+show log on screen.
+
+"psn"
+show product serial number.
+
+"show route"
+show route table.
+
+"testmtu IP"
+show mtu value trace in localhost to 'IP', if your jumbo don't work, test this.
+
+"usedomlog"
+write log on DOM disk, if use RAM disk before, log on RAM disk will be stored.
+
+"useramlog"
+write log on RAM disk, log will be lost after power off.
+
+ENDOFHELP
+}
+
+shell_helpex ()
+{
+more <<ENDOFHELPEX
+These ADVANCED command can be input @ Your choice:
+
+"exinfo show|none|{login,cdb,data,clean}"
+more detail about {login, cdb, data, clean} will be logged.
+exinfo nobump will cause write speed low down.
+example: exinfo login cdb clean
+
+"helpex"
+this information
+
+"license clean"
+clean license, and after server restart, it won't work!
+
+"license input"
+input license by ftp or copy&paste on telnet terminal.
+
+"license request"
+show license request information and try to upload(need a ftp account).
+
+"license show"
+show license data.
+
+"recoverylevel {0|1}"
+set recoverylevel, need restart server.
+
+"targetdepth NUMBER"
+set target queue depth, default=4. don't set too big!
+
+"usbrestore"
+update firmware from USB disk.
+
+ENDOFHELPEX
+}
+
+shell_helpdev ()
+{
+more <<ENDOFHELPDEVLOP
+These FOR DEVELOPER command can be input @ Your choice:
+
+"iscsi_trace all|none|set|del [trace_level]"
+set iscsi trace level, valid level: debug,function,line,pid,entryexit,buff,mem,sg,out_of_mem,scst_state,retry,scsi_serializing,special,scsi,mgmt,minor,scsi_not_rw,itest,reserve_release
+
+"scst_trace all|none|null|set|add|clear|del|value [trace_level]"
+set scst trace level, valid level: debug,iscsi_full,iscsi,net,buf,sem,enterleave,mymemory,times,recovery,verbose,iscsi_state,sn,itest,default
+
+"changeto current|prev|test|xxx"
+change to current|prev|test version (test version in /etc/userdata/sysconfig/drivers).
+xxx version in /etc/userdata/sysconfig/drv/xxx
+
+"nochange"
+use default version.
+
+"bump"
+write speed up.
+
+"nobump"
+write speed down.
+
+
+ENDOFHELPDEVLOP
+}
+password="2fa55d5408348bd7dddd1aaac90d204f"
+lockpassword="cb1bed64b2010707284b103981446e02"
+DRIVERPATH=/home/manager/drivers/`uname -r`
+HOST=`basename /proc/scsi_target/iscsi_target/* 2>/dev/null`
+#HOST=0
+set_exparams ()
+{
+	TMPFILE=/tmp/tmp.$PID
+	touch /etc/userdata/sysconfig/exparams
+	cat /etc/userdata/sysconfig/exparams|grep -v "${1}"'.*/iscsi_target/params' >$TMPFILE
+	echo -n "${1} = ${2}" >/proc/scsi_target/iscsi_target/params 
+	echo 'echo -n "'"${1} = ${2}"'" >/proc/scsi_target/iscsi_target/params' >>$TMPFILE		
+	mv $TMPFILE /etc/userdata/sysconfig/exparams
+}
+
+get_exparams ()
+{
+	cat /proc/scsi_target/iscsi_target/params|grep "^${1} ="|sed "s/${1} = //g"
+}
+
+set_iscsi_trace ()
+{
+	[ ${#} -eq 0 ] && return
+	if [ -z "`echo "|all|none|set|del|"|grep "|${1}|"`" ];then
+		echo "bad set."
+		return
+	fi
+	[ ${#} -eq 2 ] && search=${2} || search=
+	TMPFILE=/tmp/tmp.$PID
+	touch /etc/userdata/sysconfig/exparams
+	cat /etc/userdata/sysconfig/exparams|grep -v "$search"'.*/scsi_target/iscsi_target/trace_level' >$TMPFILE
+	
+	echo "${*}" >/proc/scsi_target/iscsi_target/trace_level 
+	echo 'echo "'"${*}"'" >/proc/scsi_target/iscsi_target/trace_level' >>$TMPFILE
+	mv $TMPFILE /etc/userdata/sysconfig/exparams
+	echo "--- current setting ----"
+	cat /proc/scsi_target/iscsi_target/trace_level
+	echo "------------------------"
+}
+
+set_scst_trace ()
+{
+	[ ${#} -eq 0 ] && return
+	if [ -z "`echo "|all|none|null|set|add|clear|del|value|"|grep "|${1}|"`" ];then
+		echo "bad set."
+		return
+	fi
+	[ ${#} -eq 2 ] && search=${2} || search=
+	TMPFILE=/tmp/tmp.$PID
+	touch /etc/userdata/sysconfig/exparams
+	cat /etc/userdata/sysconfig/exparams|grep -v "$search"'.*/scsi_target/trace_level' >$TMPFILE
+	
+	echo "${*}" >/proc/scsi_target/trace_level 
+	echo 'echo "'"${*}"'" >/proc/scsi_target/trace_level' >>$TMPFILE
+	mv $TMPFILE /etc/userdata/sysconfig/exparams
+	echo "--- current setting ----"
+	cat /proc/scsi_target/trace_level
+	echo "------------------------"
+}
+
+ver ()
+{
+	[ -f /etc/style ] && style=`cat /etc/style` || style=""
+	echo "`cat /etc/release|sed 's/[^0-9.]//g'`.`cat /etc/build`$style"
+	[ -f /proc/scsi_target/iscsi_target/0 ] && echo "`cat /proc/scsi_target/iscsi_target/0|grep VER|sed 's/1.6.//g'`"
+}
+
+elevator_set()
+{
+	[ -f /sys/block/${1}/queue/scheduler ] && (echo "${2}" >/sys/block/${1}/queue/scheduler; echo "set elevator for ${1} as ${2}.") || echo "device ${1} not found."
+}
+elevator_cmd()
+{
+	case ${1} in
+all)
+	for dev in `ls /sys/block 2>/dev/null|grep ^sd`
+	do
+		elevator_set `basename $dev` ${2}
+	done
+	if [ "`cat /etc/userdata/sysconfig/elevator 2>/dev/null`" != "${2}" ];then
+		echo ${2} >/etc/userdata/sysconfig/elevator
+	fi
+	;;
+list)
+	rootdisk=`cat /etc/rootdisk`	
+	[ ! -z "${2}" ] && thedev=${2} || thedev=$rootdisk
+	[ -f /sys/block/$thedev/queue/scheduler ] && cat /sys/block/$thedev/queue/scheduler || echo "$thedev not exist."
+	;;
+*)
+	if [ -z "${2}" ];then
+		echo "new elevator not specified."
+	else
+		elevator_set ${1} ${2}	
+	fi
+esac
+}
+
+pause ()
+{
+	[ $paraN -eq 0 ] && read -p "press Enter ..." 
+}
+while true
+do
+if [ $paraN -eq 0 ];then
+clear
+[ -f /etc/userdata/sysconfig/psn ] && mypsn=`cat /etc/sysconfig/psn`
+[ -f /etc/userdata/sysconfig/defaultip ] && myip=`cat /etc/sysconfig/defaultip`
+echo "$mypsn (defaultip: $myip)"
+cat <<EOF
+********************************************************************************
+select:
+		0. default IP reconfiguration
+		1. management console
+		2. check net speed
+		3. check disk performance
+		4. dump system log 
+		5. system update
+		6. reboot
+		7. powerdown
+		8. exit
+EOF
+read -p "Your choice: " key
+else
+key=$*
+fi
+[ "$key" != "ver" -a ! -z "$key" ] && logger -t dc-mon "shell($key)"
+case $key in
+	0)
+		rm /etc/userdata/sysconfig/defaultip 2>/dev/null
+		/sbin/ipconfig.sh force
+		shell webrestart
+		pause
+		;;
+	1)
+		cd /home/manager
+		/bin/bash /home/manager/.bash_profile
+		cd -
+		;;
+	2)
+		#trap 'exit' 2
+		netspeed
+		pause
+		;;
+	3) TestSize=$((`free |grep Mem|awk '{print $2}'` * 4 / 1024))
+	   for disk in `fdisk -l 2>/dev/null|grep Disk|grep '/dev/sd'|awk '{print $2}'|sed s/://g`
+		do 
+			utils/diskperf read $disk $TestSize 
+			echo 
+		done
+	   read -p "need WRITE performance test(ALL DATA WILL BE LOST!!!)? " cfm
+	   if [ "$cfm" = 'y' ];then
+		   for disk in `fdisk -l 2>/dev/null|grep Disk|grep '/dev/sd'|awk '{print $2}'|sed s/://g`
+			do 
+				utils/diskperf write $disk $TestSize 
+				echo
+			done
+	   fi
+		pause
+		;; 
+	4) 	
+		echo "prepare log ..."
+		su - logview
+		pause
+		;;
+	5) echo "Note: your new firmware should be in directory 'images' of your USB disk(FAT32)."
+		/bin/usbrestore.sh
+		pause
+		;;
+	6) 
+		read -p "REBOOT!!!, confirm[yes/no]? " cfm
+		if [ "$cfm" = "yes" ];then
+			[ -h /sbin/halt ] && /sbin/reboot || reboot -f
+		fi
+		;;
+	7)
+		read -p "POWER DOWN!!!, confirm[yes/no]? " cfm
+		if [ "$cfm" = "yes" ];then
+			/sbin/powerdown >/dev/null
+		fi
+		;;
+	8) exit 0
+		;;
+	"license") echo "Note: your license should be in directory 'license' of your USB disk(FAT32)."
+		/bin/usblicense.sh `cat /etc/userdata/sysconfig/psn 2>/dev/null`
+		pause
+		;;
+	"license request") cmds/_license request
+		pause
+		;;
+	"license input") cmds/_license input
+		pause
+		;;
+	"license clean") cmds/_license clean
+		modprobe xfs 2>/dev/null >/dev/null
+		pause
+		;;
+	"license show") cmds/_license show
+		pause
+		;;
+	"license test") modprobe xfs 2>/dev/null
+		if [ $? -eq 0 ];then
+			echo "license ok!"
+		else
+			echo "license fail!"
+		fi
+		pause
+		;;
+	"quickupdate") /sbin/quickupdate
+		pause
+		;;
+	"sysupdate") /sbin/sysupdate
+		pause
+		;;
+	"cleantty")
+		/sbin/cleantty.sh
+		pause
+		;;
+	"putrequest")
+		[ -f /etc/userdata/sysconfig/psn ] && PSN=`cat /etc/sysconfig/psn` || PSN=$HOSTNAME
+		defurl="ftp://ftp:ftp@192.253.253.1:2121/request/$PSN.request"
+		read -p "license URL[default=$defurl]:" URL
+		[ ! -z "$URL" ] && defurl=$URL
+		user=`echo $defurl|sed 's/ftp:\/\/\([^:]*\):.*/\1/g'`
+		pass=`echo $defurl|sed 's/ftp:\/\/[^:]*:\([^@]*\)@.*/\1/g'`
+		ip=`echo $defurl|sed 's/ftp:\/\/[^@]*@\([0-9.]*\).*/\1/g'`
+		port=`echo $defurl|sed 's/ftp:\/\/[^@]*@[^:]*:\([0-9]*\).*/\1/g'`		
+		dirpath=`echo $defurl|sed 's/ftp:\/\/[^/]*\/\(.*\)/\1/g'`
+		[ -z "$dirpath" ] && dirpath="request"
+		dir=`dirname $dirpath`
+		file=`basename $dirpath`
+		echo "put request to ftp://$user:$pass@$ip:$port/$dir/$file"	
+		bad=0
+		[ -z "$user" ] && bad=1
+		[ -z "$pass" ] && bad=1
+		[ -z "$ip" ] && bad=1
+		[ -z "$port" ] && bad=1
+		[ -z "$dirpath" ] && bad=1
+		if [ $bad -eq 1 ]; then
+			echo "Bad url, request not sent."	
+		else
+			cp -af /var/log/request /tmp/$file
+			cd /tmp
+			if [ -f /etc/newbusybox ];then
+				ftpput -v -u $user -p $pass -P $port $ip /$dir/$file $file
+			else
+				ftpput -v -u $user -p $pass -P $port $ip /$dir $file
+			fi
+			cd -
+		fi
+		pause
+		;;	
+	"getlicense")
+		[ -f /etc/userdata/sysconfig/psn ] && PSN=`cat /etc/sysconfig/psn` || PSN=$HOSTNAME
+		defurl="ftp://ftp:ftp@192.253.253.1/license/$PSN.license.dat"
+		read -p "license URL[default=$defurl]:" URL
+		[ ! -z "$URL" ] && defurl=$URL
+		wget $defurl -O - >/tmp/license.dat
+		if [ `cat /tmp/license.dat|wc -c` -gt 120 ]; then
+			mv /etc/userdata/sysconfig/license.dat /etc/sysconfig/license.dat.old 2>/dev/null
+			#backup it now
+			[ ! -f /etc/userdata/sysconfig/license.old ] && cp /tmp/license.dat /etc/sysconfig/license.old
+			mv /tmp/license.dat /etc/userdata/sysconfig
+			echo "license updated!"
+		else
+			echo "license data seems bad, try again."
+		fi
+		pause
+		;;
+	"shell")
+		read -s -p "Password: " pass
+		if [ "`echo $pass|md5sum|awk '{print $1}'`" = $password ]; then
+			clear
+			/bin/bash
+		else
+			pause
+		fi
+		;;
+	"usbrestore")
+		/bin/usbrestore.sh
+		;;
+	SN\ *)
+		psn=`echo $key|sed 's/^SN //g'`
+		if [ ! -z "$psn" ];then
+			echo "set product SN to '$psn'"
+			echo "$psn" >/etc/userdata/sysconfig/psn
+		else 
+			echo "bad SN."
+		fi
+		pause
+		;;
+	targetdepth\ *)
+		oldepth=`cat /etc/userdata/sysconfig/global_allowed_depth 2>/dev/null`
+		[ -z "$oldepth" ] && oldepth=20
+		newdepth=`echo $key|sed 's/[^0-9]//g'`
+		[ -z "$newdepth" ] && newdepth=-1
+		if [ $newdepth -le 1 ]; then
+			echo "Bad depth value, must greater than 1"
+		else
+			read -p "set global taget depth from '$oldepth' to '$newdepth'[y/n]? " CFM
+			if [ "$CFM" = "y" ];then
+				echo -n "queue_depth_allowed = $newdepth" 2>/dev/null >/proc/scsi_target/iscsi_target/params 
+				echo "$newdepth" >/etc/userdata/sysconfig/global_allowed_depth 
+				echo "target depth changed."
+			else
+				echo "target depth not changed."
+			fi
+		fi
+		pause
+		;;
+	"log none")
+		shell scsi_debug 0
+		pause
+		;;
+	"log more")
+		shell scsi_debug 1
+		pause
+		;;
+	"log detail")
+		shell scsi_debug 3
+		pause
+		;;
+	"log all")
+		shell scsi_debug 7
+		pause
+		;;
+	nopininterval)
+		[ -f /etc/userdata/sysconfig/nopinterval ] && interval=`cat /etc/sysconfig/nopinterval` || interval=0
+		echo "current nopinterval $interval, idle connection will be freed after 4x$interval seconds."
+		pause
+		;;
+	nopininterval\ *)
+		newinterval=`echo $key|sed 's/[^0-9]//g'`
+		if [ -z "$newinterval" ];then
+			echo "bad nopin interval, should be 0-2."
+		else
+			if [ $newinterval -lt 0 -o $newinterval -gt 3600 ];then
+				echo "bad nopin interval, should be 0-3600."
+			else
+				echo "$newinterval" >/etc/userdata/sysconfig/nopininterval
+
+				$DRIVERPATH/cmd/iscsi_manage target force n=$newinterval host=${HOST}
+				echo "nopin interval changed to $newinterval, old connection not infect."
+			fi
+		fi
+		pause
+		;;
+	recoverylevel\ *)
+		newlevel=`echo $key|sed 's/[^0-9]//g'`
+		if [ -z "$newlevel" ];then
+			echo "bad levelvalue, should be 0-2."
+		else
+			if [ $newlevel -lt 0 -o $newlevel -gt 2 ];then
+				echo "bad levelvalue, should be 0-2."
+			else
+				echo "$newlevel" >/etc/userdata/sysconfig/recoverylevel
+				echo "recoverylevel changed to $newlevel, need restart server."
+			fi
+		fi
+		pause
+		;;
+	maxconnections*)
+		newmaxconn=`echo $key|sed 's/maxconnections *//g'|sed 's/[^0-9]//g'`
+		if [ -z "$newmaxconn" ];then
+			[ -f /etc/userdata/sysconfig/maxconnections ] && oldmax=`cat /etc/sysconfig/maxconnections` || oldmax=1
+			echo "maxconnections=$oldmax"
+		else
+			echo "$newmaxconn" >/etc/userdata/sysconfig/maxconnections
+			echo "maxconnections set to $newmaxconn, need restart."
+		fi
+		pause
+		;;
+	"cfsdc sync lunmapping on")
+		rm /etc/userdata/sysconfig/dis_synclm 2>/dev/null
+		echo "cfsdc auto sync lunmapping on"
+		pause
+		;;
+	"cfsdc sync lunmapping off")
+		touch /etc/userdata/sysconfig/dis_synclm 
+		echo "cfsdc auto sync lunmapping off"
+		echo "/etc/userdata/sysconfig/lunmappingodysys" >>/etc/synclist_auto
+		pause
+		;;
+	"cfsdc sync ipgroup on")
+		rm /etc/userdata/sysconfig/dis_syncipg 2>/dev/null
+		echo "cfsdc auto sync ipgroup on"
+		echo "/etc/userdata/sysconfig/ipgroups" >>/etc/synclist_auto
+		pause
+		;;
+	"cfsdc sync ipgroup off")
+		touch /etc/userdata/sysconfig/dis_syncipg 
+		cat /etc/synclist_auto|grep -v ipgroups >/tmp/dc_s_auto
+		cat /tmp/dc_s_auto >/etc/synclist_auto
+		echo "cfsdc auto sync ipgroup off"
+		pause
+		;;
+	"cfsdc sync op off")
+		touch /etc/userdata/sysconfig/dis_syncop 2>/dev/null
+		echo "cfsdc sync post action off"
+		cat /etc/syncfile_auto_do.sh|grep -v lmrestore.sh >/tmp/dc_s_autodo
+		cat /tmp/dc_s_autodo >/etc/syncfile_auto_do.sh
+		pause
+		;;
+	"cfsdc sync op on")
+		rm /etc/userdata/sysconfig/dis_syncop 2>/dev/null
+		echo "cfsdc sync post action off"
+		echo "/bin/lmrestore.sh" >>/etc/syncfile_auto_do.sh
+		pause
+		;;
+	"cfsdc sync setup")
+		ipgoff=0
+		lmoff=0
+		if [ -f /etc/userdata/sysconfig/dis_syncipg ];then
+			shell cfsdc sync ipgroup off
+			ipgoff=1
+		fi
+		if [ -f /etc/userdata/sysconfig/dis_synclm ];then
+			shell cfsdc sync lunmapping off
+			lmoff=1
+		fi
+		if [ $ipgoff -eq 1 -a $lmoff -eq 1 ];then
+			shell cfsdc sync op off
+		fi
+		pause
+		;;
+	"cfsdc hbdisk check")
+		qutom_targetid=`cat /etc/userdata/sysconfig/qutomdisk 2>/dev/null|awk '{print $2}'`
+		qutom_dev=`getsd.sh $qutom_targetid|awk '{print $1}'`
+		if [ -z "$qutom_dev" ];then
+			echo "hearbeat disk($qutom_targetid, $qutom_dev) config error!"
+		else
+			if [ "`cat /www/msflag 2>/dev/null`" = 1 ];then
+				echo "check heartbeat disk($qutom_targetid, $qutom_dev) on master..."
+				scsiop reserve $qutom_dev
+				ret=$?
+				echo "### release ###"
+				scsiop release $qutom_dev
+				rret=$?
+				echo "CFSDC RESERVE RET=$ret, expect=0"
+				cp /tmp/qdisk.* /var/log 2>/dev/null
+				logger "check heartbeat disk($qutom_targetid, $qutom_dev) on master, reserve ret=($ret,release:$rret)"
+				if [ "$ret" -ne 0 ];then
+					echo "Master check heartbeatdisk FAIL!"
+				else
+					echo "Master check heartbeatdisk OK!"
+				fi
+			else
+				echo "check heartbeat disk($qutom_targetid, $qutom_dev) on standby..."
+				sg_readcap /dev/$qutom_dev >/var/log/hbdisk.out 2>/var/log/hbdisk.err
+				rawret=$?
+				echo "RAW READCAP RET=$rawret, expect=1"
+				scsiop readcap $qutom_dev
+				ret=$?
+				echo "CFSDC READCAP RET=$ret, expect=1"
+				cp /tmp/qdisk.* /var/log 2>/dev/null
+				logger "check heartbeat disk($qutom_targetid, $qutom_dev) on standby, readcap ret=(raw:$rawret,cfsdc:$ret)"
+				if [ "$ret" -ne 1 ];then
+					if [ "$ret" -eq 2 ];then
+						echo "Slave check heartbeatdisk meet Unit Attention, try check again."
+					else
+						echo "Slave check heartbeatdisk FAIL!"
+					fi
+				else
+					echo "Slave check heartbeatdisk OK!"
+				fi
+			fi
+		fi
+		pause
+		;;
+	"cfsdc log on")
+		touch /etc/userdata/sysconfig/hbverbose
+		echo "cfsdc detail log on"
+		pause
+		;;
+	"cfsdc log off")
+		rm /etc/userdata/sysconfig/hbverbose 2>/dev/null
+		echo "cfsdc detail log off"
+		pause
+		;;
+	"cfsdc debug on")
+		touch /etc/userdata/sysconfig/cfsdc.debug
+		echo "cfsdc debug enabled. press ALT+F1 to check debug info"
+		pause
+		;;
+	"cfsdc debug off")
+		rm /etc/userdata/sysconfig/cfsdc.debug 2>/dev/null
+		echo "cfsdc debug disabled."
+		pause
+		;;
+	enable\ cfsdc)
+		mkdir -p /etc/userdata/sysconfig/customdrv
+		touch /etc/userdata/sysconfig/customdrv/cfsdc
+		echo "CFS DC mode enabled."
+		pause
+		;;
+	disable\ cfsdc)
+		mkdir -p /etc/userdata/sysconfig/customdrv
+		mv /etc/userdata/sysconfig/customdrv/cfsdc /etc/sysconfig/customdrv/cfsdc.not
+		echo "CFS DC mode disabled."
+		pause
+		;;
+	cfsdc\ move)
+		killall -10 serialbeat
+		echo "CFS DC moving ..."
+		pause
+		;;
+	cfsdc\ state)
+		if [ "`cat /www/msflag 2>/dev/null`" = 1 ];then
+			echo "cfsdc master."
+		else
+			echo "cfsdc standby."
+		fi
+		pause
+		;;
+	cfsdc\ sync)
+		if [ "`cat /www/msflag`" = 1 ];then
+			echo "This is master, should rung sync from standby"
+		else
+			echo "Sync setting from master ..."
+			/sbin/dcctrl_sync.sh
+			echo "Sync done."
+		fi
+		pause
+		;;
+	scsi\ rescan*)
+		host=`echo $key|sed 's/scsi rescan *//g'`
+		if [ -z "$host" ];then
+			for host in `ls /sys/class/scsi_host`
+			do
+				echo "scan $host ..."
+				echo - - - >/sys/class/scsi_host/$host/scan
+				echo "done."
+			done
+		else
+			if [ -d "/sys/class/scsi_host/$host" ];then
+				echo "scan $host ..."
+				echo - - - >/sys/class/scsi_host/$host/scan
+				echo "done."
+			else
+				echo "$host not found."
+			fi
+		fi
+		pause
+		;;
+	enable\ jumbo*)
+		nowmtu=`ifconfig eth0 2>/dev/null|grep MTU|sed 's/.*MTU:\([0-9]*\).*/\1/g'`
+		echo "current MTU=$nowmtu"
+		mtusize=`echo $key|sed 's/[^0-9]//g'`
+		[ -z "$mtusize" ] && mtusize=9000
+		for eth in `ifconfig -a|grep eth|awk '{print $1}'`
+		do 
+			ifconfig $eth mtu $mtusize up
+		done
+		echo $mtusize > /etc/userdata/sysconfig/enablejumbo
+		read -p "set MTU=$mtusize, press Enter ..."
+		;;
+	"disable jumbo")
+		for eth in `ifconfig -a|grep eth|awk '{print $1}'`
+		do 
+			ifconfig $eth mtu 1500 up
+		done
+		rm -f /etc/userdata/sysconfig/enablejumbo
+		pause
+		;;
+	testmtu\ *)
+		ip=`echo $key|sed 's/[^0-9.]//g'`
+		if [ -z "$ip" ];then
+			read -p "need a peer IP, press Enter ..."
+		else
+			tracepath -n $ip
+			[ -f /etc/userdata/sysconfig/enablejumbo ] && pingsize=`cat /etc/sysconfig/enablejumbo` || pingsize=1500
+			read -p "press Enter to ping $ip use $pingsize data ..."
+			ping -c 17 -s $pingsize $ip
+			pause
+		fi
+		;;
+	"clean route")
+		cat /etc/userdata/sysconfig/startnet.sh|grep -v "^route" >/tmp/startnet.sh
+		cat /etc/userdata/sysconfig/startnet.sh|grep "^route"|sed -e 's/add/del/g' >/tmp/stoproute.sh
+		. /tmp/stoproute.sh
+		cat /tmp/startnet.sh >/etc/userdata/sysconfig/startnet.sh	
+		echo "Route Table"
+		echo "------------------------"
+		route
+		echo "------------------------"
+		pause
+		;;
+	nameserver\ *)
+		echo $key >/etc/resolv.conf
+		read -p "set $key, press Enter ..."
+		;;
+
+	"add route")
+		tonet=
+		while [ -z "$tonet" ]
+		do
+			read -p "To Netwrok[0.0.0.0 or x.x.x.x/xx]? " tonet
+		done
+		netip=`ipcalc -n $tonet 2>/dev/null|sed -e 's/[^0-9.]//g'`
+		netrange=`echo $tonet|sed -e 's/[^/]*\///g'`
+		if [ $? -ne 0  -a  "$tonet" != "0.0.0.0" ];then
+			read -p "bad network addresss, press Enter ..."
+		else
+			if [ "$tonet" != "0.0.0.0" ];then
+				tonet="$netip/$netrange"
+			fi
+			gwip=
+			while [ -z "$gwip" ]
+			do
+				read -p "GateWay IP ? " gwip
+			done
+			ipcalc -n $gwip/32 2>/dev/null  >/dev/null
+			if [ ! $? -eq 0 ];then
+				read -p "bad gateway ip, press Enter ..."
+			else
+				gwdev=
+				while [ -z "$gwdev" ]
+				do
+					read -p "Through dev[ethx] ? " gwdev
+				done
+				if [ -z "`ifconfig -a|grep $gwdev`" ];then
+					read -p "$gwdev not exist! press Enter ..."
+				else
+				#ok now
+					route add -net $tonet gw $gwip dev $gwdev
+					[ $? -eq 0 ] && echo "route add -net $tonet gw $gwip dev $gwdev" >> /etc/userdata/sysconfig/startnet.sh
+					echo "Route Table"
+					echo "------------------------"
+					route
+					echo "------------------------"
+					pause
+				fi
+			fi
+		fi
+		;;
+	"show route")
+		echo "Route Table"
+		echo "--------------------------"
+		route
+		echo "--------------------------"
+		pause
+		;;
+	"report_real_lun")
+		value=`get_exparams "report_real_lun"`
+		echo "report_real_lun=$value"
+		pause
+		;;
+#report_real_lun = 4:inquiry use 0x0 as blank char, 8: inquiry use '@' as blank
+	report_real_lun\ *)
+		value=`echo $key|sed 's/report_real_lun *//g'`
+		set_exparams "report_real_lun" $value 2>/dev/null
+		value=`get_exparams "report_real_lun"`
+		echo "report_real_lun=$value"
+		pause
+		;;
+	"fastrecovery")
+		value=`get_exparams "fastrecovery"`
+		echo "fastrecovery=$value"
+		pause
+		;;
+	fastrecovery\ *)
+		value=`echo $key|sed 's/fastrecovery *//g'`
+		set_exparams "fastrecovery" $value 2>/dev/null
+		value=`get_exparams "fastrecovery"`
+		echo "fastrecovery=$value"
+		pause
+		;;
+	nobump)
+		ex_debug=`get_exparams "ex_debug"`
+		ex_debug=$((ex_debug | 128))
+		set_exparams "ex_debug" $ex_debug 2>/dev/null
+		read -p "bump=$ex_debug, press Enter ..."
+		;;
+	bump)
+		ex_debug=`get_exparams "ex_debug"`
+		ex_debug=$((ex_debug & ~128))
+		set_exparams "ex_debug" $ex_debug 2>/dev/null
+		read -p "bump=$ex_debug, press Enter ..."
+		;;
+	nock)
+		touch /etc/userdata/sysconfig/nock 2>/dev/null
+		rm /etc/userdata/sysconfig/ck 2>/dev/null
+		killall -1 ck 2>/dev/null
+		shell scsiforcedone 2
+		echo "en, nock."
+		pause
+		;;
+	ck)
+		touch /etc/userdata/sysconfig/ck 2>/dev/null
+		/sbin/ck &
+		echo "en, ck enable."
+		pause
+		;;
+	exinfo\ *)
+		ex_debug=`get_exparams "ex_debug"`
+		[ ! -z "`echo $key|grep cdb`" ] && ex_debug=$((ex_debug |  16))
+		[ ! -z "`echo $key|grep data`" ] && ex_debug=$((ex_debug | 32))
+		[ ! -z "`echo $key|grep clean`" ] && ex_debug=$((ex_debug | 64))
+		[ ! -z "`echo $key|grep ntsih`" ] && ex_debug=$((ex_debug | 256))
+		[ ! -z "`echo $key|grep login`" ] && ex_debug=$((ex_debug | 32768))
+		[ ! -z "`echo $key|grep none`" ] && ex_debug=0
+		ex_debug=$((ex_debug + 0))
+		set_exparams "ex_debug" $ex_debug 2>/dev/null
+		read -p "exinfo=$ex_debug, press Enter ..."
+		;;
+	"printlog on")
+		touch /etc/userdata/sysconfig/printlog
+		echo "6" >/proc/sys/kernel/printk
+		pause
+		;;
+	"printlog off")
+		rm -f /etc/userdata/sysconfig/printlog 2>/dev/null
+		echo "1" >/proc/sys/kernel/printk
+		pause
+		;;
+	scst_trace\ *)
+		set_scst_trace `echo $key|sed 's/scst_trace//g'` 2>/dev/null
+		pause
+		;;
+	iscsi_trace\ *)
+		set_iscsi_trace `echo $key|sed 's/iscsi_trace//g'` 2>/dev/null
+		pause
+		;;
+	psn)
+		touch /etc/userdata/sysconfig/psn
+		read -p "Product:[`cat /etc/userdata/sysconfig/psn`] ,press Enter ..."
+		;;
+	checkfs)
+		echo "check system log and setting ..."
+		/sbin/checkfs.sh force
+		pause
+		;;
+	cleanlog)
+		su - logview
+		killall acpid
+		/sbin/extdeactive.sh 2>/dev/null >/dev/null
+		umount /dev/${rootdisk}3
+		mkfs.vfat /dev/${rootdisk}3 2>/dev/null >/dev/null
+		mount /dev/${rootdisk}3 /var/log -t vfat
+		mkdir -p /var/log/metadata_backups
+		/sbin/extupdate.sh 2>/dev/null >/dev/null &
+		acpid
+		read -p "log cleaned, press Enter ..."
+		;;
+	customdev\ *)
+		cuspassword="d4dd564e5394369959b61c95e3cf48ca"
+		read -s -p "Password: " pass
+		mkdir -p /etc/userdata/sysconfig/customdrv
+		[ ! -f /etc/userdata/sysconfig/customdev ] && echo "#!/bin/bash
+echo \"loading drivers ...\"
+[ -x /etc/userdata/sysconfig/customdrv/install ] && /etc/sysconfig/customdrv/install
+" >/etc/userdata/sysconfig/customdev
+		#if [ "`echo $pass|md5sum|awk '{print $1}'`" != $cuspassword ]; then
+		if [ ! -z "$pass" ]; then
+			echo
+			echo "bad password!"
+		else
+			echo
+			mod=`echo $key|sed 's/customdev *//g'`
+			if [ ! -z "`lsmod|grep $mod`" ];then
+				echo "$mod already added."
+			else
+				echo "test drivers $mod ..."
+				modprobe $mod 2>/dev/null >/dev/null
+				if [ $? -ne 0 ];then
+					echo "Fail, not added."
+				else
+					echo "Pass, add to customdev"
+					echo "modprobe $mod" >>/etc/userdata/sysconfig/customdev
+					chmod 755 /etc/userdata/sysconfig/customdev
+				fi
+			fi
+		fi
+		;;
+	"no customdev")
+			rm /etc/userdata/sysconfig/customdev 2>/dev/null
+			echo "clear customdev"
+			pause
+		;;
+	"no masterip")
+			rm /etc/userdata/sysconfig/masterip 2>/dev/null
+			echo "clear masterip"
+			pause
+		
+		;;
+	"iboot version")
+		if [ -f /usr/odybk/version ];then
+			echo "iboot version `cat /usr/odybk/version`"
+		else
+			echo "iboot service not installed."
+		fi
+		pause
+		;;
+	cleansetting)
+		shell ext custom iboot save 2>/dev/null
+		echo "de-active services ..."
+		/sbin/extdeactive.sh 2>/dev/null >/dev/null
+		rm  /www/log.tgz 2>/dev/null #incase disk full
+		touch /etc/userdata/sysconfig/license.dat
+		touch /etc/userdata/sysconfig/psn
+		cp /etc/userdata/sysconfig/license.dat /tmp
+		cp /etc/userdata/sysconfig/psn /tmp
+		tar zcf /tmp/custom.tgz /etc/userdata/sysconfig/custom* 2>/dev/null
+		umount /dev/${rootdisk}2
+		cp -a /var/odyiscsi /tmp	
+		echo "clean setting section ..."
+		mkfs.vfat /dev/${rootdisk}2  2>/dev/null >/dev/null
+		mount /dev/${rootdisk}2 /var/odyiscsi -t vfat
+		cp -a /tmp/odyiscsi/* /var/odyiscsi/
+		cp /tmp/license.dat /var/odyiscsi/etc
+		cp /tmp/psn /var/odyiscsi/etc
+		tar zxf /tmp/custom.tgz -C /
+		rm /tmp/custom.tgz 2>/dev/null
+
+#customize startnet.sh
+		echo "#!/bin/bash
+" >/etc/userdata/sysconfig/startnet.sh
+		i=1
+		for eth in `cat /proc/net/dev|awk -F: /eth/'{print $1}'|sed 's/://g'`
+		do 
+			echo "ifconfig $eth 10.10.$i.253 netmask 255.255.255.0 broadcast 10.10.$i.255 up" >>/etc/userdata/sysconfig/startnet.sh
+			let i++
+		done
+		/sbin/bootselect.sh default
+		/sbin/extupdate.sh 2>/dev/null >/dev/null &
+		read -p "setting cleaned, press Enter ..."
+		;;
+	disconnect\ *)
+		ip=`echo $key|sed 's/disconnect *//g'`
+		echo $ip
+		pid=`cat /proc/scsi_target/iscsi_target/0|grep "$ip" -A 1|grep pid|awk '{print $4}'|sed 's/,//g'`
+		echo $pid
+		if [ -z "$pid" ]; then
+			read -p "connection for $ip not found. press Enter ..."
+		else
+			kill -1 $pid
+			read -p "$ip($pid) disconnectted. press Enter ..."
+		fi
+		;;
+	useramlog)
+		if [ ! -z "`mount|grep ram2`" ];then
+			read -p "alread useramlog. press Enter ..."
+			continue
+		fi
+		dd if=/dev/zero of=/dev/ram2 bs=1M count=32 >/dev/null 2>/dev/null
+		mkfs.ext2 /dev/ram2 >/dev/null 2>/dev/null
+		klogdlevel=`ps|grep klogd|grep -v grep|awk '{print $7}'`
+		killall klogd
+		killall acpid
+		killall syslogd
+		sleep 2
+		umount /var/log
+		if [ $? -ne 0 ]; then
+			klogd -c $klogdlevel -x
+			read -p "fail to switch log. press Enter ..."
+			continue
+		fi
+		mount /dev/ram2 /var/log 
+		syslogd -m 0 -b 14 -s 2000 -S
+		acpid
+		klogd -c $klogdlevel -x
+		read -p "now useramlog, press Enter ..."
+		;;
+	usedomlog)
+		if [ ! -z "`mount|grep ${rootdisk}3`" ];then
+			read -p "alread usedomlog. press Enter ..."
+			continue
+		fi
+		klogdlevel=`ps|grep klogd|grep -v grep|awk '{print $7}'`
+		killall klogd
+		killall acpid
+		tar zcf /tmp/ramlog.tgz  /var/log/* 2>/dev/null
+		sleep 2
+		umount /var/log
+		if [ $? -ne 0 ]; then
+			klogd -c $klogdlevel -x
+			read -p "fail to switch log. press Enter ..."
+			continue
+		fi
+		mount /dev/${rootdisk}3 /var/log -t vfat
+		acpid
+		mv /tmp/ramlog.tgz /var/log
+		klogd -c $klogdlevel -x
+		read -p "now usedomlog, press Enter ..."
+		;;
+	"headerdigest on")
+		touch /etc/userdata/sysconfig/usehd
+		$DRIVERPATH/cmd/iscsi_manage target set HeaderDigest=CRC32C host=${HOST}
+		read -p "header digest on, press Enter ..."
+		;;
+	"headerdigest off")
+		rm /etc/userdata/sysconfig/usehd 2>/dev/null
+		$DRIVERPATH/cmd/iscsi_manage target set HeaderDigest=None host=${HOST}
+		read -p "header digest off, press Enter ..."
+		;;
+	"chap on")
+		if [ -f /etc/userdata/sysconfig/usechap ];then
+			echo "old chap information:"
+			cat /etc/userdata/sysconfig/usechap
+			echo 
+		fi
+		chaplocaluser=
+		while [ "`echo -n $chaplocaluser|wc -c`" -ne 12 ]; do
+			read -p "input CHAP local username[12 chars]: " chaplocaluser
+			chaplocaluser=`echo $chaplocaluser|sed 's/[^a-zA-Z0-9_-]//g'`
+		done
+		chaplocalpass=
+		while [ "`echo -n $chaplocalpass|wc -c`" -ne 12 ]; do
+			read -p "input CHAP local password[12 chars]: " chaplocalpass
+			chaplocalpass=`echo $chaplocalpass|sed 's/[^a-zA-Z0-9_-]//g'`
+		done
+		echo "CHAPLOCALNAME='$chaplocaluser'
+CHAPLOCALSECRET='$chaplocalpass'
+" >/etc/userdata/sysconfig/usechap
+		. /etc/userdata/sysconfig/usechap
+		
+		$DRIVERPATH/cmd/iscsi_manage target set AuthMethod=CHAP host=${HOST}
+		$DRIVERPATH/cmd/iscsi_manage target force b t cl=256 lx="$CHAPLOCALSECRET" ln="$CHAPLOCALNAME" host=${HOST}
+		read -p "chap on, press Enter ..."
+		;;
+	"chap off")
+		rm /etc/userdata/sysconfig/usechap 2>/dev/null
+		$DRIVERPATH/cmd/iscsi_manage target set AuthMethod=None host=${HOST}
+		read -p "chap off, press Enter ..."
+		;;
+	"help")
+		clear
+		shell_help
+		pause
+		;;
+	"helpex")
+		clear
+		shell_helpex
+		pause
+		;;
+	"helpdev")
+		clear
+		shell_helpdev
+		pause
+		;;
+	"force reboot")
+		/etc/reboot
+		pause
+		;;
+	changeto\ *)
+		toversion=`echo $key|sed 's/changeto *//g'`
+		cd /home/manager
+		if  [ -d /home/manager/drivers.$toversion ];then
+			ln -s drivers.$toversion drivers -fn
+			echo  "change to $toversion version."
+			echo $toversion > /etc/userdata/sysconfig/change.drv
+		else 
+			if [ -d /etc/userdata/sysconfig/drv/$toversion ]; then
+				ln -s /etc/userdata/sysconfig/drv/$toversion drivers -fn
+				echo "change version to $toversion."
+				echo $toversion > /etc/userdata/sysconfig/change.drv
+			fi
+		fi
+		pause
+		;;
+	"nochange")
+		rm /etc/userdata/sysconfig/change.drv 2>/dev/null
+		cd /home/manager
+		ln -s drivers.current drivers -fn
+		cd -
+		read -p "use default drivers. press Enter ..."
+		;;
+	"link")
+		echo "------ link status --------"
+		for eth in `cat /proc/net/dev|awk -F: /eth/'{print $1}'|sed 's/://g'`
+		do 
+		echo "$eth: `ethtool $eth |grep Speed`"
+		done
+		pause
+		;;
+	date*)
+		date
+		newdate=`echo $key|sed 's/date *//g'`
+		date $newdate 2>/dev/null >/dev/null
+		if [ $? -ne 0 -o -z "$newdate" ];then
+			echo 'use "date [MMDDhhmm[[CC]YY][.ss]]" to change system clock.'
+		else
+			hwclock --systohc
+			echo "set system clock: `date`"
+		fi
+		pause
+		;;
+	ver)
+		ver
+		. /etc/product.cfg 2>/dev/null
+		echo "webui=`cat /www/version 2>/dev/null`"
+		echo "rootfs=`cat /version`"
+		if [ "$PRO_SUPPORT_VSNAP" = "yes" ];then
+			echo "ody_snap=`cat /sys/module/ody_snap/version 2>/dev/null`"
+		fi
+		for ext in `ls /etc/ext/ 2>/dev/null`
+		do
+			if [ -f /etc/ext/$ext/scripts/version ];then
+				echo "$ext=`cat /etc/ext/$ext/scripts/version`"
+			fi
+		done
+		if [ -d /usr/odysnapshot ];then
+			echo "vsnap=`cat /usr/odysnapshot/version 2>/dev/null`"
+		fi
+		if [ ! -z "`mount|grep /usr/odybk`" ];then
+			echo "odybk=`cat /usr/odybk/version 2>/dev/null`"
+			[ -d /usr/odybk/vsnap ] && echo "vsnap=`cat /usr/odybk/vsnap/version 2>/dev/null`"
+		fi
+		if [ -f /etc/zulu.docroot/version ];then
+			echo "zulu=`cat /etc/zulu.docroot/version`"
+		fi
+		echo "build=`cat /etc/buildtime 2>/dev/null`"
+		pause
+		;;
+	scsiretry\ *)
+		value=`echo $key|sed 's/scsiretry *//g'`
+		echo "set scsi retries to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsiretry
+		echo -n "scsiretry = $value" >/proc/scsi_target/params
+		pause
+		;;
+	scsiforcedone\ *)
+		value=`echo $key|sed 's/scsiforcedone *//g'`
+		echo "set scsi forcedone to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsiforcedone
+		echo -n "scsiforcedone = $value" >/proc/scsi_target/params
+		pause
+		;;
+	qmax\ *)
+		value=`echo $key|sed 's/qmax *//g'`
+		echo "set target qmax to $value."
+		echo "$value" >/etc/userdata/sysconfig/qmax
+		pause
+		;;
+	scsiqmaxglobal\ *)
+		value=`echo $key|sed 's/scsiqmaxglobal *//g'`
+		echo "set scsi scsiqmaxglobal to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsiqmaxglobal
+		echo -n "scsiqmaxglobal = $value" >/proc/scsi_target/params
+		pause
+		;;
+	scsiqmaxsession\ *)
+		value=`echo $key|sed 's/scsiqmaxsession *//g'`
+		echo "set scsi scsiqmaxsession to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsiqmaxsession
+		echo -n "scsiqmaxsession = $value" >/proc/scsi_target/params
+		pause
+		;;
+	scsi_max_active_cmds\ *)
+		value=`echo $key|sed 's/scsi_max_active_cmds *//g'`
+		echo "set scsi scsi_max_active_cmds to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsi_max_active_cmds
+		echo -n "scsi_max_active_cmds = $value" >/proc/scsi_target/params
+		pause
+		;;
+	scsi_max_queued_cmds\ *)
+		value=`echo $key|sed 's/scsi_max_queued_cmds *//g'`
+		echo "set scsi scsi_max_queued_cmds to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsi_max_queued_cmds
+		echo -n "scsi_max_queued_cmds = $value" >/proc/scsi_target/params
+		pause
+		;;
+	scsi_sess_timeout\ *)
+		value=`echo $key|sed 's/scsi_sess_timeout *//g'`
+		echo "set scsi scsi_sess_timeout to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsi_sess_timeout
+		echo -n "scsi_sess_timeout = $value" >/proc/scsi_target/params
+		pause
+		;;
+	idmap\ *)
+		value=`echo $key|sed 's/idmap *//g'`
+		echo "set idmap to $value."
+		echo "$value" >/etc/userdata/sysconfig/scst_idmap
+		pause
+		;;
+	scsi_qcheck\ *)
+		value=`echo $key|sed 's/scsi_qcheck *//g'`
+		echo "set scsi scsi_qcheck to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsi_qcheck
+		echo -n "scsi_qcheck = $value" >/proc/scsi_target/params
+		pause
+		;;
+	scsiabortdw\ *)
+		value=`echo $key|sed 's/scsiabortdw *//g'`
+		echo "set scsi abortdw to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsiabortdw
+		echo -n "scsiabortdw = $value" >/proc/scsi_target/params
+		pause
+		;;
+	rebootwait\ *)
+		value=`echo $key|sed 's/rebootwait *//g'`
+		echo "$value" >/proc/sys/kernel/panic
+		echo "set rebootwait to `cat /proc/sys/kernel/panic`."
+		echo "`cat /proc/sys/kernel/panic`" >/etc/userdata/sysconfig/rebootwait
+		pause
+		;;
+	scsitmout\ *)
+		value=`echo $key|sed 's/scsitmout *//g'`
+		echo "set scsi timout to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsitmout
+		echo -n "scsitmout = $value" >/proc/scsi_target/params
+		pause
+		;;
+	maxck\ *)
+		value=`echo $key|sed 's/maxck *//g'`
+		echo "set fault check times to $value."
+		echo "$value" >/etc/userdata/sysconfig/maxck
+		pause
+		;;
+	dupchecktime)
+		if [ -f /etc/userdata/sysconfig/dupchecktime ];then
+			echo "dupcheck time set as `cat /etc/userdata/sysconfig/dupchecktime`."
+		else
+			echo "dupcheck time not set yet."
+		fi
+		pause
+		;;
+	dupchecktime\ *)
+		value=`echo $key|sed 's/dupchecktime *//g'`
+		echo "set dupcheck time to $value seconds."
+		echo "$value" >/etc/userdata/sysconfig/dupchecktime
+		pause
+		;;
+	scsi_syncmode\ *)
+		value=`echo $key|sed 's/scsi_syncmode *//g'`
+		echo "set scsi sync mode to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsi_syncmode
+		echo -n "scsi_syncmode = $value" >/proc/scsi_target/params
+		pause
+		;;
+	qt_debug\ *)
+		value=`echo $key|sed 's/qt_debug *//g'`
+		echo "set odyqt log level to $value."
+		echo "$value" >/etc/userdata/sysconfig/odyqt_trace_flag
+		echo -n "trace_flag = $value" >/proc/scsi_target/ody_qt/param
+		pause
+		;;
+	qt_option\ *)
+		value=`echo $key|sed 's/qt_option *//g'`
+		echo "set odyqt option to $value."
+		echo "$value" >/etc/userdata/sysconfig/odyqt_q2t_option
+		echo -n "q2t_option = $value" >/proc/scsi_target/ody_qt/param
+		pause
+		;;
+	scsi_debug\ *)
+		value=`echo $key|sed 's/scsi_debug *//g'`
+		echo "set scsi log level to $value."
+		echo "$value" >/etc/userdata/sysconfig/scsi_debug
+		echo -n "scsi_debug = $value" >/proc/scsi_target/params
+		pause
+		;;
+	scsibusreset\ lun)
+		echo "3" >/etc/userdata/sysconfig/scsibusreset
+		echo "scsi busreset for lun."
+		echo -n "scsibusreset = 3" >/proc/scsi_target/params
+		pause
+		;;
+	scsibusreset\ target)
+		echo "1" >/etc/userdata/sysconfig/scsibusreset
+		echo "scsi busreset for target."
+		echo -n "scsibusreset = 1" >/proc/scsi_target/params
+		pause
+		;;
+	scsibusreset\ off)
+		echo "0" >/etc/userdata/sysconfig/scsibusreset
+		echo "scsi busreset OFF."
+		echo -n "scsibusreset = 0" >/proc/scsi_target/params
+		pause
+		;;
+	prerelease\ on)
+		echo "enable pre-release before DC move."
+		touch /etc/userdata/sysconfig/prerelease
+		pause
+		;;
+	prerelease\ off)
+		echo "disable pre-release before DC move."
+		rm /etc/userdata/sysconfig/prerelease 2>/dev/null
+		pause
+		;;
+	scsififo\ on)
+		echo "1" >/etc/userdata/sysconfig/scsififo
+		echo "scsi fifo ON."
+		echo -n "scsififo = 1" >/proc/scsi_target/params
+		pause
+		;;
+	scsififo\ off)
+		echo "0" >/etc/userdata/sysconfig/scsififo
+		echo "scsi fifo OFF."
+		echo -n "scsififo = 0" >/proc/scsi_target/params
+		pause
+		;;
+	advroute\ on)
+		echo "on" >/etc/userdata/sysconfig/advroute
+		echo "enable all NICs in one subnet support."
+		pause
+		;;
+	advroute\ off)
+		echo "off" >/etc/userdata/sysconfig/advroute
+		echo "disable all NICs in one subnet support."
+		pause
+		;;
+	"advroute set")
+		/sbin/updateip -v
+		pause
+		;;
+	checkrecovery\ on)
+		echo "1" >/etc/userdata/sysconfig/checkrecovery
+		echo "scsi checkrecovery ON."
+		echo -n "checkrecovery = 1" >/proc/scsi_target/params
+		pause
+		;;
+	checkrecovery\ off)
+		echo "0" >/etc/userdata/sysconfig/checkrecovery
+		echo "scsi checkrecovery OFF."
+		echo -n "checkrecovery = 0" >/proc/scsi_target/params
+		pause
+		;;
+	auto_online\ on)
+		echo "1" >/etc/userdata/sysconfig/auto_online
+		echo "scsi auto_online ON."
+		echo -n "auto_online = 1" >/proc/scsi_target/params
+		pause
+		;;
+	auto_online\ off)
+		echo "0" >/etc/userdata/sysconfig/auto_online
+		echo "scsi auto_online OFF."
+		echo -n "auto_online = 0" >/proc/scsi_target/params
+		pause
+		;;
+	"idmfirst on")
+		/sbin/idmchoice.sh on
+		pause
+		;;
+	"idmfirst off")
+		/sbin/idmchoice.sh off
+		pause
+		;;
+	"debug on")
+		echo "on" >/etc/userdata/sysconfig/debug
+		echo "0" >/proc/sys/kernel/panic 2>/dev/null
+		echo "0" >/proc/sys/kernel/panic_on_oops 2>/dev/null
+		echo "debug mode enable" | tee -a /var/log/messages
+		/sbin/bootverbose.sh
+		pause
+		;;
+	"debug off")
+		echo "off" >/etc/userdata/sysconfig/debug
+		echo "5" >/proc/sys/kernel/panic 2>/dev/null
+		echo "1" >/proc/sys/kernel/panic_on_oops 2>/dev/null
+		echo "debug mode disable" | tee -a /var/log/messages
+		/sbin/bootverbose.sh no
+		rm /etc/userdata/sysconfig/debug
+		pause
+		;;
+	"vboot on")
+		/sbin/bootverbose.sh
+		echo "verbose boot enable."
+		pause
+		;;
+	"vboot off")
+		/sbin/bootverbose.sh no
+		echo "verbose boot disable."
+		pause
+		;;
+	"realreset on")
+		rm /etc/userdata/sysconfig/noreset 2>/dev/null
+		echo "realreset on, restart your service."
+		pause
+		;;
+	"realreset off")
+		touch /etc/userdata/sysconfig/noreset 2>/dev/null
+		echo "realreset off, restart your service."
+		pause
+		;;
+	"demo")
+		read -s -p "Password: " pwd
+		if [ "$pwd" = "odysys1106" ];then
+			mkdir -p /etc/userdata/sysconfig/customdrv 2>/dev/null
+			touch /etc/userdata/sysconfig/customdrv/md 2>/dev/null
+		else
+			echo "bad password."
+		fi
+		pause
+		;;
+	onlinedev\ *)
+		value=`echo $key|sed 's/onlinedev *//g'`
+		line=`shell info target|grep "^$value "`
+		if [ "$value" = "all" ];then
+			for dev in `ls /sys/class/scsi_device`
+			do
+				echo running >"/sys/class/scsi_device/$dev/device/state"
+				echo "device $dev `cat /sys/class/scsi_device/$dev/device/state`"
+			done
+		else
+			if [ -z "$line" ];then
+				echo "device $value not exist."
+			else
+				dev=`echo $line|awk '{print $2":"$3":"$4":"$5}'`
+				if [ ! -d "/sys/class/scsi_device/$dev" ];then
+					echo "device $value not found."
+				else
+					echo running >"/sys/class/scsi_device/$dev/device/state"
+					echo "device $dev `cat /sys/class/scsi_device/$dev/device/state`"
+				fi
+			fi
+			
+		fi
+		pause
+		;;
+	ipmi*)
+		param=`echo $key|sed 's/^ipmi *//g'`
+		/sbin/ipmitool $param
+		pause
+		;;
+	hwmon)
+		sensors
+		pause
+		;;
+	mon)
+		/sbin/mon.sh
+		pause
+		;;
+	powerdown)
+		echo "POWER DOWN! WAITING ..."
+		/sbin/powerdown >/dev/null
+		pause
+		;;
+	"disable poweroff")
+		rm /etc/userdata/sysconfig/enable.pwo 2>/dev/null >/dev/null
+		echo "poweroff button disabled."
+		pause
+		;;
+	"enable poweroff")
+		touch /etc/userdata/sysconfig/enable.pwo 2>/dev/null >/dev/null
+		echo "poweroff button enable."
+		pause
+		;;
+	"forcecheck on")
+		touch /etc/userdata/sysconfig/forcecheck
+		echo "enable filesystem force check"
+		pause
+		;;
+	"forcecheck off")
+		rm  /etc/userdata/sysconfig/forcecheck -f 2>/dev/null
+		rm  /etc/userdata/sysconfig/tryhard -f 2>/dev/null
+		echo "disable filesystem force check"
+		pause
+		;;
+	"check once")
+		touch /etc/userdata/sysconfig/check_once
+		rm /etc/userdata/sysconfig/forcecheck 2>/dev/null
+		rm /etc/userdata/sysconfig/tryhard 2>/dev/null
+		echo "filesystem will be checked next time bootup."
+		pause
+		;;
+	"tryhard")
+		touch /etc/userdata/sysconfig/tryhard
+		touch /etc/userdata/sysconfig/check_once
+		echo "filesystem will be check and LOG will be ZERO!, some file will be lost!"
+		pause
+		;;
+	"forceip on")
+		touch /etc/userdata/sysconfig/forceip
+		echo "force ip enabled."
+		pause
+		;;
+	"forceip off")
+		rm /etc/userdata/sysconfig/forceip 2>/dev/null
+		echo "force ip disabled."
+		pause
+		;;
+	"throughput")
+		clear
+		while true
+		do
+			echo -e "\033[0;0H"	#set pos
+			shell info speed
+			printf "%80s" ' '	#clear line
+		done
+		pause
+		;;
+	master|slave)
+		shell advroute off
+		eval "`cat /etc/userdata/sysconfig/startnet.sh|grep ifconfig|sed 's/up/down/g'`"
+		ipvsadm -C
+		>/etc/userdata/sysconfig/dcstat
+		rm /etc/userdata/sysconfig/master 2>/dev/null
+		rm /etc/userdata/sysconfig/slave 2>/dev/null
+		touch /etc/userdata/sysconfig/$key #main flag
+		touch /etc/userdata/sysconfig/dcmode
+		touch /etc/userdata/sysconfig/dcxmode
+		i=0
+		for eth in `cat /proc/net/dev|awk -F: /eth/'{print $1}'|sed 's/://g'`
+		do
+			if [ "`cat /etc/userdata/sysconfig/dcmode`" = "active-active" -a "`cat /etc/sysconfig/dcxmode`" = on ];then
+				if [ $((i%2)) -eq 0 ];then 
+					mode=$key
+				else
+					[ $key = master ] && mode=slave || mode=master
+				fi
+			else
+				mode=$key
+			fi
+			echo "set $eth as $mode host port."
+			/sbin/$mode.sh $eth 2>/dev/null
+			echo "$eth $mode" >>/etc/userdata/sysconfig/dcstat
+			let i++
+		done
+		/sbin/ipconfig.sh force >/dev/null &
+		pause
+		;;
+	slavex)
+		shell advroute off
+		eval "`cat /etc/userdata/sysconfig/startnet.sh|grep ifconfig|sed 's/up/down/g'`"
+		touch /etc/userdata/sysconfig/slave
+		ipvsadm -C
+		>/etc/userdata/sysconfig/dcstat
+		for eth in `cat /proc/net/dev|awk -F: /eth/'{print $1}'|sed 's/://g'`
+		do
+			echo "set $eth as slave host port."
+			/sbin/slave.sh $eth 2>/dev/null
+			echo "$eth slave" >>/etc/userdata/sysconfig/dcstat
+		done
+		pause
+		;;
+
+	dcrestart)
+		touch /etc/userdata/sysconfig/dcstat
+		/etc/userdata/sysconfig/startnet.sh 2>/dev/null
+		ipvsadm -C
+		cat /etc/userdata/sysconfig/dcstat|awk /eth/'{print "echo \"set "$1" as slave host port.\"\n/sbin/slave.sh "$1" 2>/dev/null"}'>/tmp/dcrestart
+		. /tmp/dcrestart
+		/sbin/ipconfig.sh force >/dev/null &
+		pause
+		;;
+		
+	standalone|nodc)
+		eval "`cat /etc/userdata/sysconfig/startnet.sh|grep ifconfig` 2>/dev/null"
+#		/etc/userdata/sysconfig/startnet.sh 2>/dev/null
+		/sbin/standalone.sh 2>/dev/null
+		rm /etc/userdata/sysconfig/dc* -f 2>/dev/null
+		rm /etc/userdata/sysconfig/master 2>/dev/null
+		rm /etc/userdata/sysconfig/slave 2>/dev/null
+		/sbin/ipconfig.sh force >/dev/null &
+		echo "set to single controller."
+		shell advroute on
+		pause
+		;;
+	dcmode*)
+		param=`echo $key|sed 's/^dcmode *//g'`
+		touch /etc/userdata/sysconfig/dcmode
+		touch /etc/userdata/sysconfig/dcstat
+		touch /etc/userdata/sysconfig/dcxmode
+		if [ -z "$param" ];then
+			echo "dcmode:  `cat /etc/userdata/sysconfig/dcmode`"
+			echo "dcstat:  `cat /etc/userdata/sysconfig/dcstat|awk /eth0/'{print $2}'`"
+			echo "dcxmode: `cat /etc/userdata/sysconfig/dcxmode`"
+		else
+			if [ $param != "a/s" -a $param != "a/a" ];then
+				echo 'bad mode, should be "a/s" or "a/a"'
+			else
+				[ $param = "a/s" ] && echo "active-standby" >/etc/userdata/sysconfig/dcmode || echo "active-active" >/etc/sysconfig/dcmode
+				echo "dcmode: `cat /etc/userdata/sysconfig/dcmode`"
+			fi
+		fi
+		pause
+		;;
+	dcxmode\ on)
+		echo "on" >/etc/userdata/sysconfig/dcxmode
+		echo "set dcxmode on"
+		pause
+		;;
+	dcxmode\ off)
+		echo "off" >/etc/userdata/sysconfig/dcxmode
+		echo "set dcxmode off"
+		pause
+		;;
+	dcstat*)
+		param=`echo $key|sed 's/^dcstat *//g'`
+		touch /etc/userdata/sysconfig/dcstat
+		if [ -z "$param" ];then
+			echo "Origin setting:"
+			cat /etc/userdata/sysconfig/dcstat
+			echo "Runging status:"
+			cat /tmp/running-stat* 2>/dev/null
+		else
+			eth=`echo $param|awk '{print $1}'`
+			mode=`echo $param|awk '{print $2}'`
+			if [ -z "$mode" ];then
+				echo "Origin setting:"
+				cat /etc/userdata/sysconfig/dcstat|grep $param
+				echo "Runging status:"
+				cat /tmp/running-stat-$param 2>/dev/null
+			else
+				cat /etc/userdata/sysconfig/dcstat|sed "s/$eth"'.*'"/$eth $mode/g" >/tmp/dcstat
+				mv /tmp/dcstat /etc/userdata/sysconfig/dcstat
+				echo "set $eth to $mode mode."
+			fi
+		fi
+		pause
+		;;
+	"dc list")
+		ipvsadm
+		pause
+		;;
+	"dc clean")
+		ipvsadm --zero
+		echo "connection weight count cleaned."
+		pause
+		;;	
+	dcfail*)
+		param=`echo $key|sed 's/^dcfail *//g'`
+		if [ -z "$param" ];then
+			[ -f /etc/userdata/sysconfig/dcfail ] && echo "set failcount to `cat /etc/sysconfig/dcfail`." || echo "use default[3]."
+		else
+			if [ "$param" -lt 1 -o "$param" -gt 10 ];then
+				echo "bad fail count, should be 1~10"
+			else
+				echo "$param" >/etc/userdata/sysconfig/dcfail
+			fi
+			echo "set failcount to `cat /etc/userdata/sysconfig/dcfail`."
+		fi
+		pause
+		;;
+	dcinterval*)
+		param=`echo $key|sed 's/^dcinterval *//g'`
+		if [ -z "$param" ];then
+			[ -f /etc/userdata/sysconfig/dcintv ] && echo "set detect interval to `cat /etc/sysconfig/dcintv`." || echo "use default[2]."
+		else
+			if [ "$param" -lt 1 -o "$param" -gt 100 ];then
+				echo "bad interval time, should be 1~100(seconds)"
+			else
+				echo "$param" >/etc/userdata/sysconfig/dcintv
+			fi
+			echo "set detect interval to `cat /etc/userdata/sysconfig/dcintv`."
+		fi
+		pause
+		;;
+	server*)
+		param=`echo $key|sed 's/^server *//g'`
+		if [ -z "$param" ];then
+			if [ ! -z "`lsmod|grep ody_iscsi_target`" ];then
+				echo "server runing"
+			else
+				echo "server stop"
+			fi
+		else
+			if [ "$param" = "stop" -o "$param" = "restart" ];then
+				/home/manager/drivers/`uname -r`/cmd/target-uninstall
+			fi
+			. /etc/product.cfg
+			if [ "$PRO_SUPPORT_FCTGT" = "yes" ];then
+				echo "FCT down, waiting 10 seconds ..."
+				sleep 10
+			fi
+			if [ "$param" = "start" -o "$param" = "restart" ];then
+				/home/manager/drivers/`uname -r`/cmd/target-install
+				#lmrestore.sh #now in target-install
+			fi
+		fi
+		pause
+		;;
+	dclog)
+		/sbin/logger
+		pause
+		;;
+	extupdate)
+		/sbin/extupdate.sh
+		pause
+		;;
+	volman)
+		killall evms 2>/dev/null >/dev/null
+		evmsn
+		/sbin/evms -l & 2>/dev/null >/dev/null
+		pause
+		;;
+	webreload)
+		echo "reload webui configuration ..."
+		killall -1 httpd 2>/dev/null
+		pause
+		;;
+	makedownload)
+		makedownload /www/download >/www/download.html
+		pause
+		;;
+	webstart)
+		echo "start webui ..."
+		/www/httpd -h /www/ -c /etc/httpd.conf 2>/dev/null >/dev/null
+		makedownload /www/download >/www/download.html
+		pause
+		;;
+	webrestart)
+		echo "restart webui ..."
+		killall httpd 2>/dev/null
+		sleep 2
+		/www/httpd -h /www/ -c /etc/httpd.conf 2>/dev/null >/dev/null
+		makedownload /www/download >/www/download.html
+		pause
+		;;
+	search)
+		if [ "`ps -ax|grep getother.sh|grep -v grep|wc -l`" -gt 0 ];then
+			echo "search already runing."
+		else
+			/sbin/getother.sh 2>/dev/null |tee /tmp/search.res &
+			sleep 7
+		fi
+		pause
+		;;
+	fastscan)
+		echo "5" >/etc/userdata/sysconfig/scantime
+		echo "Enable default ip fastscan."
+		pause
+		;;
+	slowscan)
+		echo "30" >/etc/userdata/sysconfig/scantime
+		echo "Enable default ip slowscan."
+		pause
+		;;
+	forceclean)
+		cat >/etc/userdata/sysconfig/clean <<EOF
+killall shell.sh 2>/dev/null
+EOF
+		echo "Force clean when run netspeed."
+		pause
+		;;
+	forceclean\ off)
+		rm /etc/userdata/sysconfig/clean 2>/dev/null
+		echo "Don't clean wehn run netspeed."
+		pause
+		;;
+	dcfailback\ on)
+		touch /etc/userdata/sysconfig/dcfailback
+		echo "enable dc failback."
+		pause
+		;;
+	dcfailback\ off) #this is default setting
+		rm /etc/userdata/sysconfig/dcfailback 2>/dev/null
+		echo "disable dc failback"
+		pause
+		;;
+	"license save")
+		if [ ! -f /etc/userdata/sysconfig/license.dat -o -f /etc/sysconfig/license.old ];then
+			echo "license miss or already saved!"
+		else
+			cp /etc/userdata/sysconfig/license.dat /etc/sysconfig/license.old
+			echo "license saved."
+		fi
+		pause
+		;;
+	"license restore") 
+		if [ -f /etc/userdata/sysconfig/license.old ];then
+			cp /etc/userdata/sysconfig/license.old /etc/sysconfig/license.dat
+			echo "licensed restored."
+		else	
+			echo "no backup of license, restore fail."
+		fi
+		pause
+		;;
+	"iboot enable")
+		[ -d /mnt/ResVol0/tftproot ] && TFTPROOT=/mnt/ResVol0/tftproot || TFTPROOT=/tftproot
+		if [ ! -d $TFTPROOT ];then
+			mkdir /tmp/tftproot -p
+			ln -s /tmp/tftproot /tftproot
+			TFTPROOT=/tmp/tftproot
+		fi
+		if [ ! -d "$TFTPROOT/netboot-i" ];then
+			tar zxf /etc/tftproot.tgz -C $TFTPROOT 2>/dev/null >/dev/null
+			chmod 777 $TFTPROOT -R
+		fi
+		/sbin/in.tftpd -s $TFTPROOT -vvvvv -l 2>/dev/null
+		mkdir -p /var/log/dhcp/
+		if [ -z "`cat /etc/style|grep iboot`" ];then
+			dhcpd -lf /var/log/dhcp/dhcpd.leases 2>/dev/null
+		fi
+		modprobe ksoc 2>/dev/null
+		echo enable 2>/dev/null >/proc/ibenc/ibenc 
+		/sbin/ibootrestore.sh 2>/dev/null
+		echo "iboot service enabled."
+		touch /etc/userdata/sysconfig/customdrv/ibenable
+		pause
+		;;
+	"iboot stop")
+		killall in.tftpd 2>/dev/null
+		killall dhcpd 2>/dev/null
+		rmmod ksoc 2>/dev/null
+		echo "iboot service stopped."
+		pause
+		;;
+	"iboot disable")
+		killall in.tftpd 2>/dev/null
+		killall dhcpd 2>/dev/null
+		rmmod ksoc 2>/dev/null
+		echo "iboot service disabled."
+		rm /etc/userdata/sysconfig/customdrv/ibenable 2>/dev/null
+		pause
+		;;
+	"iboot list")
+		#check
+		echo "ibenc table:"
+		echo "--------------------"
+		cat /proc/ibenc/ibenc 2>/dev/null|grep -v verbose
+		echo "--------------------"
+		[ -f /proc/ibenc/ibenc ] && cat /proc/ibenc/ibenc > /etc/userdata/sysconfig/iboot.save
+		pause
+		;;
+	iboot\ add\ *)
+		param=`echo $key|sed 's/^iboot add *//g'`
+		mac=`echo $param|awk '{print $1}'`
+		tip=`echo $param|awk '{print $2}'`
+		tid=`echo $param|awk '{print $3}'`
+		echo "add $mac,ena,,,$tip,,a0,128,,,,,iqn.2005-05.cn.com.odysys.iscsi.$HOSTNAME:$tid" 2>/dev/null >/proc/ibenc/ibenc 
+		#check
+		shell iboot list
+		pause
+		;;
+	iboot\ del\ *)
+		mac=`echo $key|sed 's/^iboot del *//g'`
+		echo "del $mac" 2>/dev/null >/proc/ibenc/ibenc
+		#check
+		shell iboot list
+		pause
+		;;
+	"qlafo on")
+		cd /lib/modules/`uname -r`/kernel/drivers/scsi/
+		if [ -L qla2xxx ];then
+			rm qla2xxx -f 2>/dev/null
+			ln -s qla2xxx.fo qla2xxx && touch /etc/userdata/sysconfig/qlafo.on
+		fi
+		cd -
+		echo "qlogic failover dirver enabled."
+		pause
+		;;
+	"qlafo off")
+		cd /lib/modules/`uname -r`/kernel/drivers/scsi/
+		if [ -L qla2xxx ];then
+			rm qla2xxx -f 2>/dev/null
+			ln -s qla2xxx.nofo qla2xxx && rm /etc/userdata/sysconfig/qlafo.on
+		fi
+		cd -
+		echo "qlogic failover dirver disabled."
+		pause
+		;;
+
+	"rdac install")
+		if [ -f /etc/userdata/sysconfig/rdac ];then
+			echo "RDAC loading..."
+			modprobe mppUpper
+			modprobe mppVhba
+		else
+			echo "RDAC disabled."
+		fi
+		pause
+		;;
+	"rdac rescan")
+		if [ -f /etc/userdata/sysconfig/rdac ];then
+			echo "RDAC rescanning ..."
+			/sbin/mppBusRescan26
+			/sbin/lsvdev
+			/bin/rdacdisk.sh 2>/dev/null 
+		else
+			echo "RDAC disabled."
+		fi
+		pause
+		;;
+	"rdac enable")
+		touch /etc/userdata/sysconfig/rdac
+		shell qlafo off
+		echo "rdac enabled, need reboot."
+		pause
+		;;
+	"rdac disable")
+		rm /etc/userdata/sysconfig/rdac 2>/dev/null
+		echo "rdac disable need reboot."
+		pause
+		;;
+	"keeprdacmember on")
+		touch /etc/userdata/sysconfig/keeprdacmember
+		echo "will keep rdac member in scsi device"
+		pause
+		;;
+	"keeprdacmember off")
+		rm /etc/userdata/sysconfig/keeprdacmember 2>/dev/null
+		echo "will remove rdac member in scsi device"
+		pause
+		;;
+	"rdac member enable")
+		touch /etc/userdata/sysconfig/enablerdacdisk
+		echo "rdac member disk also report."
+		pause
+		;;
+	"rdac member disable")
+		rm /etc/userdata/sysconfig/enablerdacdisk 2>/dev/null
+		echo "rdac member disk not report."
+		pause
+		;;
+	"emcp enable")
+		touch /etc/userdata/sysconfig/emcpenable
+		echo "enable EMC PowerPath support"
+		pause
+		;;
+	"emcp disable")
+		rm /etc/userdata/sysconfig/emcpenable 2>/dev/null
+		echo "disable EMC PowerPath support"
+		pause
+		;;
+	"emcp start")
+		if [ ! -f /etc/userdata/sysconfig/emcpenable ];then
+			echo "emcp not enable."
+		else
+			/etc/init.d/PowerPath start
+		fi
+		pause
+		;;
+	"emcp stop")
+		if [ ! -f /etc/userdata/sysconfig/emcpenable ];then
+			echo "emcp not enable."
+		else
+			/etc/init.d/PowerPath stop
+		fi
+		pause
+		;;
+	"emcp save")
+		if [ ! -f /etc/userdata/sysconfig/emcpenable ];then
+			echo "emcp not enable."
+		else
+			echo "Saving PowerPath config ..."
+			cd /tmp/emcp
+			tar zcvf /etc/userdata/sysconfig/customdrv/etc.emc.tgz etc/emc*
+			echo "Done."
+		fi
+		pause
+		;;
+	"emcp restore")
+		if [ ! -f /etc/userdata/sysconfig/emcpenable ];then
+			echo "emcp not enable."
+		else
+			echo "Restore PowerPath config ..."
+			tar zxvf /etc/userdata/sysconfig/customdrv/etc.emc.tgz -C /tmp/emcp
+			echo "Done."
+		fi
+		pause
+		;;
+	"disk rescan on")
+		touch /etc/userdata/sysconfig/diskrescan
+		echo "enable disk rescan (remove unused path)"
+		pause
+		;;
+	"disk rescan off")
+		rm /etc/userdata/sysconfig/diskrescan 2>/dev/null
+		echo "disable disk rescan"
+		pause
+		;;
+	"disk rescan")
+		/sbin/diskrescan reload
+		pause
+		;;
+	"iboot stop dhcpd")
+		killall dhcpd 2>/dev/null
+		echo "dhcpd stopped."
+		pause
+		;;
+	"iboot start dhcpd")
+		[ ! -f /etc/userdata/sysconfig/dhcpd.conf ] && cp /etc/sysconfig/dhcpd.conf.sample /etc/sysconfig/dhcpd.conf
+		dhcpd -lf /var/log/dhcp/dhcpd.leases 2>/dev/null
+		echo "dhcpd start."
+		pause
+		;;
+	"iboot edit dhcpd")
+		vi /etc/dhcpd.conf
+		pause
+		;;
+	iboot\ set\ *)
+		param=`echo $key|sed 's/^iboot set *//g'`
+		mac=`echo $param|awk '{print $1}'`
+		name=`echo $param|awk '{print $2}'`
+		value=`echo $param|awk '{print $3}'`
+		echo "set $mac $name $value" 2>/dev/null >/proc/ibenc/ibenc
+		#check
+		shell iboot list
+		pause
+		;;
+	lock)
+		psn=`cat  /etc/userdata/sysconfig/psn 2>/dev/null`
+		if [ -z "$psn" ];then
+			psn=PSN$RANDOM
+			echo "$psn" >/etc/userdata/sysconfig/psn
+		fi
+		if [ ! -f /etc/userdata/sysconfig/license.dat ];then
+			echo "no license!"
+		else
+			read -s -p "Password: " pass
+			echo
+			if [ "`echo $pass|md5sum|awk '{print $1}'`" = $lockpassword ]; then
+				mv /etc/userdata/sysconfig/license.dat /etc/sysconfig/license.lck
+				echo "license locked!"
+			else
+				echo "password missmatch!"
+			fi
+		fi
+		pause
+		;;
+	unlock)
+		if [ ! -f /etc/userdata/sysconfig/license.lck -o -f /etc/sysconfig/license.dat ];then
+			echo "license not lock."
+		else
+			read -s -p "Password: " pass
+			echo
+			psn=`cat  /etc/userdata/sysconfig/psn 2>/dev/null`
+			needle=`echo $psn|sed 's/1/a/g'|sed 's/2/b/g'|sed 's/3/c/g'|sed 's/4/d/g'`
+			[ -z "$pass" ] && match="" || match=`echo $needle|grep $pass`
+			if [ -z "$pass" -o -z "$match" -o "`echo $pass|wc -c`" -lt 5 ];then
+				echo "password missmatch!"
+			else
+				mv /etc/userdata/sysconfig/license.lck /etc/sysconfig/license.dat
+				echo "license unlocked!"
+			fi
+		fi
+		pause
+		;;
+	verify)
+		/sbin/verify.sh
+		pause
+		;;
+	"build")
+		cat /etc/buildcfg 2>/dev/null
+		pause
+		;;
+	"buildtime")
+		cat /etc/buildtime 2>/dev/null
+		pause
+		;;
+	"raidm start")
+		/etc/raid.webm.start
+		pause
+		;;
+	"raidm stop")
+		/etc/raid.webm.stop
+		pause
+		;;
+	failpolicy*)
+		param=`echo $key|sed 's/^failpolicy *//g'`
+		if [ -z "$param" ];then
+			cat /etc/userdata/sysconfig/failpolicy 2>/dev/null
+		else
+			echo "set failpolicy to '$param'."
+			echo "$param" > /etc/userdata/sysconfig/failpolicy
+		fi
+		pause
+		;;
+	info\ *)
+		param=`echo $key|sed 's/info *//g'`
+		if [ -x /sbin/info.$param.sh ];then
+			/sbin/info.$param.sh -t 2>/dev/null
+		fi
+		pause
+		;;
+	ext\ *)
+		param=`echo $key|sed 's/ext *//g'`
+		ext=`echo $param|awk '{print $1}'`
+		param=`echo $param|sed 's/'"$ext"'//g'`
+		if [ -x /etc/ext/$ext/scripts/shell.sh ];then
+			/etc/ext/$ext/scripts/shell.sh $param
+		fi
+		pause
+		;;
+	wb\ *)
+		param=`echo $key|sed 's/wb *//g'`
+		tid=`echo $param|awk '{print $1}'`
+		iot=`echo $param|awk '{print $2}'`
+		[ -z "$iot" ] && iot=sequence
+		sdisk=`getsd.sh $tid|awk '{print $1}'`
+		if [ ! -z "$sdisk" ];then
+			read -p "set target $tid to $iot write back, connection will be broken, confirm[Y/n]? " cfm
+			if [ "$cfm" = "Y" ];then
+				diskwb.sh $tid $iot
+				if [ $? -eq 0 ];then
+					#store in config
+					touch /etc/userdata/sysconfig/iotype
+					cat /etc/userdata/sysconfig/iotype|grep -v $tid' \|'$tid'$' >/tmp/.iotype
+					echo "wb $tid $iot" >>/tmp/.iotype
+					cp /tmp/.iotype /etc/userdata/sysconfig/iotype	
+				fi
+			fi
+		else
+			echo "bad targetid '$param'."
+		fi
+		pause
+		;;
+	wt\ *)
+		param=`echo $key|sed 's/wt *//g'`
+		tid=`echo $param|awk '{print $1}'`
+		iot=`echo $param|awk '{print $2}'`
+		[ -z "$iot" ] && iot=sequence
+		sdisk=`getsd.sh $tid|awk '{print $1}'`
+		if [ ! -z "$sdisk" ];then
+			read -p "set target $tid to $iot write through, connection will be broken, confirm[Y/n]? " cfm
+			if [ "$cfm" = "Y" ];then
+				diskwt.sh $tid $iot
+				if [ $? -eq 0 ];then
+					#store in config
+					touch /etc/userdata/sysconfig/iotype
+					cat /etc/userdata/sysconfig/iotype|grep -v $tid' \|'$tid'$' >/tmp/.iotype
+					echo "wt $tid $iot" >>/tmp/.iotype
+					cp /tmp/.iotype /etc/userdata/sysconfig/iotype	
+				fi
+			fi
+		else
+			echo "bad targetid '$param'."
+		fi
+		pause
+		;;
+	"show pcis")
+		lspci -tv
+		pause
+		;;
+	"old e1000 on")
+		cd /lib/modules/`uname -r`/kernel/drivers/net/e1000
+		if [ -f e1000.ko.old ];then
+			mkdir -p /etc/userdata/sysconfig/customdrv
+			touch /etc/userdata/sysconfig/customdrv/olde1000
+			ln -s e1000.ko.old e1000.ko -f
+			echo "now old e1000 driver enable, need reboot."
+			
+		else
+			echo "no old e1000 driver found, check your version."
+		fi
+		cd -
+		pause
+		;;
+	"old e1000 off")
+		cd /lib/modules/`uname -r`/kernel/drivers/net/e1000
+		if [ -f e1000.ko.new ];then
+			rm /etc/userdata/sysconfig/customdrv/olde1000 2>/dev/null
+			ln -s e1000.ko.new e1000.ko -f
+			echo "now new e1000 driver enable, need reboot."
+		else
+			echo "no new e1000 driver found, check your version."
+		fi
+		cd -
+		pause
+		;;
+	lsitool)
+		/sbin/lsiutil
+		pause
+		;;
+	masterip\ eth?\ *)
+		param=`echo $key|sed 's/masterip *//g'`
+		/sbin/masterip.sh $param
+		pause
+		;;
+	"no setp")
+		echo "set" >/etc/userdata/sysconfig/myset
+		echo "should restart server."
+		pause
+		;;
+	"setp")
+		rm /etc/userdata/sysconfig/myset 2>/dev/null
+		echo "should restart server."
+		pause
+		;;
+	"fixpart")
+		/sbin/fixlastpart.sh
+		fdisk -l /dev/`cat /etc/rootdisk`
+		pause
+		;;
+	"exportall on")
+		touch /etc/userdata/sysconfig/exportall
+		echo "All scsi disk even offline or multi path will be export, need restart server."
+		pause	
+		;;
+	"exportall off")
+		rm /etc/userdata/sysconfig/exportall 2>/dev/null
+		echo "Only online and accessiable disk will be export, need restart server."
+		pause
+		;;
+	group*)
+		GFILE=/proc/scsi_target/iscsi_target/groups
+		param=`echo $key|sed 's/^group *//g'`
+		if [ ! -f $GFILE ];then
+			echo "group not supported or server not start."
+		else
+			if [ "$param" = "cat" -o "$param" = "" ];then
+				cat $GFILE
+			else
+				if [ "$param" = "help" ];then
+					cat <<EOHELP
+Valid group cmd
+cat: 			show all group rules
+reset: 			clear all group rules
+enable: 		enable groupping
+disable: 		disable groupping
+master IP: 		set group master ip
+grpmask MASK: 		set target ip group netmask
+srcmask MASK: 		set source ip group netmask
+clearall:		clear all ip weight
+clearsg: 		clear all source ip group ip weight
+cleartg: 		clear all target ip group ip weight
+add IQN include IP: 	add a target ip group of IQN include this IP
+del IQN include IP: 	del a target ip group of IQN include this IP
+add IQN exclude IP: 	add a target ip group of IQN exclude this IP
+del IQN exclude IP: 	del a target ip group of IQN exclude this IP
+set IQN include IP VALUE: set the IP of the IQN's weight to VALUE
+addsrc IP IP IP[ IP[ IP]]: setup a source ip group, 3~5 IP needded.
+delsrc IP: 		delete a source ip group(any IP of their members)
+setsrc IP VALUE: 	set the IP's weight to VALUE
+ip disable IP:		disable this IP in all group
+ip enable IP:		enable this IP in all group(ever disabled)
+maxweight N:		max weight value to N(default 16)
+
+*note*:
+ IP 	dotted ip address
+ MASK	dotted ip netmask
+ IQN	targetname, such as iqn.2005-05.cn.com.odysys.iscsi.odyiscsi:16
+ VALUE  weight 0~255
+
+EOHELP
+				else
+					#cmd
+					[ "$param" = "clear" ] && param=clearall
+					param=`echo $param|sed 's/clear tg/cleartg/g'|sed 's/clear sg/clearsg/'`
+					echo $param >$GFILE
+					echo --------------------------
+					cat $GFILE
+					echo --------------------------
+					cat $GFILE >/etc/userdata/sysconfig/ipgroups
+					if [ "`echo $param|awk '{print $1}'`" = "master" ];then
+						if [ -z "`ps -ax|grep monmasterip.sh|grep -v grep`" ];then
+							/sbin/monmasterip.sh 2>/dev/null >/dev/null &
+						fi
+					fi
+				fi
+			fi
+		fi
+		pause
+		;;
+	nbcheck\ high*)
+		param=`echo $key|sed 's/nbcheck high //g'|sed 's/[^0-9]//g'`
+		if [ ! -z "$param" ];then
+			echo "set nbcheck high mark to $param."
+			echo "$param" >/etc/userdata/sysconfig/nbcheck.high
+			echo "restart nbcheck ..."
+			shell nbcheck stop
+			shell nbcheck start
+		else
+			echo "current nbcheck.high=`cat /etc/userdata/sysconfig/nbcheck.high 2>/dev/null`"
+		fi
+		pause
+		;;
+
+	nbcheck\ low*)
+		param=`echo $key|sed 's/nbcheck low //g'|sed 's/[^0-9]//g'`
+		if [ ! -z "$param" ];then
+			echo "set nbcheck low mark to $param."
+			echo "$param" >/etc/userdata/sysconfig/nbcheck.low
+			echo "restart nbcheck ..."
+			shell nbcheck stop
+			shell nbcheck start
+		else
+			echo "current nbcheck.low=`cat /etc/userdata/sysconfig/nbcheck.low 2>/dev/null`"
+		fi
+		pause
+		;;
+
+	nbcheck\ interval*)
+		param=`echo $key|sed 's/nbcheck interval //g'|sed 's/[^0-9]//g'`
+		if [ ! -z "$param" ];then
+			echo "set nbcheck interval to $param."
+			echo "$param" >/etc/userdata/sysconfig/nbcheck.interval
+			echo "restart nbcheck ..."
+			shell nbcheck stop
+			shell nbcheck start
+		else
+			echo "current nbcheck.interval=`cat /etc/userdata/sysconfig/nbcheck.interval 2>/dev/null`"
+		fi
+		pause
+		;;
+
+	nbcheck\ times*)
+		param=`echo $key|sed 's/nbcheck times //g'|sed 's/[^0-9]//g'`
+		if [ ! -z "$param" ];then
+			echo "set nbcheck times to $param."
+			echo "$param" >/etc/userdata/sysconfig/nbcheck.times
+			echo "restart nbcheck ..."
+			shell nbcheck stop
+			shell nbcheck start
+		else
+			echo "current nbcheck.times=`cat /etc/userdata/sysconfig/nbcheck.times 2>/dev/null`"
+		fi
+		pause
+		;;
+
+	nbcheck\ mindiff*)
+		param=`echo $key|sed 's/nbcheck mindiff //g'|sed 's/[^0-9]//g'`
+		if [ ! -z "$param" ];then
+			echo "set nbcheck mindiff to $param."
+			echo "$param" >/etc/userdata/sysconfig/nbcheck.mindiff
+		else
+			echo "current nbcheck.mindiff=`cat /etc/userdata/sysconfig/nbcheck.mindiff 2>/dev/null`"
+		fi
+		pause
+		;;
+
+	nbcheck\ enable)
+		if [ -z "`cat /proc/scsi_target/iscsi_target/groups 2>/dev/null|head -n 1|grep enable`" ];then
+			echo "Net load balance not enabled, need ipgroup."
+		else
+			echo "Enable net load balance check."
+			logger -t NBT "nbcheck enable."
+			touch /etc/userdata/sysconfig/nbcheck
+			killall netbalance 2>/dev/null
+			shell nbcheck start
+		fi
+		pause
+		;;
+	nbcheck\ disable)
+		rm /etc/userdata/sysconfig/nbcheck 2>/dev/null
+		killall netbalance 2>/dev/null
+		echo "Disable net load balance check."
+		logger -t NBT "nbcheck disable."
+		pause
+		;;
+	nbcheck\ stop)
+		echo "Stop net load balance check."
+		killall netbalance 2>/dev/null
+		logger -t NBT "nbcheck stop."
+		pause
+		;;
+	nbcheck\ start)
+		[ -f /etc/userdata/sysconfig/nbcheck.high ] && nbc_high=`cat /etc/sysconfig/nbcheck.high` || nbc_high=105
+		[ -f /etc/userdata/sysconfig/nbcheck.low ] && nbc_low=`cat /etc/sysconfig/nbcheck.low` || nbc_low=196 #disabled
+		[ -f /etc/userdata/sysconfig/nbcheck.interval ] && nbc_interval=`cat /etc/sysconfig/nbcheck.interval` || nbc_interval=2
+		[ -f /etc/userdata/sysconfig/nbcheck.times ] && nbc_times=`cat /etc/sysconfig/nbcheck.times` || nbc_times=3
+		logger -t NBT "Start /sbin/netbalance $nbc_interval $nbc_high $nbc_low $nbc_times"
+		echo "Net load balance check start."
+		/sbin/netbalance $nbc_interval $nbc_high $nbc_low $nbc_times >/dev/null 2>/dev/null &
+		pause
+		;;
+	nbcheck)
+		echo "Valid nbcheck commands:
+
+nbcheck start|stop	start/stop check
+nbcheck enable|disable	enable/disable autostart of check
+nbcheck high NNN	set high mark of netspeed, in MB/s, default is 105	
+nbcheck low NNN		set low mark of speed, in MB/s, default is 195(disabled)
+nbcheck interval NNN	set check interval, in seconds, default is 2
+nbcheck times NNN	set check confirm times, default is 3
+nbcheck mindiff NNN	set minimal diff speed of highest and lowest, in MB/s,
+			default is 10.
+"
+		pause
+		;;
+
+	elevator_setup)
+		if [ -f /etc/booting ];then
+			#setup product cfg
+			echo
+			cat /etc/userdata/sysconfig/license.dat >/var/log/license.dat
+			/etc/pcfg >/tmp/product.cfg 2>/var/log/pro.cfg.err
+			[ "`cat /tmp/product.cfg|wc -l`" -ne 0 ] && cp /tmp/product.cfg /etc/product.cfg
+			eleval="SUPPORT="`grep yes /etc/product.cfg|sed 's/PRO_SUPPORT_\(.*\)=yes/\1/g'`
+			echo $eleval|tee /var/log/pro.cfg
+			echo 
+			. /etc/product.cfg
+			if [ "$PRO_SUPPORT_EXT3_EXTEND" = "yes" ];then
+				modprobe ext3_extend	 2>/dev/null
+			else
+				modprobe ext3 2>/dev/null
+			fi
+		fi
+		if [ -f /etc/userdata/sysconfig/elevator ];then
+			elevator_cmd all `cat /etc/userdata/sysconfig/elevator`
+			echo "set elevator as `cat /etc/userdata/sysconfig/elevator`"|tee -a /var/log/messages >/dev/null
+		fi
+		pause
+		;;
+	elevator\ *)
+		param=`echo $key|sed 's/elevator //g'`
+		elevator_cmd $param
+		pause
+		;;
+	unexport\ *)
+		param=`echo $key|sed 's/unexport *//g'`
+		sdev=`basename $param`
+		tid=`gettid.sh $sdev|awk '{print $7}'`
+		if [ ! -z "$tid" ];then
+			echo set disable -i $tid 2>/dev/null >/proc/scsi_target/config 
+			logger "disable rootdisk $sdev($tid)"
+		fi
+		pause
+		;;
+	"sequence io")
+		echo "anticipatory" >/etc/userdata/sysconfig/defaultio
+		/sbin/bootselect.sh anticipatory
+		echo "use sequence io as default, need reboot."
+		pause
+		;;
+	"random io") 
+		echo "cfq" >/etc/userdata/sysconfig/defaultio
+		echo "use random io as default, need reboot."
+		/sbin/bootselect.sh cfq
+		pause
+		;;
+	"mirror help")
+		cat <<EOF
+shell mirror COMMAND, where COMMAND is:
+help 				show this help
+add oid mid [trunksize]		create mirror oid-mid use trunksize(default 64k)
+del oid				delete mirror oid
+replace origin oid nid		replace origin target as nid
+del origin oid			delete origin target oid
+failover oid			failover to mirror target
+failback mid			failback to origin target
+pause oid			pause mirror io
+resume oid			resume mirror io
+sync start oid [syncsize]	start background synchornize thread ,use syncsiz				as first round block size(default 4*trunksize)
+sync stop oid [exit]		pause synchornize thread, and exit(if exit=1)
+sync resume oid			resume synchornize thread
+sync limit oid speed		limit max io speed of sync thead to speed MB/s
+mode oid mod			set mirror io mode(0/1)
+save bitmap oid fid		save bitmap to /etc/mirror/bitmap_oid_mid_fid					file need created first
+load bitmap oid fid		load bitmap form /etc/mirror/bitmap_oid_mid_fid
+verify start oid		start verify thread
+verify pause oid [exit]		pause verify thread, and exit(if exit=1)
+verify resume oid		resume verify thread
+verify limit oid speed		limit max io speed of verify thread to speedMB/s
+undirty bitmap oid		assume mirror is clean, don't synchorize now.
+show				see status of mirrors
+EOF
+		pause
+		;;
+	"mirror autoload enable")
+		rm /etc/userdata/sysconfig/mirror.ald 2>/dev/null
+		echo "mirror will auto-load after reboot"
+		pause
+		;;
+	"mirror autoload disable")
+		touch /etc/userdata/sysconfig/mirror.ald
+		echo "mirror will NOT auto-load after reboot"
+		pause
+		;;
+	"mirror show")
+		if [ ! -f /proc/scsi_target/mirror ];then
+			echo "mirror not support in this version."
+		else
+			cat /proc/scsi_target/mirror
+		fi
+		pause
+		;;
+	"mirror "*)
+		if [ ! -f /proc/scsi_target/mirror ];then
+			echo "mirror not support in this version."
+		else
+			param=`echo $key|sed 's/mirror //g'`
+			echo $param >/proc/scsi_target/mirror
+			/sbin/scstmirror.sh save param
+			cat /proc/scsi_target/mirror
+		fi
+		pause
+		;;
+	"check ctx")
+		( cd /proc && for p in [1-9]* ; do echo "$(<${p}/cmdline) $(<${p}/schedstat)" ; done ) | sort -rn -k 3 | head
+		pause
+		;;
+	"lm list")
+		cat /proc/scsi_target/lunmapping
+		pause
+		;;
+	"lm "*)
+		param=`echo $key|sed 's/lm //g'`
+		echo $param >/proc/scsi_target/lunmapping
+		/sbin/scstlm.sh save
+		cat /proc/scsi_target/lunmapping
+		pause
+		;;
+	"mdclean "*)
+		param=`echo $key|sed 's/mdclean //g'`
+		/sbin/md_forceclean.sh $param
+		pause
+		;;
+	"fc tgtonly on")
+		touch /etc/userdata/sysconfig/fctgtonly
+		echo "will remove disks on targetmode fc-host after reboot."
+		pause
+		;;
+	"fc tgtonly off")
+		rm /etc/userdata/sysconfig/fctgtonly 2>/dev/null
+		echo "will keep disks on targetmode fc-host after reboot."
+		pause
+		;;
+	"fc tgtonly")
+		[ -f /etc/userdata/sysconfig/fctgtonly ] && res=on || res=off
+		echo "tgtonly setting is: $res."
+		pause
+		;;
+	"fc link")
+		echo "Host  Tgt Port_Name          Speed      Link       Type"
+		echo "-------------------------------------------------------------------------------"
+		for host in `ls /sys/class/fc_host/`
+		do
+			if [ -f /sys/class/fc_host/$host/device/scsi_host*/port_database ];then
+				plink=`cat /sys/class/fc_host/$host/device/scsi_host*/state|awk '{print $1"_"$2}'`
+				ptgt=`cat /sys/class/fc_host/$host/device/scsi_host*/target_mode_enabled`
+				pname=`cat /sys/class/fc_host/$host/port_name`
+				ptype=`cat /sys/class/fc_host/$host/port_type|sed 's/ /_/g'`
+			       pspeed=`cat /sys/class/fc_host/$host/speed|sed 's/ /_/g'`
+				printf "%-5s %3d %-16s %-10s %-10s %-15s %-s\n" $host $ptgt $pname $pspeed $plink $ptype
+			fi
+		done
+		echo "-------------------------------------------------------------------------------"
+		pause
+		;;
+	"fc portlist")
+		echo "Host  Loop Domain  PortName        T State"
+		echo "----------------------------------------------"
+		for host in `ls /sys/class/scsi_host`
+		do
+			if [ -f /sys/class/scsi_host/$host/target_mode_enabled ];then
+				if [ "`cat /sys/class/scsi_host/$host/target_mode_enabled`" = 0 ];then
+					#skip non-target-port
+					continue
+				fi
+			fi
+			if [ -f /sys/class/scsi_host/$host/port_database ];then
+				cat /sys/class/scsi_host/$host/port_database|grep "fc_ports database" -A10000|grep -v fc_ports|sed 's/^/'$host' /g'
+			fi
+		done
+		echo "----------------------------------------------"
+		pause
+		;;
+	"fc targetmode")
+		for host in `ls /sys/class/scsi_host`
+		do
+			if [ -f /sys/class/scsi_host/$host/target_mode_enabled ];then
+				echo "$host: target_mode = `cat /sys/class/scsi_host/$host/target_mode_enabled`"
+			fi
+		done
+		pause
+		;;
+	"fc targetmode host"*)
+		param=`echo $key|sed 's/fc targetmode host *//g'`
+		targetmode $param
+		pause
+		;;
+	"fc lip reset host"*)
+		param=`echo $key|sed 's/fc lip reset host *//g'`
+		if [ ! -f /sys/class/scsi_host/host$param/device/fc_host*/issue_lip ];then	
+			echo host$param is not a fc host.
+		else
+			echo issue lip reset to host$param.
+			echo 1 >/sys/class/scsi_host/host$param/device/fc_host*/issue_lip
+		fi
+		pause
+		;;
+	poolfs\ *)
+		param=`echo $key|sed 's/poolfs *//g'`
+		echo "using $param filesystem as pool fs."
+		mkdir -p /etc/userdata/sysconfig/customdrv
+		echo "$param" >/etc/userdata/sysconfig/customdrv/poolfs
+		pause
+		;;
+	"pool ordered")
+		echo "ordered" >/etc/userdata/sysconfig/customdrv/pooldata
+		echo "pool will mount as ordered when next boot."
+		pause
+		;;
+	"pool writeback")
+		echo "writeback" >/etc/userdata/sysconfig/customdrv/pooldata
+		echo "pool will mount as writeback when next boot."
+		pause
+		;;
+	"pc on")
+		echo 2 >/etc/userdata/sysconfig/pcollapse 2>/dev/null
+		echo "pharse collapse on(2), need restart."
+		pause
+		;;
+	"pc force on")
+		echo 1 >/etc/userdata/sysconfig/pcollapse 2>/dev/null
+		echo "pharse collapse on(1), need restart."
+		pause
+		;;
+	"keepnullsdev on")
+		touch /etc/userdata/sysconfig/keepnullsdev
+		echo "Null SCSI Device(Shadow Path) will be reserved"
+		pause
+		;;
+	"keepnullsdev off")
+		rm /etc/userdata/sysconfig/keepnullsdev 2>/dev/null
+		echo "Null SCSI Device(Shadow Path) will be removed"
+		pause
+		;;
+	"pc off")
+		rm /etc/userdata/sysconfig/pcollapse 2>/dev/null
+		echo "pharse collapse off, need restart."
+		pause
+		;;
+	"rma")
+		echo "setup remote assistant package ..."
+		tar zxf /etc/rma_package.tgz -C / 2>/dev/null >/dev/null
+		rma_start
+		pause
+		;;
+	"set as group one")
+		cat >/etc/userdata/sysconfig/startnet.sh <<EOF
+ifconfig eth0 10.10.1.201 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth1 10.10.1.202 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth2 10.10.1.203 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth3 10.10.1.204 netmask 255.255.255.0 broadcast 10.10.1.255 up
+EOF
+		shell group enable >/dev/null
+		shell group master 10.10.1.200 >/dev/null
+		shell group maxweight 16 >/dev/null
+		shell group add default include 10.10.1.201 >/dev/null
+		shell group add default include 10.10.1.202 >/dev/null
+		shell group add default include 10.10.1.203 >/dev/null
+		shell group add default include 10.10.1.204 
+		pause
+		;;
+	"set default group")
+		shell group enable >/dev/null
+		shell group master 10.10.1.200 >/dev/null
+		shell group maxweight 32 >/dev/null
+		shell group add default include 10.10.1.201 >/dev/null
+		shell group add default include 10.10.1.205 >/dev/null
+		shell group add default include 10.10.1.202 >/dev/null
+		shell group add default include 10.10.1.206 >/dev/null
+		shell group add default include 10.10.1.203 >/dev/null
+		shell group add default include 10.10.1.207 >/dev/null
+		shell group add default include 10.10.1.204 >/dev/null
+		shell group add default include 10.10.1.208 
+		pause
+		;;
+	"set as group A")
+		cat >/etc/userdata/sysconfig/startnet.sh <<EOF
+ifconfig eth0 10.10.1.201 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth1 10.10.1.202 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth2 10.10.1.203 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth3 10.10.1.204 netmask 255.255.255.0 broadcast 10.10.1.255 up
+EOF
+		shell set default group
+		echo "set as ip-group controller A, need reboot"
+		pause
+		;;
+	"set as group B")
+		cat >/etc/userdata/sysconfig/startnet.sh <<EOF
+ifconfig eth0 10.10.1.205 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth1 10.10.1.206 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth2 10.10.1.207 netmask 255.255.255.0 broadcast 10.10.1.255 up
+ifconfig eth3 10.10.1.208 netmask 255.255.255.0 broadcast 10.10.1.255 up
+EOF
+		shell set default group
+		echo "set as ip-group controller B, need reboot"
+		pause
+		;;
+	"zcli")
+		if [ ! -d /etc/zulu.docroot ];then
+			echo "zulu not installed."
+		else
+			cd /etc/zulu.docroot/cli
+			./cli
+		fi
+		;;
+	*)
+		echo "Unknown cmd or bad parameters!"
+		pause
+		;;
+esac
+[ $paraN -ne 0 ] && exit
+sleep 1	#incase bad unexpectted
+done
+		

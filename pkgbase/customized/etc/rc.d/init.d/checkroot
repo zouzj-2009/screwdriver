@@ -2,9 +2,10 @@
 #prepare keys
 found=
 checkrootsig(){
-	dd if=/dev/$1 bs=1k skip=16 count=16 2>/dev/null|gpg -r XOSTE >/tmp/.rootsig 2>/dev/null
+	dd if=/dev/$1 of=/etc/.sys.sig bs=1k skip=16 count=16 2>/dev/null
+	/encrypted/checksig.sh /etc/.sys.sig pkg >/tmp/.pkgs
 	[ $? -ne 0 ] && return 1	
-	mv /tmp/.rootsig /etc/rootsig
+	mv /etc/.sys.sig /etc/sys.sig
 	return 0
 }
 
@@ -16,7 +17,7 @@ do
 	echo " Found!" && found=$blockdev && break
 done
 if [ -z "$found" -a "$1" != "nowait" ];then
-	read -t 30 -p "Root Disk Not Found! Press Enter to continue ..."
+	[ -z "`grep CDBOOT /proc/cmdline`" ] && read -t 30 -p "Root Disk Not Found! Press Enter to continue ..."
 	exit 1
 fi
 echo "$found" >/etc/rootdisk

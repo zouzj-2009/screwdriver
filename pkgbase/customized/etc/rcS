@@ -1,8 +1,13 @@
 #!/bin/bash
-echo "Bootup `cat /rootpkg` ..."
+rm /etc/rcS >/dev/null 2>/dev/null
+dmesg|grep '^Check rootfs'|awk '{print $NF}' >/etc/rootver
+cp /etc/rootver /encrypted/rootver
+echo "Bootup `cat /rootpkg`-`cat /etc/rootver` ..."
 
-mount -t proc /proc /proc
 echo Mounting proc filesystem
+mount -t proc /proc /proc
+rm /etc/mtab 2>/dev/null
+ln -s /proc/mounts /etc/mtab
 echo Mounting sysfs filesystem
 mount -t sysfs /sys /sys
 echo Creating /dev
@@ -54,7 +59,17 @@ gpg --import /etc/xoste.key 2>/dev/null >/dev/null
 
 echo "Searching root disk ..."
 /etc/init.d/checkroot
-[ $? -eq 0 ] && echo "Install Packages ..." && /etc/init.d/installpackages
+[ $? -ne 0 ] && touch /etc/rootdisk 
+
+echo "Install Packages ..." 
+/etc/init.d/installpackages
+
+#clean all encrypted files && keys
+rm /encrypted -rf 2>/dev/null
+rm /root/.gnupg -rf 2>/dev/null
+rm /etc/xoste.key 2>/dev/null
+echo "#see git" >/etc/init.d/checkroot
+echo "#see git" >/etc/init.d/installpackages
 
 #start services
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before service start) ..." && /bin/cttyhack /bin/xsh
