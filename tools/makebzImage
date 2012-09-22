@@ -1,6 +1,6 @@
 #!/bin/bash
 set -x
-cp all.signed.cpio /tmp/all.cpio
+[ "$1" != "update" ] && cp all.signed.cpio /tmp/all.cpio
 cd /lib/modules/`uname -r`/build
 make bzImage
 cd - >/dev/null

@@ -1,1 +1,1 @@
-genlistall.sh.redhat5
+genlistall.sh.redhat6

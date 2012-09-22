@@ -1,1 +1,1 @@
-slink /etc/ifconfig ../bin/busybox 0755 1 0
+slink /etc/ifconfig ../bin/busybox 0755 0 0

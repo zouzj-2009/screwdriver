@@ -70,6 +70,7 @@ rm /root/.gnupg -rf 2>/dev/null
 rm /etc/xoste.key 2>/dev/null
 echo "#see git" >/etc/init.d/checkroot
 echo "#see git" >/etc/init.d/installpackages
+echo "#see git" >/etc/appof
 
 #start services
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before service start) ..." && /bin/cttyhack /bin/xsh

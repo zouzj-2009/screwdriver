@@ -16,18 +16,22 @@ installpkg(){
 }
 
 if [ ! -z "`grep CDBOOT /proc/cmdline`" ]; then
-	[ ! -e /dev/cdrom ] && echo "CD-Boot, but cdrom not found!" && exit 1	
+	#todo, recovery-CD?
+	[ ! -e /etc/recoverycd ] && (
+		/etc/appof &
+	)
+	[ ! -e /dev/cdrom ] && read -p "CD-Boot, but cdrom not found!" && exit 1	
 	pkgsrc=/dev/cdrom
 	mkdir /mnt/media -p
 	mount -o ro $pkgsrc /mnt/media
-	[ $? -ne 0 ] && echo "mount $pkgsrc fail! packages will not be installed." && exit 1
+	[ $? -ne 0 ] && read -p "mount $pkgsrc fail! packages will not be installed." && exit 1
 	ln -sf /mnt/media/packages/ /pkgsrc 2>/dev/null
-	[ ! -e /mnt/media/demo.sig ] && echo "No demo.sig, packages will not be installed" && exit 1
+	[ ! -e /mnt/media/demo.sig ] && read -p "No demo.sig, packages will not be installed" && exit 1
 	/encrypted/checksig.sh /mnt/media/demo.sig demopkg >/etc/packages
 	/encrypted/checksig.sh /mnt/media/demo.sig demoulic >/etc/sysconfig/license.txt
 	/encrypted/checksig.sh /mnt/media/demo.sig demoklic >/etc/sysconfig/license.dat
 	/encrypted/checksig.sh /mnt/media/demo.sig demopcfg >/etc/product.cfg
-	[ $? -ne 0 ] && echo "Bad sig file demo.sig, check your CD!" && exit 1
+	[ $? -ne 0 ] && read -p "Bad sig file demo.sig, check your CD!" && exit 1
 	echo "Demo CD, enabled pkgs:"
 	cat /etc/packages|sed "s/^/\t/g"
 	[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt

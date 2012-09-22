@@ -1,0 +1,5 @@
+ethtool
+udev
+hal
+libcap-ng
+dbus
