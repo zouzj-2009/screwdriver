@@ -1,0 +1,17 @@
+#!/bin/bash
+pdir=`dirname $0`
+[ -z $1 ] && echo "need rootdir" && exit 1
+[ "$1" = "/" ] && echo "rootdir should not be '/'" && exit 2
+echo "Prepare Shell ..."
+dir=$1
+mkdir -p $dir
+mkdir -p $dir/bin
+mkdir $dir/usr/sbin $dir/usr/bin/ $dir/sbin $dir/dev $dir/proc $dir/sys $dir/etc $dir/root -p
+$pdir/hardlink /lib64 $dir >/dev/null
+$pdir/hardlink /bin/busybox $dir/bin >/dev/null
+$pdir/hardlink /bin/bash $dir/bin >/dev/null
+[ -x /etc/extensions/createshell ] && /etc/extensions/createshell $dir 
+chroot $dir/ /bin/busybox --install -s >/dev/null 2>/tmp/.createshell.trace
+ln -s bash $dir/bin/sh
+cat /etc/mtab|head -n 1 > $dir/etc/mtab
+cat /etc/fstab|head -n 5 > $dir/etc/fstab

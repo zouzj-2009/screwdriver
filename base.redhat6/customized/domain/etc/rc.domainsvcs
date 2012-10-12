@@ -1,0 +1,7 @@
+#!/bin/bash
+echo "============== Domain Services ==================="
+dmesg >/var/log/dmesg
+/etc/init.d/syslog start
+[ ! -f /domain/config/services/no.sshd ] && /etc/init.d/sshd start
+[ ! -f /domain/config/services/no.inetd ] && /etc/init.d/inetd start
+[ ! -f /domain/config/services/no.httpd ] && /etc/init.d/httpd start

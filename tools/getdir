@@ -2,12 +2,17 @@
 #note! using full path!
 prog=`basename $0|sed 's/^get//g'`
 [ -z ${1} ] && mydir="$PWD/$prog/" || mydir=$1
+prefix=$3
 getfileloc()
 {
 	file=${1}
 	search=${mydir}
 	file=${file/$search//}	
-	echo $file
+	if [ "$2" = "slink" ];then
+		echo $file
+	else
+		echo $prefix$file
+	fi
 }
 for file in `find $mydir|grep -v "$mydir$"`
 do
@@ -15,8 +20,8 @@ do
 	[ ! -z $2 ] && [ -f $2 ] && [ ! -z `grep $lfile $2` ] && continue
 	if [ -L $file ];then
 		target=`ls -ld $file|awk '{print $11}'`
-		target=`getfileloc $target`
-		[ -e $file ] && ofile=$file || ofile=`getfileloc $file`
+		target=`getfileloc $target slink`
+		[ -e $file ] && ofile=$file || ofile=`getfileloc $file slink`
 		[ -e $ofile ] && echo slink `getfileloc $file`" "$target" "`./tools/fmode $ofile|awk '{print $1" "$2" "$3}'` || echo slink `getfileloc $file`" "$target" 0755 1 0"
 	elif [ -d $file ];then
 		echo dir `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	

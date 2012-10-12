@@ -1,0 +1,20 @@
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.symbols.bin /lib/modules/2.6.32-220.el6.x86_64/modules.symbols.bin 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.block /lib/modules/2.6.32-220.el6.x86_64/modules.block 0644 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.dep /lib/modules/2.6.32-220.el6.x86_64/modules.dep 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.ofmap /lib/modules/2.6.32-220.el6.x86_64/modules.ofmap 0644 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/cdrom 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/cdrom/cdrom.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/cdrom/cdrom.ko 0744 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.ieee1394map /lib/modules/2.6.32-220.el6.x86_64/modules.ieee1394map 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.ccwmap /lib/modules/2.6.32-220.el6.x86_64/modules.ccwmap 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.modesetting /lib/modules/2.6.32-220.el6.x86_64/modules.modesetting 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.drm /lib/modules/2.6.32-220.el6.x86_64/modules.drm 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.seriomap /lib/modules/2.6.32-220.el6.x86_64/modules.seriomap 0644 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.usbmap /lib/modules/2.6.32-220.el6.x86_64/modules.usbmap 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.dep.bin /lib/modules/2.6.32-220.el6.x86_64/modules.dep.bin 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.isapnpmap /lib/modules/2.6.32-220.el6.x86_64/modules.isapnpmap 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.order /lib/modules/2.6.32-220.el6.x86_64/modules.order 0644 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.pcimap /lib/modules/2.6.32-220.el6.x86_64/modules.pcimap 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.symbols /lib/modules/2.6.32-220.el6.x86_64/modules.symbols 0644 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.alias /lib/modules/2.6.32-220.el6.x86_64/modules.alias 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.alias.bin /lib/modules/2.6.32-220.el6.x86_64/modules.alias.bin 0644 0 0
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//modules.inputmap /lib/modules/2.6.32-220.el6.x86_64/modules.inputmap 0644 0 0

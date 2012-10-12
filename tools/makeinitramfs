@@ -1,5 +1,22 @@
 #!/bin/bash
 [ -z $1 ] && echo "need initramfs dir!" && exit 1
+
+#move root to dir and link it to /
+if [ ! -L $1/bin ];then
+	mv $1/* $1/fakeroot
+	mv $1/fakeroot/encrypted $1/
+#	mv $1/ufs/root/etc $1/
+	for file in `ls $1/fakeroot`
+	do
+		ln -s fakeroot/$file $1/$file
+	done
+	rm $1/mnt
+	mkdir $1/mnt
+	mkdir $1/rootfs/{dfs,ssh,nas,target} -p
+	mkdir $1/vars/{dfs,ssh,nas,target} -p
+else
+	echo "already moved ROOT!"
+fi
 /lib/modules/`uname -r`/build/usr/updatekey.sh
 [ $? -ne 0 ] && echo "update key fail!" && exit 2
 exec 2>list.checksum
@@ -20,5 +37,5 @@ do
 	cat /tmp/.lastsigned >$file
 done
 echo "@@ Re-gen signed cpio ..."
-./tools/getdir $1 >list.signed.all
+./tools/getdir $1 |sed "s/\/\//\//" >list.signed.all
 ./tools/gen_init_cpio list.signed.all >all.signed.cpio

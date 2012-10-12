@@ -6,7 +6,12 @@ dir=${1}
 export LD_LIBRARY_PATH="$dir/lib;$dir/usr/lib;$dir/usr/local/lib"
 for file in `find "${dir}/"`
 do
+	echo $file|grep "^${dir}/fakeroot" >/dev/null
+	[ $? -eq 0 ] && continue
 	[ ! -f $file ] && continue
+	#skip .ko files
+	echo $file|grep '\.ko$' >/dev/null
+	[ $? -eq 0 ] && continue	
 #	[ ! -x $file ] && continue
 	[ -z "`file $file|grep "ELF"`" ] && continue
 	[ $debug -eq 1 ] && echo "strip file $file ..."
@@ -23,7 +28,7 @@ do
 		[ $debug -eq 1 ] && echo "check need lib $lib ..."
 		dirname=`dirname $lib`
 		[ -z "`echo $lib|grep ^/`"   -a -f $lib ] && continue
-		[ -f $dir/$lib ] && continue
+		[ -f $dir/$lib -o -f $dir/fakeroot/$lib ] && continue
 		mkdir -p deplibs/$dirname/
 		cp $lib deplibs/$dirname/
 		echo ">>>add lib $lib"

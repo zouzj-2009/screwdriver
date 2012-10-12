@@ -1,0 +1,8 @@
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci 0755 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci/pcie 0755 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci/pcie/aer 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci/pcie/aer/aer_inject.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/pci/pcie/aer/aer_inject.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci/hotplug 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci/hotplug/fakephp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/pci/hotplug/fakephp.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci/hotplug/shpchp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/pci/hotplug/shpchp.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/pci/hotplug/acpiphp_ibm.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/pci/hotplug/acpiphp_ibm.ko 0744 0 0

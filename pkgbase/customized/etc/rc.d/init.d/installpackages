@@ -7,7 +7,7 @@ installpkg(){
 	#check sign
 	headersize=`dd if=$1 bs=1k count=128 2>/dev/null|gpg -u XOSTE 2>/tmp/.trace.gpg.$pkgname |wc -c`
 	[ $headersize -lt 65536 ] && echo ">> Fail, bad signature: `md5sum $1|awk '{print $1}'`, header:$headersize." && return 1
-	cd / >/dev/null
+	cd /fakeroot >/dev/null
 	(
 		dd if=$1 bs=1k count=128 2>/dev/null|gpg -u XOSTE 2>/tmp/.trace.gpg.$pkgname
 		dd if=$1 bs=1k skip=128 2>/dev/null

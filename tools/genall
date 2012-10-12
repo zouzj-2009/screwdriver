@@ -9,12 +9,12 @@ if [ -z "$1" ];then
 	rm ./initramfs/* -rf
 	rm ./deplibs/* -rf
 fi
-mkdir initramfs/etc -p
-[ -z "$1" -a ! -z "$basever" ] && echo "$basever" >initramfs/etc/version.base
+mkdir initramfs/fakeroot/etc -p
+[ -z "$1" -a ! -z "$basever" ] && echo "$basever" >initramfs/fakeroot/etc/version.base
 echo "@@ Generating package $pkg file list ..." >&2
 set -x
 ./tools/genlistall.sh $1|sed "s/\/\//\//"> list.$out
-[ $? -ne 0 ] && exit 1
+[ ${PIPESTATUS} -ne 0 ] && exit 1
 ./tools/gen_init_cpio list.$out >$out.cpio 
 [ $? -ne 0 ] && ( echo "gen_init_cpio list.$out fail!" >&2 ) && exit 1
 echo "@@ Checking package $pkg cpio ..." >&2
@@ -24,9 +24,13 @@ set +x
 [ ! -z "$1" ] && ( echo "@@ Generate $pkg done" >&2 ) && exit 0
 #finanal round
 echo "@@ Check package $pkg lib depdence ..." >&2
-./tools/checkdep initramfs >&2
+./tools/checkdep initramfs/fakeroot >&2
 [ $? -ne 0 ] && exit 1
-./tools/checkdep initramfs >&2
+./tools/checkdep initramfs/fakeroot >&2
+[ $? -ne 0 ] && exit 1
+./tools/checkdep initramfs/ >&2
+[ $? -ne 0 ] && exit 1
+./tools/checkdep initramfs/ >&2
 [ $? -ne 0 ] && exit 1
 echo "@@ Appending package $pkg lib list ..." >&2
 ./tools/getdir $PWD/deplibs/ |tee list.libs >> list.$out

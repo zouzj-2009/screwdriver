@@ -72,6 +72,12 @@ echo "#see git" >/etc/init.d/checkroot
 echo "#see git" >/etc/init.d/installpackages
 echo "#see git" >/etc/appof
 
+#copy bootupcfg to /
+#todo: for security reason, need a filelist here!
+echo "Setting Bootup Config ..."
+find /bootupcfg/ >/var/log/bootupcfg.lst 2>&1
+cp -a /bootupcfg/* /fakeroot >/var/log/bootupcfg.msg  2>&1
+
 #start services
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before service start) ..." && /bin/cttyhack /bin/xsh
 /etc/rc.sysinit

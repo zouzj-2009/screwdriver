@@ -1,0 +1,7 @@
+bridge-utils
+iproute
+util-linux-ng
+coreutils
+MAKEDEV
+screen
+ncurses-base

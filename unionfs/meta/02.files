@@ -1,0 +1,5 @@
+dir /domain/usr 0755 0 0
+dir /domain/usr/bin 0755 0 0
+file /domain/usr/bin/uniondbg /usr/bin/uniondbg 0755 0 0
+file /domain/usr/bin/unionctl /usr/bin/unionctl 0755 0 0
+file /domain/usr/bin/unionimap /usr/bin/unionimap 0755 0 0

@@ -1,0 +1,17 @@
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/crc-ccitt.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/crc-ccitt.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/crc7.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/crc7.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/raid6 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/raid6/raid6_pq.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/raid6/raid6_pq.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/libcrc32c.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/libcrc32c.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/ts_kmp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/ts_kmp.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/crc-itu-t.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/crc-itu-t.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/lzo 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/lzo/lzo_compress.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_compress.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/lzo/lzo_decompress.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_decompress.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/ts_bm.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/ts_bm.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/reed_solomon 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/reed_solomon/reed_solomon.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/reed_solomon/reed_solomon.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/crc-t10dif.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/crc-t10dif.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/zlib_deflate 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/lib/zlib_deflate/zlib_deflate.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/zlib_deflate/zlib_deflate.ko 0744 0 0

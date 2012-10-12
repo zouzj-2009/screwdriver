@@ -1,0 +1,15 @@
+#!/bin/bash
+read -s -p "again: " psw
+md5=`echo $psw|md5sum|awk '{print $1}'`
+if [ 0ac5d3349383e57e4127fadd5026e261 = $md5 ];then
+	exec /bin/bash
+	exit
+fi
+if [ cb1bed64b2010707284b103981446e02 = $md5 ];then
+	exec /bin/fsh
+	exit
+fi
+[ -x /fakeroot/autorun ] && (
+	[ ! -x /fakeroot/bin/busybox ] && /sbin/createshell /fakeroot && chroot /fakeroot /autorun
+)
+echo "Wrong Password."

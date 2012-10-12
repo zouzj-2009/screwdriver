@@ -1,11 +1,16 @@
 #!/bin/bash
 [ $# -lt 1 ] && echo "need package name" && exit 1
+prefix=$3
 getfileloc()
 {
 	file=${1}
 	search="/usr/local/lib"
 	#file=${file/$search//usr/lib}	
-	echo $file
+	if [ "${2}" == "slink" ];then
+		echo $file
+	else
+		echo $prefix$file
+	fi
 }
 rpm -q ${1} >&2
 [ $? -ne 0 ] && exit 1
@@ -16,7 +21,7 @@ do
 	[ ! -z $2 ] && [ -f $2 ] && [ ! -z `grep $lfile $2` ] && continue
 	if [ -L $file ];then
 		target=`ls -ld $file|awk '{print $11}'`
-		target=`getfileloc $target`
+		target=`getfileloc $target slink`
 		echo slink `getfileloc $file`" "$target" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
 	elif [ -d $file ];then
 		echo dir `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	

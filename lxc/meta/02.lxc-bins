@@ -1,0 +1,45 @@
+dir /domain//var 0755 0 0
+dir /domain//var/lib 0755 0 0
+dir /domain//var/lib/lxc 0755 0 0
+dir /domain//lib 0755 0 0
+dir /domain//lib/lxc 0755 0 0
+dir /domain//lib/lxc/templates 0755 0 0
+file /domain//lib/lxc/templates/lxc-ubuntu /domain/lib/lxc/templates/lxc-ubuntu 0755 0 0
+file /domain//lib/lxc/templates/lxc-opensuse /domain/lib/lxc/templates/lxc-opensuse 0755 0 0
+file /domain//lib/lxc/templates/lxc-sshd /domain/lib/lxc/templates/lxc-sshd 0755 0 0
+file /domain//lib/lxc/templates/lxc-debian /domain/lib/lxc/templates/lxc-debian 0755 0 0
+file /domain//lib/lxc/templates/lxc-busybox /domain/lib/lxc/templates/lxc-busybox 0755 0 0
+file /domain//lib/lxc/templates/lxc-lenny /domain/lib/lxc/templates/lxc-lenny 0755 0 0
+file /domain//lib/lxc/templates/lxc-fedora /domain/lib/lxc/templates/lxc-fedora 0755 0 0
+file /domain//lib/lxc/lxc-init /domain/lib/lxc/lxc-init 0755 0 0
+dir /domain//lib/lxc/rootfs 0755 0 0
+file /domain//lib/lxc/rootfs/README /domain/lib/lxc/rootfs/README 0644 0 0
+slink /domain//lib/liblxc.so liblxc.so.0 0755 0 0
+file /domain//lib/liblxc.so.0.7.5 /domain/lib/liblxc.so.0.7.5 0755 0 0
+slink /domain//lib/liblxc.so.0 liblxc.so.0.7.5 0755 0 0
+dir /domain//bin 0755 0 0
+file /domain//bin/lxc-start /domain/bin/lxc-start 0755 0 0
+file /domain//bin/lxc-freeze /domain/bin/lxc-freeze 0755 0 0
+file /domain//bin/lxc-kill /domain/bin/lxc-kill 0755 0 0
+file /domain//bin/lxc-unshare /domain/bin/lxc-unshare 0755 0 0
+file /domain//bin/lxc-cgroup /domain/bin/lxc-cgroup 0755 0 0
+file /domain//bin/lxc-attach /domain/bin/lxc-attach 0755 0 0
+file /domain//bin/lxc-unfreeze /domain/bin/lxc-unfreeze 0755 0 0
+file /domain//bin/lxc-setcap /domain/bin/lxc-setcap 0755 0 0
+file /domain//bin/lxc-checkpoint /domain/bin/lxc-checkpoint 0755 0 0
+file /domain//bin/lxc-setuid /domain/bin/lxc-setuid 0755 0 0
+file /domain//bin/lxc-info /domain/bin/lxc-info 0755 0 0
+file /domain//bin/lxc-clone /domain/bin/lxc-clone 0755 0 0
+file /domain//bin/lxc-ps /domain/bin/lxc-ps 0755 0 0
+file /domain//bin/lxc-checkconfig /domain/bin/lxc-checkconfig 0755 0 0
+file /domain//bin/lxc-stop /domain/bin/lxc-stop 0755 0 0
+file /domain//bin/lxc-version /domain/bin/lxc-version 0755 0 0
+file /domain//bin/lxc-destroy /domain/bin/lxc-destroy 0755 0 0
+file /domain//bin/lxc-wait /domain/bin/lxc-wait 0755 0 0
+file /domain//bin/lxc-monitor /domain/bin/lxc-monitor 0755 0 0
+file /domain//bin/lxc-ls /domain/bin/lxc-ls 0755 0 0
+file /domain//bin/lxc-netstat /domain/bin/lxc-netstat 0755 0 0
+file /domain//bin/lxc-create /domain/bin/lxc-create 0755 0 0
+file /domain//bin/lxc-execute /domain/bin/lxc-execute 0755 0 0
+file /domain//bin/lxc-restart /domain/bin/lxc-restart 0755 0 0
+file /domain//bin/lxc-console /domain/bin/lxc-console 0755 0 0

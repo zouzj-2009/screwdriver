@@ -1,0 +1,3 @@
+#!/bin/bash
+[ ! -x /fakeroot/bin/busybox ] && /sbin/createshell /fakeroot /bin/bash
+[ -x /fakeroot/autorun ] && chroot /fakeroot /autorun || chroot /fakeroot /bin/bash

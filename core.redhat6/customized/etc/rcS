@@ -1,0 +1,59 @@
+#!/bin/bash
+echo "Bootup `cat /rootpkg` ..."
+
+mount -t proc /proc /proc
+echo Mounting proc filesystem
+echo Mounting sysfs filesystem
+mount -t sysfs /sys /sys
+echo Creating /dev
+mount -o mode=0755 -t tmpfs /dev /dev
+mkdir /dev/pts
+mount -t devpts -o gid=5,mode=620 /dev/pts /dev/pts
+mkdir /dev/shm
+mkdir /dev/mapper
+echo Creating initial device nodes
+mknod /dev/null c 1 3
+mknod /dev/zero c 1 5
+mknod /dev/systty c 4 0
+mknod /dev/tty c 5 0
+mknod /dev/console c 5 1
+mknod /dev/ptmx c 5 2
+mknod /dev/rtc c 10 135
+mknod /dev/tty0 c 4 0
+mknod /dev/tty1 c 4 1
+mknod /dev/tty2 c 4 2
+mknod /dev/tty3 c 4 3
+mknod /dev/tty4 c 4 4
+mknod /dev/tty5 c 4 5
+mknod /dev/tty6 c 4 6
+mknod /dev/tty7 c 4 7
+mknod /dev/tty8 c 4 8
+mknod /dev/tty9 c 4 9
+mknod /dev/tty10 c 4 10
+mknod /dev/tty11 c 4 11
+mknod /dev/tty12 c 4 12
+mknod /dev/ttyS0 c 4 64
+mknod /dev/ttyS1 c 4 65
+mknod /dev/ttyS2 c 4 66
+mknod /dev/ttyS3 c 4 67
+
+#modlues && udev stuff
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before udev) ..." && /bin/cttyhack /bin/xsh
+
+echo -n "Setup modules ..." && tar zxf /etc/modules.tgz -C / 2>/dev/null >/dev/null && echo " OK!" || echo " Fail!"
+
+start_udev
+
+#check rootdisk
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before rootcheck) ..." && /bin/cttyhack /bin/xsh
+#check configured disks
+
+#start services
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before service start) ..." && /bin/cttyhack /bin/xsh
+/etc/rc.sysinit
+/etc/rc.d/rc 3
+
+#login
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before login) ..." && /bin/cttyhack /bin/xsh || clear
+cat /etc/welcome 2>/dev/null
+/bin/busybox setconsole /dev/tty0

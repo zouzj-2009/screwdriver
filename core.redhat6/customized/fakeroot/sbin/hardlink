@@ -1,0 +1,19 @@
+#!/bin/bash
+[ -z $1 ] && echo "need link source" && exit 1
+[ -z $2 ] && echo "need link destination dir" && exit 1
+src=$1
+dest=$2
+die(){
+	echo $1 >&2
+	exit 2
+}
+if [ -d $src ]; then
+	echo "create dir $dest/$src"
+	mkdir -p $dest/$src
+	[ $? -ne 0 ] && die "create dir $dest/$src failed."
+	find $src -exec /sbin/linkit '{}' $dest \;
+else 
+	/sbin/linkit $src $dest
+fi
+exit 0
+
