@@ -34,7 +34,7 @@ start() {
 
 stop() {
 	echo -n $"Stopping http daemon: "
-	killproc /usr/sbin/httpd
+	killall /usr/sbin/httpd
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/httpd
 	echo

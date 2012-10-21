@@ -6,7 +6,11 @@ ver=`$sign 2>&1|grep ver|awk '{print $5}'|sed s'/)$//g'|sed 's/^0x//g'`
 [ ! -d $cdcfg ] && echo "dir boot-cd not exist!" && exit 1
 [ ! -f bzImage ] && echo "bzImage not exist!" && exit 1
 
-./tools/checksign $cdcfg/demo.sig 2>/dev/null >demo.sig.old
+./tools/makepkgs
+
+touch $cdcfg/packages/pkg.zzpack
+#./tools/checksign $cdcfg/demo.sig 2>/dev/null >demo.sig.old
+mv demo.sig demo.sig.old
 cat demo.sig.old|sed "s/^rootver=.*/rootver=$ver/" >demo.sig
 ./tools/makesign demo.sig >$cdcfg/demo.sig
 rm demo.sig.old

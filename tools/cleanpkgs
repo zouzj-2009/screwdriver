@@ -1,0 +1,20 @@
+#!/bin/bash
+[ ! -f inc.packages ] && echo "no packages needed!" >&2 && exit 0
+[ -d boot-cd ] && cdcfg=$PWD/boot-cd || cdcfg=$PWD/../demo-cd/boot-cd
+pkgs=
+base=`basename $PWD`
+for pkg in `( echo zzpack && cat inc.packages )|grep -v ^#`
+do
+	[ ! -z "$1" ] && [ $pkg != $1 ] && continue
+	[ ! -d ../$pkg ] && echo "package $pkg not exists!" && continue
+	rm $cdcfg/packages/pkg.$pkg 2>/dev/null
+	if [ -f ../$pkg/pkg.$pkg ];then
+		echo "clean pkg $pkg ..."
+		cd ../$pkg
+		./tools/clean
+		rm pkg.$pkg
+		rm $pkg.cpio.gz
+		rm base-$base
+		cd - >/dev/null
+	fi
+done

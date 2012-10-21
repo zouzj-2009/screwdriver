@@ -1,0 +1,3 @@
+#!/bin/bash
+export HOME=/domain/root
+gpg --import /domain/etc/xoste.key 2>/dev/null >/dev/null

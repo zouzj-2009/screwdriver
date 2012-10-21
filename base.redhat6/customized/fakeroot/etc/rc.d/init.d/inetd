@@ -33,7 +33,7 @@ start() {
 
 stop() {
 	echo -n $"Stopping inet daemon: "
-	killproc /usr/sbin/inetd
+	killall /usr/sbin/inetd
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/inetd
 	echo

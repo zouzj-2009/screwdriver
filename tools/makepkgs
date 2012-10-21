@@ -1,0 +1,28 @@
+#!/bin/bash
+[ ! -f inc.packages ] && echo "no packages needed!" >&2 && exit 0
+[ -d boot-cd ] && cdcfg=$PWD/boot-cd || cdcfg=$PWD/../demo-cd/boot-cd
+#package for update
+pkgs=
+rm $cdcfg/packages/pkg* 
+base=`basename $PWD`
+for pkg in `cat inc.packages && echo zzpack |grep -v ^#`
+do
+	echo "check pkg $pkg ..."
+	[ ! -d ../$pkg ] && echo "package $pkg not exists!" >&2 && exit 2
+	if [ ! -f ../$pkg/pkg.$pkg -o ! -f ../$pkg/base-$base ];then
+		echo "make pkg $pkg(base $base) ..."
+		cd ../$pkg
+		./tools/genpkg ../$base
+		[ $? -ne 0 ] && echo "fail to gen pkg $pkg ..." >&2 && exit 3
+		cd - >/dev/null
+	fi
+	cp ../$pkg/pkg.$pkg $cdcfg/packages/
+	[ -z "$pkgs" ] && pkgs=pkg.$pkg || pkgs=$pkgs"--@@--pkg.$pkg"
+done
+cat demo.sig|sed "s/^demopkg=.*/demopkg=$pkgs/g" >/tmp/demo.sig
+[ $? -eq 0 ] && cp /tmp/demo.sig demo.sig || (
+	echo "something wrong, check your demo.sig file!"
+	exit 4
+)
+
+	 

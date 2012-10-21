@@ -1,0 +1,20 @@
+#!/bin/bash
+export HOME=/domain/root
+export PATH=/domain/usr/local/sbin:/domain/usr/sbin:/domain/sbin:/domain/usr/local/bin:/domain/usr/bin:/domain/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin
+
+waitmsg(){
+	read -p "$1 Press Enter to continue ..." in
+}
+
+waitconfirm(){
+	read -p "$1" in
+	echo $in
+}
+
+waitinput(){
+	read -p "$1" in
+	[ -n "$in" ] && echo "$in" && return 0
+	[ -z "$2" ] && echo "no-default!" && return 1
+	echo "$2"
+	return 1
+}

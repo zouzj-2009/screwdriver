@@ -8,5 +8,10 @@ basepkg=`basename $1`
 ./tools/packlibs $1
 echo "@@ Make package $pkg ..."
 mv all.base-$basepkg.cpio $pkg.cpio
+echo "size of $pkg.cpio"
+du -m $pkg.cpio
 gzip -9 $pkg.cpio
+touch base-$basepkg
+echo $basepkg >base
+[ ! -f version ] && date -Imin >version
 ./tools/signpackage $pkg.cpio.gz

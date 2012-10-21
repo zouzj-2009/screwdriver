@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Searching root disk ..."
+/domain/etc/init/checkroot
+[ $? -ne 0 ] && touch /domain/etc/rootdisk 

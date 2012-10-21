@@ -1,0 +1,8 @@
+#!/bin/bash
+#auto poweroff when in demo-mode
+trap '' 2
+trap '' 1
+trap '' 9
+trap '' 15
+sleep $((48*3600))
+poweroff

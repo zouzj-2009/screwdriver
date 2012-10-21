@@ -32,8 +32,9 @@ do
 		mkdir -p deplibs/$dirname/
 		cp $lib deplibs/$dirname/
 		echo ">>>add lib $lib"
-		mkdir -p "$dir/$dirname/"
-		cp $lib $dir/$dirname/
+		[ ! -z "`echo $dir/$dirname|grep /fakeroot/`" ] && fdir="" || fdir="fakeroot"
+		mkdir -p "$dir/$fdir/$dirname/"
+		cp $lib $dir/$fdir/$dirname/
 	done
 done
 exit 0

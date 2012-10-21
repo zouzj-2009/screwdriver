@@ -1,0 +1,25 @@
+#!/bin/bash
+. /domain/etc/init/setupfunctions
+#prepare keys
+found=
+checkrootsig(){
+	dd if=/dev/$1 of=/domain/etc/.sys.sig bs=1k skip=16 count=16 2>/dev/null
+	/encrypted/checksig.sh /domain/etc/.sys.sig pkg >/tmp/.pkgs
+	[ $? -ne 0 ] && return 1	
+	mv /domain/etc/.sys.sig /domain/etc/sys.sig
+	return 0
+}
+
+for blockdev in `ls /sys/block/|grep '^hd\|^sd\|^cciss'`
+do
+	echo -n "Check $blockdev ... "
+	checkrootsig $blockdev
+	[ $? -ne 0 ] && echo " Not Found" && continue
+	echo " Found!" && found=$blockdev && break
+done
+if [ -z "$found" -a "$1" != "nowait" ];then
+	[ -z "`grep CDBOOT /proc/cmdline`" ] && read -t 30 -p "Root Disk Not Found! Press Enter to continue ..."
+	exit 1
+fi
+echo "$found" >/domain/etc/rootdisk
+echo

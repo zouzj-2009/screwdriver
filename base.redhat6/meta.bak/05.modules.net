@@ -1,0 +1,122 @@
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net 0755 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/bridge 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/bridge/bridge.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/bridge/bridge.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/dccp 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/dccp/dccp_ipv6.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/dccp/dccp_ipv6.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/dccp/dccp_ipv4.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/dccp/dccp_ipv4.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/dccp/dccp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/dccp/dccp.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/dccp/dccp_diag.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/dccp/dccp_diag.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/dccp/dccp_probe.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/dccp/dccp_probe.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/llc 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/llc/llc.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/llc/llc.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/xfrm4_mode_beet.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/xfrm4_mode_beet.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/ah4.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/ah4.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_vegas.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_vegas.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/ipcomp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/ipcomp.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_highspeed.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_highspeed.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_bic.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_bic.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_hybla.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_hybla.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/esp4.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/esp4.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/inet_diag.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/inet_diag.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/ipip.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/ipip.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_diag.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_diag.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_scalable.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_scalable.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/xfrm4_mode_tunnel.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/xfrm4_mode_tunnel.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_yeah.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_yeah.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/ip_gre.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/ip_gre.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_westwood.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_westwood.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_veno.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_veno.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/xfrm4_mode_transport.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/xfrm4_mode_transport.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_lp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_lp.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tunnel4.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tunnel4.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/xfrm4_tunnel.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/xfrm4_tunnel.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_htcp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_htcp.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv4/tcp_illinois.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv4/tcp_illinois.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/xfrm6_tunnel.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/xfrm6_tunnel.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/esp6.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/esp6.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/xfrm6_mode_ro.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/xfrm6_mode_ro.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/ipv6.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/ipv6.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/ah6.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/ah6.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/mip6.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/mip6.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/sit.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/sit.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/ipcomp6.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/ipcomp6.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/xfrm6_mode_beet.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/xfrm6_mode_beet.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/tunnel6.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/tunnel6.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/xfrm6_mode_transport.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/xfrm6_mode_transport.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/ip6_tunnel.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/ip6_tunnel.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ipv6/xfrm6_mode_tunnel.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ipv6/xfrm6_mode_tunnel.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/xfrm 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/xfrm/xfrm_ipcomp.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/xfrm/xfrm_ipcomp.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/key 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/key/af_key.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/key/af_key.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ieee802154 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ieee802154/wpan-class.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ieee802154/wpan-class.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ieee802154/af_802154.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ieee802154/af_802154.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/ieee802154/nl802154.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/ieee802154/nl802154.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/mac80211 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/mac80211/mac80211.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/net/mac80211/mac80211.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/net/core 0755 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/igb 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/igb/igb.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/igb/igb.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ixgbevf 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ixgbevf/ixgbevf.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/ixgbevf/ixgbevf.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/bnx2x 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/bnx2x/bnx2x.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/bnx2x/bnx2x.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/bnx2.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/bnx2.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/cxgb4 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/cxgb4/cxgb4.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/cxgb4/cxgb4.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/qlge 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/qlge/qlge.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/qlge/qlge.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ifb.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/ifb.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/chelsio 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/chelsio/cxgb.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/chelsio/cxgb.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ixgb 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ixgb/ixgb.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/ixgb/ixgb.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/mii.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/mii.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/e100.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/e100.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/enic 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/qla3xxx.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/qla3xxx.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/via-rhine.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/via-rhine.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/pcnet32.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/pcnet32.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/virtio_net.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/virtio_net.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/vxge 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/vxge/vxge.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/vxge/vxge.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/skge.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/skge.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ipg.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/ipg.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/e1000 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/e1000/e1000.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/e1000/e1000.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/qlcnic 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/qlcnic/qlcnic.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/qlcnic/qlcnic.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/phy/broadcom.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/phy/broadcom.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/phy/realtek.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/phy/realtek.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/tun.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/tun.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/bonding 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/bonding/bonding.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/bonding/bonding.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/vmxnet3 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/vmxnet3/vmxnet3.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/vmxnet3/vmxnet3.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/via-velocity.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/via-velocity.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/sky2.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/sky2.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/e1000e 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/e1000e/e1000e.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/e1000e/e1000e.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/myri10ge 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/myri10ge/myri10ge.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/myri10ge/myri10ge.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/netxen 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/netxen/netxen_nic.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/netxen/netxen_nic.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ixgbe 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/ixgbe/ixgbe.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/ixgbe/ixgbe.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/dummy.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/dummy.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/cxgb3 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/cxgb3/cxgb3.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/cxgb3/cxgb3.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/mdio.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/mdio.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/veth.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/veth.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/benet 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/benet/be2net.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/benet/be2net.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/macvlan.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/macvlan.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/r8169.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/r8169.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/igbvf 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/igbvf/igbvf.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/igbvf/igbvf.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/net/tg3.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/net/tg3.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/vhost/vhost_net.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/vhost/vhost_net.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//misc/vmxnet.ko /lib/modules/2.6.32-220.el6.x86_64/misc/vmxnet.ko 0644 0 0
