@@ -1,0 +1,14 @@
+# This is run first except when booting in single-user mode.
+#
+:3:sysinit:/etc/rcS
+
+# Stuff to do when restarting the init process
+tty2::askfirst:-/bin/login
+tty3::askfirst:-/bin/login
+tty4::askfirst:-/bin/login
+::restart:/sbin/init
+
+# Stuff to do before rebooting
+::ctrlaltdel:/sbin/reboot
+::shutdown:/bin/umount -a -r
+::shutdown:/sbin/swapoff -a

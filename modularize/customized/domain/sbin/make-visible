@@ -1,0 +1,30 @@
+#!/bin/bash
+[ -z "$1" ] && echo "need container name!" && exit 1
+cont=$1	#such as shell
+debug=`cat /domain/var/lib/lxc/$cont/config|grep network.debug|awk -F= '{print $2}'|sed 's/ //g'`
+[ "$debug" = "yes" ] && debug=1 || debug=0
+[ make-invisible = `basename $0` ] && act='-D' || act='-I'
+[ ! -d /domain/var/lib/lxc/$cont ] && echo "node $cont not exist!" && exit 2
+[ ! -f /domain/var/lib/lxc/$cont/config ] && echo "node $cont not configured!" && exit 2
+visible=`cat /domain/var/lib/lxc/$cont/config|grep network.visible|awk -F= '{print $2}'|sed 's/ //g'`
+if [ "-I" = "$act" -a "no" = "$visible" ];then
+	logger -t LC "node $cont set as in-visible."
+	exit 0
+fi
+link=`cat /domain/var/lib/lxc/$cont/config|grep network.link|awk -F= '{print $2}'|sed 's/ //g'`
+rlink=`cat /domain/var/lib/lxc/$cont/config|grep network.rlink|awk -F= '{print $2}'|sed 's/ //g'`
+innmac=`cat /domain/var/lib/lxc/$cont/config|grep network.hwaddr|awk -F= '{print $2}'|sed 's/ //g'`
+innip=`cat /domain/var/lib/lxc/$cont/config|grep network.ipv4|awk -F= '{print $2}'|sed 's/ //g'`
+vif=${cont}-0
+[ $act = '-I' ] && ifconfig $vif -promisc
+outmac=`ip addr show $link|grep link/ether|awk '{print $2}'`
+get_debug()
+{
+	[ $debug -eq 0 ] && return
+	echo "--log --log-arp --log-prefix m_$1"
+}
+#ebtables $act INPUT -p ARP -i $vif --arp-ip-src $innip -j DROP `get_debug inn_DROP`
+ebtables -t nat $act PREROUTING -i $rlink -p ARP --arp-opcode Request --arp-ip-dst $innip -j arpreply --arpreply-mac $outmac --arpreply-target DROP `get_debug arp-REP`
+ebtables -t broute $act BROUTING -i $rlink -p ! ARP  --among-dst $outmac=$innip -j dnat --to-destination $innmac ` get_debug nat-DST`
+ebtables -t broute $act BROUTING -i $rlink -p ARP  --arp-opcode Reply --arp-ip-dst $innip -j dnat --to-destination $innmac `get_debug arp-DST`
+ebtables -t nat $act POSTROUTING -o $rlink -s $innmac -j snat --snat-arp --to-source $outmac `get_debug nat-SRC`

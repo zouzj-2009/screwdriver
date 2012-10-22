@@ -1,0 +1,10 @@
+# This is run first except when booting in single-user mode.
+#
+:3:sysinit:/etc/rcS
+
+# Stuff to do when restarting the init process
+::restart:/sbin/init
+
+# Stuff to do before rebooting
+::ctrlaltdel:/etc/shutdown/reboot
+::shutdown:/etc/shutdown/shutdown

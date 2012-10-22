@@ -1,0 +1,90 @@
+#!/bin/bash
+#
+# Starts the container 
+#
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+. /domain/etc/init/setupfunctions
+
+cname=`basename $0|sed s'/^[0-9]*\.//g'`
+
+[ ! -d /domain/etc/container/config/$cname ] && exit 0
+
+mkdir /var/lock/container -p
+mkdir /var/run/container -p
+RETVAL=0
+
+#
+# See how we were called.
+#
+
+start() {
+	# Check if it is already running
+	if [ ! -f /var/lock/container/$cname ]; then
+	    echo -n $"Starting $cname daemon: "
+	    create-container $cname
+	    RETVAL=$?
+	    [ $RETVAL -ne 0 ] && return $RETVAL
+	    mv /var/run/container/$cname.log /var/run/container/$cname.old.log 2>/dev/null
+	    screen -dmS init-$cname  lxc-start -n $cname -l DEBUG -o /var/run/container/$cname.log && success || failure
+	    RETVAL=$?
+	    [ $RETVAL -eq 0 ] && touch /var/lock/container/$cname
+	    [ $RETVAL -eq 0 ] && make-visible $cname
+	    echo
+	fi
+	return $RETVAL
+}
+
+stop() {
+	echo -n $"Stopping $cname daemon: "
+	lxc-stop -n $cname && success || failure
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && rm -f /var/lock/container/$cname
+	[ $RETVAL -eq 0 ] && make-invisible $cname
+	echo
+        return $RETVAL
+}
+
+
+restart() {
+	stop
+	start
+}	
+
+reload() {
+	trap "" SIGHUP
+	restart
+}	
+
+case "$1" in
+start)
+	start
+	;;
+stop)
+	stop
+	;;
+reload)
+	reload
+	;;
+reconfig)
+	destroy-container $cname
+	restart
+	;;
+restart)
+	restart
+	;;
+condrestart)
+	if [ -f /var/lock/container/$cname ]; then
+	    restart
+	fi
+	;;
+status)
+	lxc-info -n $cname
+	;;
+*)
+	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

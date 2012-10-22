@@ -1,0 +1,80 @@
+#!/bin/bash
+. /domain/etc/init/setupfunctions
+
+
+cname=$1
+cvars=/domain/vars/$cname
+mkdir -p $cvars
+[ ! -z "`lxc-ls|grep ^$cname$`" ] && exit 0
+[ ! -d /domain/etc/container/config/$cname ] && exit 1
+. /domain/etc/container/config.default
+. /domain/etc/container/config/$cname/config.setting
+mkdir /domain/rootfs/$cname -p
+[ -z $hwaddr ] && hwaddr=`macgen`
+[ -z $link ] && link=$bridge 
+
+check_bridge()
+{
+	br=$1
+	ip link show $br >/dev/null 2>/dev/null
+	[ $? -eq 0 ] && echo $br && return 0
+	#not exists! create one!
+	index=${br#br}
+	eth=eth$index
+	ip link show $eth >/dev/null 2>/dev/null
+	[ $? -ne 0 ] && (
+		#no link fail to br0
+		logger -t node "node $cname link $br not found, fail to br0."
+		echo br0
+	) && return 0
+	brctl addbr $br
+	brctl setfd $br 0
+	brctl addif $br $eth
+	#brctl stp $br on
+	#todo set ip here?
+	ifconfig $br 0.0.0.0 -promisc up
+	ifconfig $eth 0.0.0.0 -promisc up
+	echo $br
+	return 0
+}
+
+link=`check_bridge $link`
+rlink=eth${link#br}
+cat >/domain/etc/container/config/$cname/config <<EOF
+lxc.utsname = $cname
+lxc.network.type = $type
+lxc.network.veth.pair = $cname-0
+lxc.network.flags = $nicup
+lxc.network.link = $link
+#lxc.network.rlink = $rlink
+#lxc.network.debug = $debug
+lxc.network.name = $nic
+lxc.network.hwaddr = $hwaddr
+lxc.network.ipv4 = $ipv4
+lxc.mount = /domain/etc/container/config/$cname/fstab.real
+lxc.rootfs = /domain/rootfs/$cname
+EOF
+cat /domain/etc/container/config/$cname/fstab > /domain/etc/container/config/$cname/fstab.real
+cat >>/domain/etc/container/config/$cname/fstab.real <<EOF
+lock /domain/rootfs/$cname/var/lock tmpfs defaults 0 0
+run /domain/rootfs/$cname/var/run tmpfs defaults 0 0
+devpts /domain/rootfs/$cname/dev/pts devpts defaults 0 0
+proc /domain/rootfs/$cname/proc proc defaults 0 0
+sysfs /domain/rootfs/$cname/sys sysfs defaults 0 0
+EOF
+
+#might be added already
+#brctl addif $bridge $nic 2>/dev/null
+#ifconfig $nic 0.0.0.0 up
+
+#is mounted?
+
+if [ ! -z "`cat /proc/mounts|cut -d ' ' -f2|grep ^/domain/rootfs/$cname$`" ];then
+	echo "WARN! $cname's already mounted!"
+else
+	mount -t unionfs -o dirs=$cvars:/croots/$cname=ro:/croots/shared=ro:/fakeroot=ro $cname /domain/rootfs/$cname
+	[ $? -ne 0 ] && echo "mount $cname FAIL!" && exit 2
+fi
+
+lxc-create -n $cname -f /domain/etc/container/config/$cname/config >/dev/null
+exit $?
