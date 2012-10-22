@@ -8,10 +8,15 @@ do
 	echo "## Defined by $pkg.$file ##"
 	if [ ! -z "`echo $file|grep '^[0-9]*\.inc\.'`" ];then
 		inc=`echo $file|sed 's/^[0-9]*\.inc\.//g'`
-		echo "## Include package $inc ##"
-		./tools/genall $inc >../$pkg/$inc.trace
-		[ $? -ne 0 ] && exit 1
-		cat list.$inc.all
+		if [ -f list.$inc.all -o  -f ../$BASEPKG/list.$inc.all  -o ! -z "`grep ^$inc$ ../$BASEPKG/inc.packages 2>/dev/null`" ];then
+			echo "## Include package $inc(base $BASEPKG) included, ignore this ##"
+			echo "## Include package $inc(base $BASEPKG) included, ignore this ##" >&2
+		else
+			echo "## Include package $inc (base $BASEPKG) ##"
+			./tools/genall $inc >../$pkg/$inc.trace
+			[ $? -ne 0 ] && exit 1
+			cat list.$inc.all
+		fi
 		continue
 	fi
 	[ -z "`echo $file|grep '^[0-9]*\.rpm\.'`" ] && cat $meta/$file && continue

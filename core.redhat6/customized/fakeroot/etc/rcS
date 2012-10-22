@@ -23,7 +23,7 @@ mknod /dev/systty c 4 0
 mknod /dev/tty c 5 0
 mknod /dev/console c 5 1
 mknod /dev/ptmx c 5 2
-mknod /dev/rtc c 10 135
+#mknod /dev/rtc c 10 135
 mknod /dev/tty0 c 4 0
 mknod /dev/tty1 c 4 1
 mknod /dev/tty2 c 4 2
@@ -73,8 +73,8 @@ ifconfig lo 127.0.0.1 up
 #modlues && udev stuff
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before udev) ..." && /bin/cttyhack /domain/bin/xsh
 
-#todo: don't pack it!
-#echo -n "Setup modules ..." && tar zxf /etc/modules.tgz -C / 2>/dev/null >/dev/null && echo " OK!" || echo " Fail!"
+[ -f /modules.tgz ] && echo -n "Setup modules ..." && tar zxf /modules.tgz -C / 2>/dev/null >/dev/null && echo " OK!" || echo " Fail!"
+rm /modules.tgz 2>/dev/null
 
 start_udev
 

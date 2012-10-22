@@ -8,10 +8,8 @@
 #tty1::askfirst:-/bin/login
 # Start an "askfirst" shell on /dev/tty2-4
 #tty1::askfirst:-/bin/login
-tty2::askfirst:-/bin/login
-tty3::askfirst:-/bin/login
-tty4::askfirst:-/bin/login
-tty5::askfirst:-/bin/login
+tty9::askfirst:-/bin/login
+tty10::askfirst:-/bin/login
 
 # /sbin/getty invocations for selected ttys
 #
@@ -30,7 +28,6 @@ tty5::askfirst:-/bin/login
 ::restart:/sbin/init
 
 # Stuff to do before rebooting
-::ctrlaltdel:/sbin/reboot
-::shutdown:/bin/umount -a -r
-::shutdown:/sbin/swapoff -a
-
+::ctrlaltdel:/domain/etc/init/reboot
+::shutdown:/domain/etc/init/shutdown
+#::shutdown:/sbin/swapoff -a

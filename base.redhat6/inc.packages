@@ -1,4 +1,6 @@
 lc
 unionfs
-container
+modularize
+mod-shell
+mod-testnode
 debug

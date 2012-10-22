@@ -4,5 +4,3 @@ samba-winbind
 samba-winbind-clients
 tdb-tools
 ctdb
-iproute
-util-linux-ng

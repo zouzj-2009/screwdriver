@@ -3,6 +3,8 @@
 [ ! -d $1 ] && echo "reference dir not exist" && exit 1
 pkg=`basename $PWD`
 basepkg=`basename $1`
+echo $basepkg >base
+export BASEPKG=$basepkg
 ./tools/clean
 ./tools/genall
 ./tools/packlibs $1
@@ -12,6 +14,5 @@ echo "size of $pkg.cpio"
 du -m $pkg.cpio
 gzip -9 $pkg.cpio
 touch base-$basepkg
-echo $basepkg >base
 [ ! -f version ] && date -Imin >version
 ./tools/signpackage $pkg.cpio.gz
