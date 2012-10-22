@@ -1,0 +1,9 @@
+list.*
+*/initramfs/*
+*/deplibs/*
+*.trace
+bzImage
+*.iso
+*.cpio.gz
+*.cpio
+pkg.*
