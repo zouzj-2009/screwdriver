@@ -56,6 +56,7 @@ check_bridge()
 
 link=`check_bridge $link`
 rlink=eth${link#br}
+[ ${ipv4} = ${ipv4#*/} ] && ipv4=$ipv4/24
 cat >/domain/etc/container/config/$ctname/config.$cname <<EOF
 lxc.utsname = $cname
 lxc.network.type = $type

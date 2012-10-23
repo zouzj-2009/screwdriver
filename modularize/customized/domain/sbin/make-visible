@@ -14,7 +14,7 @@ fi
 link=`cat /domain/var/lib/lxc/$cont/config|grep network.link|awk -F= '{print $2}'|sed 's/ //g'`
 rlink=`cat /domain/var/lib/lxc/$cont/config|grep network.rlink|awk -F= '{print $2}'|sed 's/ //g'`
 innmac=`cat /domain/var/lib/lxc/$cont/config|grep network.hwaddr|awk -F= '{print $2}'|sed 's/ //g'`
-innip=`cat /domain/var/lib/lxc/$cont/config|grep network.ipv4|awk -F= '{print $2}'|sed 's/ //g'`
+innip=`cat /domain/var/lib/lxc/$cont/config|grep network.ipv4|awk -F= '{print $2}'|sed 's/ //g'|sed 's/\/[0-9]*//g'`
 vif=${cont}-0
 [ $act = '-I' ] && ifconfig $vif -promisc
 outmac=`ip addr show $link|grep link/ether|awk '{print $2}'`
