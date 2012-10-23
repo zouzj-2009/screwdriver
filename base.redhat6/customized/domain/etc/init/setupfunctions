@@ -19,9 +19,3 @@ waitinput(){
 	return 1
 }
 
-nextip(){
-	tail=${1#[^.]*.[^.]*.[^.]*.}
-	tail=$(($tail+$2))
-	[ $tail -ge 255 ] && tail=$((1+$2))
-	echo $1|sed "s/^\([^.]*.[^.]*.[^.]*\)\.[^.]*$/\1.$tail/"
-}

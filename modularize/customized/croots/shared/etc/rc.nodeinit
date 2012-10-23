@@ -1,0 +1,5 @@
+#!/bin/bash
+
+#This is public setting for all nodes!
+
+ifconfig -a >/var/log/cinfo.ifconfig

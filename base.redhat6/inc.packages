@@ -6,4 +6,6 @@ mod-testnode
 samba
 glfs
 fss
+mod-nasnode
+mod-stornode
 debug

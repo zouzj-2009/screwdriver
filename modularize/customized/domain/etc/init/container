@@ -8,16 +8,15 @@
 . /domain/etc/init/setupfunctions
 
 ctname=`basename $0|cut -d. -f2`
-nic=`basename $0|cut -d. -f3`
-if [ ! -z "$nic" ];then
-	cname=$ctname${nic#eth}
+bindnic=`basename $0|cut -d. -f3`
+if [ ! -z "$bindnic" ];then
+	cname=$ctname${bindnic#eth}
 else
 	cname=$ctname
 fi
 
 [ ! -d /domain/etc/container/config/$ctname ] && exit 0
-[ -z "`grep $nic: /proc/net/dev`" ] && exit 0
-
+[ ! -z "$bindnic" -a -z "`grep $bindnic: /proc/net/dev`" ] && exit 0
 mkdir /var/lock/container -p
 mkdir /var/run/container -p
 RETVAL=0
@@ -30,7 +29,7 @@ start() {
 	# Check if it is already running
 	if [ ! -f /var/lock/container/$cname ]; then
 	    echo -n $"Starting $cname daemon: "
-	    create-container $ctname $cname $nic
+	    create-container $ctname $cname $bindnic
 	    RETVAL=$?
 	    [ $RETVAL -ne 0 ] && return $RETVAL
 	    mv /var/run/container/$cname.log /var/run/container/$cname.old.log 2>/dev/null

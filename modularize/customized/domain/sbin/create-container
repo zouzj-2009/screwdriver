@@ -1,26 +1,32 @@
 #!/bin/bash
 . /domain/etc/init/setupfunctions
 
+nextip(){
+	tail=${1#[^.]*.[^.]*.[^.]*.}
+	tail=$(($tail+$2))
+	[ $tail -ge 255 ] && tail=$((1+$2))
+	echo $1|sed "s/^\([^.]*.[^.]*.[^.]*\)\.[^.]*$/\1.$tail/"
+}
 
 ctname=$1
 cname=$2
-nic=$2
+bindnic=$3
 cvars=/domain/vars/$cname
 
-[ -z "`grep $nic: /proc/net/dev`" ] && exit 1
 
 mkdir -p $cvars
 [ ! -z "`lxc-ls|grep ^$cname$`" ] && exit 0
-[ ! -d /domain/etc/container/config/$cname ] && exit 1
+[ ! -d /domain/etc/container/config/$ctname ] && exit 1
 . /domain/etc/container/config.default
 . /domain/etc/container/config/$ctname/config.setting
 mkdir /domain/rootfs/$cname -p
 [ -z $hwaddr ] && hwaddr=`macgen`
 [ -z $link ] && link=$bridge 
 
-if [ ! -z $nic ];then
-	link=br${nic#eth}
-	ipv4=`nextip $ipv4 ${nic#eth}`
+if [ ! -z $bindnic ];then
+	[ -z "`grep $bindnic: /proc/net/dev`" ] && exit 1
+	link=br${bindnic#eth}
+	ipv4=`nextip $ipv4 ${bindnic#eth}`
 fi
 
 check_bridge()
@@ -58,6 +64,8 @@ lxc.network.flags = $nicup
 lxc.network.link = $link
 #lxc.network.rlink = $rlink
 #lxc.network.debug = $debug
+#lxc.create.ctname = $ctname
+#lxc.create.nic = $bindnic
 lxc.network.name = $nic
 lxc.network.hwaddr = $hwaddr
 lxc.network.ipv4 = $ipv4
@@ -89,7 +97,7 @@ fi
 cat >/domain/rootfs/$cname/etc/cinfo <<EOF
 node=$cname
 template=$ctname
-nic=$nic
+bindnic=$bindnic
 ipv4=$ipv4
 link=$link
 rlink=$rlink
