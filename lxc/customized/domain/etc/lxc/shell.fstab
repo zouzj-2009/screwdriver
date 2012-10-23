@@ -1,3 +1,0 @@
-none /etc/lxc/shell.rootfs/pts devpts defaults 0 0
-none /etc/lxc/shell.rootfs/proc proc defaults 0 0
-none /etc/lxc/shell.rootfs/sys sys defaults 0 0

@@ -1,7 +1,0 @@
-#!/bin/bash
-. /domain/etc/init/setupfunctions
-cname=$1
-lxc-stop -n $cname
-make-invisible $cname
-lxc-destroy -n $cname
-umount /domain/rootfs/$cname

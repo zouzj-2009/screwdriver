@@ -1,6 +1,0 @@
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/char/ipmi 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/char/ipmi/ipmi_watchdog.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/ipmi/ipmi_watchdog.ko 0744 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/char/ipmi/ipmi_poweroff.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/ipmi/ipmi_poweroff.ko 0744 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/char/ipmi/ipmi_devintf.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/ipmi/ipmi_devintf.ko 0744 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/char/ipmi/ipmi_si.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/ipmi/ipmi_si.ko 0744 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/char/ipmi/ipmi_msghandler.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/ipmi/ipmi_msghandler.ko 0744 0 0

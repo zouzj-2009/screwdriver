@@ -1,4 +1,0 @@
-type=veth
-nicup=up
-nic=eth0
-bridge=br0

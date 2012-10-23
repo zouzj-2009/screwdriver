@@ -1,3 +1,0 @@
-#!/bin/bash
-[ -z $1 ] && exit 1
-/sbin/hardlink /etc/modules.tgz $1/etc/ >/dev/null
