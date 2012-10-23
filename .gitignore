@@ -1,4 +1,9 @@
 list.*
+demo-cd/boot-cd/packages/*
+demo-cd/boot-cd/isolinux/vmlinuz
+demo-cd/boot-cd/demo.sig
+build-from-source*
+*/base
 */initramfs/*
 */deplibs/*
 *.trace
@@ -7,3 +12,11 @@ bzImage
 *.cpio.gz
 *.cpio
 pkg.*
+aufs/*
+base
+core
+iwm/*
+redhat5.based
+redhat6.based
+version.base
+source-pkgs/*
