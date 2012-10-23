@@ -8,8 +8,8 @@
 #tty1::askfirst:-/bin/login
 # Start an "askfirst" shell on /dev/tty2-4
 #tty1::askfirst:-/bin/login
-tty9::askfirst:-/bin/login
-tty10::askfirst:-/bin/login
+tty11::askfirst:-/bin/login
+tty12::askfirst:-/bin/login
 
 # /sbin/getty invocations for selected ttys
 #

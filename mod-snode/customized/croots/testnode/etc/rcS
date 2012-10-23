@@ -1,0 +1,4 @@
+#!/bin/bash
+/etc/geninit
+/etc/rc.d/init.d/syslog start
+/etc/rc.d/init.d/sshd start

@@ -1,0 +1,2 @@
+file /fakeroot/usr/bin/netperf /usr/bin/netperf 0755 0 0
+file /fakeroot/usr/bin/netserver /usr/bin/netserver 0755 0 0

@@ -1,0 +1,1 @@
+./tools/clean && ./tools/genall && ./tools/makeinitramfs initramfs/ && ./tools/makebzImage && ./tools/makeiso 

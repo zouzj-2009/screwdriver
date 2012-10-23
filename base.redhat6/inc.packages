@@ -3,4 +3,7 @@ unionfs
 modularize
 mod-shell
 mod-testnode
+samba
+glfs
+fss
 debug

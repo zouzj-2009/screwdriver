@@ -2,16 +2,26 @@
 . /domain/etc/init/setupfunctions
 
 
-cname=$1
+ctname=$1
+cname=$2
+nic=$2
 cvars=/domain/vars/$cname
+
+[ -z "`grep $nic: /proc/net/dev`" ] && exit 1
+
 mkdir -p $cvars
 [ ! -z "`lxc-ls|grep ^$cname$`" ] && exit 0
 [ ! -d /domain/etc/container/config/$cname ] && exit 1
 . /domain/etc/container/config.default
-. /domain/etc/container/config/$cname/config.setting
+. /domain/etc/container/config/$ctname/config.setting
 mkdir /domain/rootfs/$cname -p
 [ -z $hwaddr ] && hwaddr=`macgen`
 [ -z $link ] && link=$bridge 
+
+if [ ! -z $nic ];then
+	link=br${nic#eth}
+	ipv4=`nextip $ipv4 ${nic#eth}`
+fi
 
 check_bridge()
 {
@@ -40,7 +50,7 @@ check_bridge()
 
 link=`check_bridge $link`
 rlink=eth${link#br}
-cat >/domain/etc/container/config/$cname/config <<EOF
+cat >/domain/etc/container/config/$ctname/config.$cname <<EOF
 lxc.utsname = $cname
 lxc.network.type = $type
 lxc.network.veth.pair = $cname-0
@@ -51,11 +61,11 @@ lxc.network.link = $link
 lxc.network.name = $nic
 lxc.network.hwaddr = $hwaddr
 lxc.network.ipv4 = $ipv4
-lxc.mount = /domain/etc/container/config/$cname/fstab.real
+lxc.mount = /domain/etc/container/config/$ctname/fstab.real.$cname
 lxc.rootfs = /domain/rootfs/$cname
 EOF
-cat /domain/etc/container/config/$cname/fstab > /domain/etc/container/config/$cname/fstab.real
-cat >>/domain/etc/container/config/$cname/fstab.real <<EOF
+cat /domain/etc/container/config/$ctname/fstab > /domain/etc/container/config/$ctname/fstab.real.$cname
+cat >>/domain/etc/container/config/$ctname/fstab.real.$cname <<EOF
 lock /domain/rootfs/$cname/var/lock tmpfs defaults 0 0
 run /domain/rootfs/$cname/var/run tmpfs defaults 0 0
 devpts /domain/rootfs/$cname/dev/pts devpts defaults 0 0
@@ -72,9 +82,18 @@ EOF
 if [ ! -z "`cat /proc/mounts|cut -d ' ' -f2|grep ^/domain/rootfs/$cname$`" ];then
 	echo "WARN! $cname's already mounted!"
 else
-	mount -t unionfs -o dirs=$cvars:/croots/$cname=ro:/croots/shared=ro:/fakeroot=ro $cname /domain/rootfs/$cname
+	mount -t unionfs -o dirs=$cvars:/croots/$ctname=ro:/croots/shared=ro:/fakeroot=ro $cname /domain/rootfs/$cname
 	[ $? -ne 0 ] && echo "mount $cname FAIL!" && exit 2
 fi
 
-lxc-create -n $cname -f /domain/etc/container/config/$cname/config >/dev/null
+cat >/domain/rootfs/$cname/etc/cinfo <<EOF
+node=$cname
+template=$ctname
+nic=$nic
+ipv4=$ipv4
+link=$link
+rlink=$rlink
+EOF
+
+lxc-create -n $cname -f /domain/etc/container/config/$ctname/config.$cname >/dev/null
 exit $?

@@ -1,0 +1,2 @@
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/exportfs 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/exportfs/exportfs.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/exportfs/exportfs.ko 0744 0 0

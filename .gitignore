@@ -1,5 +1,6 @@
 list.*
 php64
+*/base-base
 demo-cd/boot-cd/packages/*
 demo-cd/boot-cd/isolinux/vmlinuz
 demo-cd/boot-cd/demo.sig

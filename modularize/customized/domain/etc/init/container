@@ -7,9 +7,16 @@
 . /etc/rc.d/init.d/functions
 . /domain/etc/init/setupfunctions
 
-cname=`basename $0|sed s'/^[0-9]*\.//g'`
+ctname=`basename $0|cut -d. -f2`
+nic=`basename $0|cut -d. -f3`
+if [ ! -z "$nic" ];then
+	cname=$ctname${nic#eth}
+else
+	cname=$ctname
+fi
 
-[ ! -d /domain/etc/container/config/$cname ] && exit 0
+[ ! -d /domain/etc/container/config/$ctname ] && exit 0
+[ -z "`grep $nic: /proc/net/dev`" ] && exit 0
 
 mkdir /var/lock/container -p
 mkdir /var/run/container -p
@@ -23,7 +30,7 @@ start() {
 	# Check if it is already running
 	if [ ! -f /var/lock/container/$cname ]; then
 	    echo -n $"Starting $cname daemon: "
-	    create-container $cname
+	    create-container $ctname $cname $nic
 	    RETVAL=$?
 	    [ $RETVAL -ne 0 ] && return $RETVAL
 	    mv /var/run/container/$cname.log /var/run/container/$cname.old.log 2>/dev/null
@@ -67,9 +74,12 @@ stop)
 reload)
 	reload
 	;;
+clear)
+	destroy-container $cname
+	;;
 reconfig)
 	destroy-container $cname
-	restart
+	start
 	;;
 restart)
 	restart
@@ -83,7 +93,7 @@ status)
 	lxc-info -n $cname
 	;;
 *)
-	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload}"
+	echo $"Usage: $0 {start|stop|status|restart|condrestart|reload|reconfig|clean}"
 	exit 1
 esac
 
