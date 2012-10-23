@@ -9,6 +9,5 @@ tty4::askfirst:-/bin/login
 ::restart:/sbin/init
 
 # Stuff to do before rebooting
-::ctrlaltdel:/sbin/reboot
-::shutdown:/bin/umount -a -r
-::shutdown:/sbin/swapoff -a
+::ctrlaltdel:/etc/shutdown/reboot
+::shutdown:/etc/shutdown/shutdown
