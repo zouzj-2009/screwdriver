@@ -4,6 +4,7 @@ modularize
 mod-shell
 mod-testnode
 samba
+python
 glfs
 fss
 mod-nasnode

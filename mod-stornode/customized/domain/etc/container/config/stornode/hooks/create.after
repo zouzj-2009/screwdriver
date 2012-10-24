@@ -1,0 +1,12 @@
+#!/bin/bash
+ctname=$1
+cname=$2
+bindnic=$3
+
+root=/domain/rootfs/$cname
+
+uuidfile=$root/var/lib/glusterd/glusterd.info
+
+[ -f $uuidfile ] && exit 0
+echo UUID=`uuidgen` >$uuidfile
+logger -t stornode "$cname/$bindnic has new `cat $uuidfile`"

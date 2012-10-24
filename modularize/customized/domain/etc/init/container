@@ -28,11 +28,13 @@ RETVAL=0
 start() {
 	# Check if it is already running
 	if [ ! -f /var/lock/container/$cname ]; then
+	    [ -x /domain/etc/contianer/config/$ctname/hooks/create.before ] && /domain/etc/container/config/$ctname/hooks/create.before $ctname $cname $bindnic
 	    echo -n $"Starting $cname daemon: "
 	    create-container $ctname $cname $bindnic
 	    RETVAL=$?
 	    [ $RETVAL -ne 0 ] && return $RETVAL
 	    mv /var/run/container/$cname.log /var/run/container/$cname.old.log 2>/dev/null
+	    [ -x /domain/etc/contianer/config/$ctname/hooks/create.after ] && /domain/etc/container/config/$ctname/hooks/create.after $ctname $cname $bindnic
 	    screen -dmS init-$cname  lxc-start -n $cname -l DEBUG -o /var/run/container/$cname.log && success || failure
 	    RETVAL=$?
 	    [ $RETVAL -eq 0 ] && touch /var/lock/container/$cname
@@ -44,7 +46,9 @@ start() {
 
 stop() {
 	echo -n $"Stopping $cname daemon: "
+	[ -x /domain/etc/contianer/config/$ctname/hooks/stop.before ] && /domain/etc/container/config/$ctname/hooks/stop.before $ctname $cname $bindnic
 	lxc-stop -n $cname && success || failure
+    	[ -x /domain/etc/contianer/config/$ctname/hooks/stop.before ] && /domain/etc/container/config/$ctname/hooks/stop.before $ctname $cname $bindnic
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && rm -f /var/lock/container/$cname
 	[ $RETVAL -eq 0 ] && make-invisible $cname
@@ -74,9 +78,11 @@ reload)
 	reload
 	;;
 clear)
+	[ -x /domain/etc/contianer/config/$ctname/hooks/destroy.before ] && /domain/etc/container/config/$ctname/hooks/destroy.before $ctname $cname $bindnic
 	destroy-container $cname
 	;;
 reconfig)
+	[ -x /domain/etc/contianer/config/$ctname/hooks/destroy.before ] && /domain/etc/container/config/$ctname/hooks/destroy.before $ctname $cname $bindnic
 	destroy-container $cname
 	start
 	;;

@@ -1,3 +1,8 @@
 #!/bin/bash
 /etc/rc.d/init.d/syslog start
 /etc/rc.d/init.d/sshd start
+
+#mount bricks
+mount -a
+
+/etc/rc.d/init.d/glusterd start
