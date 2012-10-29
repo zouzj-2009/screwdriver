@@ -1,0 +1,4 @@
+file /fakeroot/usr/sbin/dmidecode.bin /usr/sbin/dmidecode 0755 0 0
+file /fakeroot/usr/sbin/biosdecode /usr/sbin/biosdecode 0755 0 0
+file /fakeroot/usr/sbin/ownership /usr/sbin/ownership 0755 0 0
+file /fakeroot/usr/sbin/vpddecode /usr/sbin/vpddecode 0755 0 0

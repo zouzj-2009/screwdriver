@@ -5,7 +5,7 @@
 pkgs=
 rm $cdcfg/packages/pkg* 
 base=`basename $PWD`
-for pkg in `cat inc.packages && echo zzpack |grep -v ^#`
+for pkg in `( cat inc.packages && echo zzpack )|grep -v ^#`
 do
 	echo "check pkg $pkg ..."
 	[ ! -d ../$pkg ] && echo "package $pkg not exists!" >&2 && exit 2

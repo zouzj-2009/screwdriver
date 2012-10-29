@@ -1,0 +1,2 @@
+#!bin/bash
+/usr/sbin/dmidecode.bin $*|awk -f /usr/sbin/shortdmid.awk

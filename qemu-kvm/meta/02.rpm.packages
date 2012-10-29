@@ -1,0 +1,8 @@
+seabios
+sgabios-bin
+vgabios
+celt051
+spice-server
+qemu-img
+qemu-kvm
+#qemu-kvm-tools

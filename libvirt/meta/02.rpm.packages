@@ -1,0 +1,16 @@
+lzop
+gnutls-utils
+nc
+libvirt-client
+radvd
+nfs-utils
+iscsi-initiator-utils
+rpcbind
+libvirt
+virt-top
+libvirt-python
+python-virtinst
+dnsmasq
+cyrus-sasl
+cyrus-sasl-lib
+gettext

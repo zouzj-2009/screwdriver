@@ -1,0 +1,9 @@
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/arch/x86/kvm 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/arch/x86/kvm/kvm-amd.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/arch/x86/kvm/kvm-amd.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/arch/x86/kvm/kvm.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/arch/x86/kvm/kvm.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/arch/x86/kvm/kvm-intel.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/arch/x86/kvm/kvm-intel.ko 0744 0 0
+dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/virtio 0755 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/virtio/virtio.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/virtio/virtio.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/virtio/virtio_ring.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/virtio/virtio_ring.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/virtio/virtio_pci.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/virtio/virtio_pci.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/virtio/virtio_balloon.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/virtio/virtio_balloon.ko 0744 0 0
