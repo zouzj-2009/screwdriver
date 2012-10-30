@@ -53,8 +53,8 @@ stop() {
 	echo -n $"Stopping $cname daemon: "
 	[ -x /domain/etc/contianer/config/$ctname/hooks/stop.before ] && /domain/etc/container/config/$ctname/hooks/stop.before $ctname $cname $bindnic
 	lxc-stop -n $cname && success || failure
-    	[ -x /domain/etc/contianer/config/$ctname/hooks/stop.before ] && /domain/etc/container/config/$ctname/hooks/stop.before $ctname $cname $bindnic
 	RETVAL=$?
+    	[ -x /domain/etc/contianer/config/$ctname/hooks/stop.before ] && /domain/etc/container/config/$ctname/hooks/stop.before $ctname $cname $bindnic
 	[ $RETVAL -eq 0 ] && rm -f /var/lock/container/$cname
 	[ $RETVAL -eq 0 ] && make-invisible $cname
 	echo

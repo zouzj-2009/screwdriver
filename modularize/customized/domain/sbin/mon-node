@@ -10,8 +10,14 @@ do
 	msg=`cat $fifo`
 	logger -s -t ctout "<$cname> $msg"
 	case "$msg" in
-	reboot|poweroff|shutdown)
+	reboot|poweroff)
 		$prog stop
+		[ "$cname" = "shell" ] && $msg
+		exit 0
+		;;
+	shutdown)
+		$prog stop
+		[ "$cname" = "shell" ] && poweroff
 		exit 0
 		;;
 	network*)

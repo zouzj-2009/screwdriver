@@ -1,0 +1,5 @@
+#!/bin/bash
+. /etc/cinfo
+echo "Poweroff node $node ..."
+[ -x /etc/rc.poweroff ] && /etc/rc.poweroff
+echo poweroff >/dev/ctout
