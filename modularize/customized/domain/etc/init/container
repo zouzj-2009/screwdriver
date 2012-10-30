@@ -35,6 +35,11 @@ start() {
 	    [ $RETVAL -ne 0 ] && return $RETVAL
 	    mv /var/run/container/$cname.log /var/run/container/$cname.old.log 2>/dev/null
 	    [ -x /domain/etc/contianer/config/$ctname/hooks/create.after ] && /domain/etc/container/config/$ctname/hooks/create.after $ctname $cname $bindnic
+	    rm /domain/rootfs/$cname/dev/ctout 2>/dev/null
+	    rm /domain/rootfs/$cname/dev/ctin 2>/dev/null
+	    mkfifo /domain/rootfs/$cname/dev/ctout
+	    mkfifo /domain/rootfs/$cname/dev/ctin
+	    /domain/sbin/mon-node $cname /domain/rootfs/$cname/dev/ctout $0 >/dev/null 2>/dev/null &
 	    screen -dmS init-$cname  lxc-start -n $cname -l DEBUG -o /var/run/container/$cname.log && success || failure
 	    RETVAL=$?
 	    [ $RETVAL -eq 0 ] && touch /var/lock/container/$cname

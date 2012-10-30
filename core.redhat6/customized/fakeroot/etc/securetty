@@ -21,6 +21,7 @@ tty8
 tty9
 tty10
 tty11
+tty12
 ssh
 /dev/pts/0
 /dev/pts/1

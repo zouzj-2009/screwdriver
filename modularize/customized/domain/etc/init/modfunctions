@@ -1,0 +1,14 @@
+#!/bin/bash
+node_cmd()
+{
+	node=$1
+	shift 1
+	echo "CMD ${*}" >/domain/rootfs/$node/dev/ctin
+	#wait for cmd done.
+	cat /domain/rootfs/$node/dev/ctin >/dev/null 2>/dev/null
+	#output 
+	cat /domain/rootfs/$node/tmp/.CTCMD/out
+	cat /domain/rootfs/$node/tmp/.CTCMD/err >&2
+	result=`cat /domain/rootfs/$node/tmp/.CTCMD/result`
+	return $result
+}

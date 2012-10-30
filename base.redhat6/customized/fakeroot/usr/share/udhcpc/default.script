@@ -1,0 +1,3 @@
+#!/bin/bash
+set|grep '^_=' -A 100|grep -v ^_ >/etc/pxeinfo
+[ -x /etc/udhcpc/client.script ] && /etc/udhcpc/client.script

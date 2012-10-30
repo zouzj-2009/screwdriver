@@ -7,4 +7,6 @@
 
 # Stuff to do before rebooting
 ::ctrlaltdel:/etc/shutdown/reboot
+::ctrlaltdel:echo reboot >/dev/ctout
 ::shutdown:/etc/shutdown/shutdown
+::shutdown:echo shutdown >/dev/ctout

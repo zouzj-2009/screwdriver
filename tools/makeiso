@@ -23,3 +23,7 @@ name="$pkg"-`cat ../version.base`."$ver"
 mkisofs -r -o $name.iso -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $cdcfg 
 echo "$name.iso has been maden."
 mv $name.iso /mnt/hgfs/vmshare/recovery-cd/$name.iso
+
+tftproot=/tftproot
+umount $tftproot/boot
+mount -o loop /mnt/hgfs/vmshare/recovery-cd/$name.iso $tftproot/boot

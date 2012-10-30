@@ -1,0 +1,5 @@
+#!/bin/bash
+. /domain/etc/init/modfunctions
+[ -z "$1" ] && echo "Usage:
+	`basename $0` NODENAME cmd"
+node_cmd $*

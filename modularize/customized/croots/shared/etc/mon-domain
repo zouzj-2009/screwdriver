@@ -1,0 +1,26 @@
+#!/bin/bash
+cname=$1
+fifo=$2
+while true
+do
+	msg=`cat $fifo`
+	logger -s -t ctin "$cname: $msg"
+	case "$msg" in
+	reboot)
+		reboot
+		;;
+	shutdown)
+		shutdown
+		;;
+	poweroff)
+		poweroff
+		;;
+	CMD\ *)	#exec cmd from domain
+		mkdir -p /tmp/.CTCMD/
+		cmd=`echo $msg|sed 's/^CMD //g'`
+		$cmd >/tmp/.CTCMD/out 2>/tmp/.CTCMD/err
+		echo $? >/tmp/.CTCMD/result
+		echo done >/dev/ctin
+		;;
+	esac
+done

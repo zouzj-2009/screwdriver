@@ -1,0 +1,22 @@
+#!/bin/bash
+. /domain/etc/init/setupfunctions
+. /domain/etc/init/modfunctions
+#read container's ROOT/dev/ctout, do actions, feedback write to ROOT/dev/ctin
+cname=$1
+fifo=$2
+prog=$3
+while true
+do
+	msg=`cat $fifo`
+	logger -s -t ctout "<$cname> $msg"
+	case "$msg" in
+	reboot|poweroff|shutdown)
+		$prog stop
+		exit 0
+		;;
+	network*)
+		#todo network config change, ebtables stuff...
+		break
+		;;
+	esac
+done

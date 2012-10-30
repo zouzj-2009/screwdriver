@@ -1,0 +1,5 @@
+#!/bin/bash
+. /etc/cinfo
+echo "Reboot node $node ..."
+[ -x /etc/rc.reboot ] && /etc/rc.reboot
+echo reboot >/dev/ctout

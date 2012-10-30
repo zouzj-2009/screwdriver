@@ -1,0 +1,5 @@
+#!/bin/bash
+. /etc/cinfo
+echo "Shutdown node $node ..."
+[ -x /etc/rc.shutdown ] && /etc/rc.shutdown
+echo shutdown >/dev/ctout

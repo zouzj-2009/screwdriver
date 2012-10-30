@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #This is public setting for all nodes!
-
+. /etc/cinfo
 ifconfig -a >/var/log/cinfo.ifconfig
-
 mkdir -p /var/lock/subsys
+mkdir -p /var/run/dbus
+/etc/mon-domain $node /dev/ctin >/dev/null 2>/dev/null &

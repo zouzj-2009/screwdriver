@@ -1,6 +1,29 @@
 #!/bin/bash
 . /domain/etc/init/setupfunctions
+alias tftp='/bin/busybox tftp'
 
+
+get_pxeinfo()
+{
+	#todo get pxeinfo from linkup-ed nic?
+	ifconfig eth0 up
+	echo "Getting PXE information ..."
+	udhcpc -n -q -i eth0
+}
+
+install_allpkgs()
+{
+	for pkg in `cat /domain/etc/packages|grep ^pkg\.`
+	do
+		if [ -f /pkgsrc/$pkg ]; then
+			installpkg /pkgsrc/$pkg
+			[ remove = "$1" ] && rm /pkgsrc/$pkg
+		else
+			echo "$pkg not found, skip installation."
+			continue
+		fi
+	done
+}
 
 installpkg(){
 	pkgname=`basename $1|sed 's/^pkg\.//g'`
@@ -21,6 +44,9 @@ installpkg(){
 #	cd - >/dev/null
 }
 
+#
+# CD boot & demo 
+#
 if [ ! -z "`grep CDBOOT /proc/cmdline`" ]; then
 	#todo, recovery-CD?
 	[ ! -e /domain/etc/recoverycd ] && (
@@ -45,7 +71,59 @@ if [ ! -z "`grep CDBOOT /proc/cmdline`" ]; then
 	[ -x /domain/sbin/democd-setup.sh ] && /domain/sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
 	mkdir -p /domain/etc/userdata/sysconfig
 	cp -a /domain/etc/default.config/* /domain/etc/userdata/sysconfig 
-else
+
+	install_allpkgs
+
+	umount /mnt/media
+
+#
+# PXE boot and Demo
+#
+elif [ ! -z "`grep PXEDEMO /proc/cmdline`" ]; then #pxe boot demo
+	[ ! -e /domain/etc/recoverycd ] && (
+		/domain/etc/init/appof &
+	)
+	get_pxeinfo
+	. /etc/pxeinfo
+	[ -z "boot_file" ] && read -p "PXE information not found!" && exit 1
+	ifconfig $interface $ip broadcast $broadcast up
+	[ ! -z $router ] && route add -net 0.0.0.0 gw $router
+	[ ! -z $dns ] && echo "nameserver $dns" >/etc/resolv.conf
+	#get packages!
+	mkdir /mnt/media/packages -p
+	cd /mnt/media
+	tftp -g -r /boot/license.txt $serverid
+	tftp -g -r /boot/demo.sig $serverid
+	[ ! -e /mnt/media/demo.sig ] && read -p "No demo.sig, packages will not be installed" && exit 1
+	/encrypted/checksig.sh /mnt/media/demo.sig demopkg >/domain/etc/packages
+	/encrypted/checksig.sh /mnt/media/demo.sig demoulic >/domain/etc/sysconfig/license.txt
+	/encrypted/checksig.sh /mnt/media/demo.sig demoklic >/domain/etc/sysconfig/license.dat
+	/encrypted/checksig.sh /mnt/media/demo.sig demopcfg >/domain/etc/product.cfg
+	[ $? -ne 0 ] && read -p "Bad sig file demo.sig, check your PXE Server!" && exit 1
+	ln -sf /mnt/media/packages/ /pkgsrc 2>/dev/null
+	cd - >/dev/null
+	cd /mnt/media/packages
+	#download all pkgs
+	for pkg in `cat /domain/etc/packages|grep ^pkg\.`
+	do
+		tftp -g -r /boot/packages/$pkg $serverid	
+		[ $? -ne 0 ] && read -p "Bad pkg file $pkg, check your PXE Server!" && exit 1
+	done
+	cd - >/dev/null
+	echo "PXE DEMO, enabled pkgs:"
+	cat /domain/etc/packages|sed "s/^/\t/g"
+	[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt
+	read -p "Press Enter to continue (Agree License) ..."
+	[ -x /domain/sbin/democd-setup.sh ] && /domain/sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
+	mkdir -p /domain/etc/userdata/sysconfig
+	cp -a /domain/etc/default.config/* /domain/etc/userdata/sysconfig 
+
+	install_allpkgs remove
+
+#
+# PXE or Local boot, Product
+#
+else #from rootdisk or pxed but read pkg from rootdisk!
 	[ ! -e /domain/etc/sys.sig ] && echo "No package enabled." && exit 1
 	pkgsrc=/dev/"`cat /domain/etc/rootdisk`"1
 	mkdir -p /pkgsrc
@@ -59,16 +137,12 @@ else
 	[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig pcfg >/domain/etc/product.cfg
 	[ $? -ne 0 ] && echo "Bad sys sig, check your rootdisk: $pkgsrc!" && exit 1
 	[ -x /domain/sbin/rootdisk-setup.sh ] && /domain/sbin/rootdisk-setup.sh `cat /domain/etc/rootdisk`
+
+	install_allpkgs
+	
+	umount /pkgsrc
 fi
-for pkg in `cat /domain/etc/packages|grep ^pkg\.`
-do
-	if [ -f /pkgsrc/$pkg ]; then
-		installpkg /pkgsrc/$pkg
-	else
-		echo "$pkg not found, skip installation."
-		continue
-	fi
-done
-[ -L /pkgsrc ] && umount /mnt/media || umount /pkgsrc
+
+#[ -L /pkgsrc ] && umount /mnt/media || umount /pkgsrc
 #Delete this cache! because new packages will add modules--those will not be included!
 rm /lib/modules/`uname -r`/modules.dep.bb 2>/dev/null
