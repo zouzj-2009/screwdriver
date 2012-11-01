@@ -68,9 +68,10 @@ if [ ! -z "`grep CDBOOT /proc/cmdline`" ]; then
 	cat /domain/etc/packages|sed "s/^/\t/g"
 	[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt
 	read -p "Press Enter to continue (Agree License) ..."
-	[ -x /domain/sbin/democd-setup.sh ] && /domain/sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
-	mkdir -p /domain/etc/userdata/sysconfig
-	cp -a /domain/etc/default.config/* /domain/etc/userdata/sysconfig 
+	#should setup shared union fs after pkg installed
+#	[ -x /domain/sbin/democd-setup.sh ] && /domain/sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
+#	mkdir -p /domain/etc/userdata/sysconfig
+#	cp -a /domain/etc/default.config/* /domain/etc/userdata/sysconfig 
 
 	install_allpkgs
 
@@ -114,9 +115,9 @@ elif [ ! -z "`grep PXEDEMO /proc/cmdline`" ]; then #pxe boot demo
 	cat /domain/etc/packages|sed "s/^/\t/g"
 	[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt
 	read -p "Press Enter to continue (Agree License) ..."
-	[ -x /domain/sbin/democd-setup.sh ] && /domain/sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
-	mkdir -p /domain/etc/userdata/sysconfig
-	cp -a /domain/etc/default.config/* /domain/etc/userdata/sysconfig 
+#	[ -x /domain/sbin/democd-setup.sh ] && /domain/sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
+#	mkdir -p /domain/etc/userdata/sysconfig
+#	cp -a /domain/etc/default.config/* /domain/etc/userdata/sysconfig 
 
 	install_allpkgs remove
 
@@ -136,11 +137,12 @@ else #from rootdisk or pxed but read pkg from rootdisk!
 	[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig ulic >/domain/etc/sysconfig/license.txt
 	[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig pcfg >/domain/etc/product.cfg
 	[ $? -ne 0 ] && echo "Bad sys sig, check your rootdisk: $pkgsrc!" && exit 1
-	[ -x /domain/sbin/rootdisk-setup.sh ] && /domain/sbin/rootdisk-setup.sh `cat /domain/etc/rootdisk`
 
 	install_allpkgs
 	
 	umount /pkgsrc
+
+#	[ -x /domain/sbin/rootdisk-setup.sh ] && /domain/sbin/rootdisk-setup.sh `cat /domain/etc/rootdisk`
 fi
 
 #[ -L /pkgsrc ] && umount /mnt/media || umount /pkgsrc

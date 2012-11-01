@@ -1,0 +1,93 @@
+#!/bin/bash
+
+[ ! -f /tmp/.demo.savebrick ] && echo "need disks to demo ..." && exit
+
+/etc/init.d/glusterd start
+
+. /tmp/.demo.setup
+
+if [ -f /tmp/.demo.newly ];then
+	#first time run-demo
+	#add all bricks to striped root volume
+	#add peers
+	gluster peer probe $internal_subnet.0.20
+	gluster peer probe $internal_subnet.0.21
+	gluster peer probe $internal_subnet.0.22
+	gluster peer probe $internal_subnet.0.23
+	
+	gluster volume list 2>/dev/null|grep demovol >/dev/null
+	if [ $? -eq 0 ];then
+		#should not be 
+		read -p "
+Demovol already exits! something wrong, maybe your should re-format your disks, and run demo again!
+
+press Enter to continue ..."
+	fi
+	act=create
+	volname=demovol
+else
+	newcount=`cat /tmp/.demo.bricks-to-add|wc -l`	
+	if [ "$newcount" -ne 0 ];then
+		#todo, ask for new volname or just add to old		
+		act=add
+		volname=demovol
+	fi
+	gluster volume sync all
+fi
+newcount=`cat /tmp/.demo.bricks-to-add|wc -l`	
+mode="stripe $nodecount"
+ask_for_strip_or_replica()
+{
+	m=`waitinput "Use newly added $newcount disks as replica/stripe/simple mode [default=strip]? " stripe`
+	[ "$m" = "stripe" ] && dc=$nodecount || dc=2
+	c=`waitinput "$m count [default=$dc] " $dc`
+	[ "$m" = "stripe" ] && echo "stripe $c"
+	[ "$m" = "replica" ] && echo "replica $c"
+}
+#add all new bricks to demovol/or new create vol
+bricks=
+for br in `cat /tmp/.demo.bricks-to-add`
+do
+	bricks=$bricks" $internal_ip:$br"
+done
+
+mode=`ask_for_strip_or_replica $nodecount`
+
+gluster volume $act $volname $mode $bricks
+
+
+#mount created volume's
+for volume in `gluster volume list`
+do
+	mkdir /mnt/$volume
+	mount -t glusterfs $public_ip:/$volume /mnt/$volume
+	[ $? -ne 0 ] && waitmsg "Mount $volume FAIL!" && continue
+	[ "$volume" = "demovol" ]  && (
+		mkdir -p /mnt/$volume/ctdb
+		mkdir -p /mnt/$volume/public
+		chmod 777 /mnt/$volume/public
+	)
+	chmod 777 /mnt/$volume
+done
+
+mount|grep /mnt/demovol >/dev/null
+if [ $? -ne 0 ];then
+	waitmsg "Demovol not mounted, this node fail to setup!"
+	exit 1
+fi
+#start samba
+/etc/init.d/ctdb start
+
+read -p "
+This node setup ok, when all nodes setup have been done, press Enter to saving the configuation for next time bootup.
+
+IF ALL nodes done, press Enter key here ..."
+
+
+#saving configuration
+save=`cat /tmp/.demo.savebrick`
+if [ -d /bricks/$save ];then
+	cd /var/
+	tar zcf /bricks/$save/.demo.saving/saved.tgz lib/glusterd ctdb
+	echo "Configuration saved!"
+fi

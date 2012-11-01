@@ -1,7 +1,7 @@
 #!/bin/bash
 #set -x
 . /domain/etc/init/setupfunctions
-[ ! -z "$1" ] && dev=$1 || dev=`cat /etc/rootdisk`
+[ ! -z "$1" ] && dev=$1 || dev=`cat /domain/etc/rootdisk`
 part=$dev"2"
 cat /proc/partitions|grep $part$ >/dev/null
 [ $? -ne 0 ] && waitmsg "rootdisk parition $part not exists" && exit 1

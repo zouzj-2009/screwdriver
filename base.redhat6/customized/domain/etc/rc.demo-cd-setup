@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#or override this!
+
 . /domain/etc/init/setupfunctions
 hostname demo
 ifconfig lo 127.0.0.1

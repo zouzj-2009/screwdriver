@@ -6,3 +6,8 @@ rm /domain/etc/xoste.key 2>/dev/null
 echo "#see git" >/domain/etc/init/checkroot
 echo "#see git" >/domain/etc/init/installpackages
 echo "#see git" >/domain/etc/appof
+rm /domain/etc/rc.cleanup
+cat > /etc/rcS <<EOF
+#!/bin/bash
+echo "System Starting ...
+EOF

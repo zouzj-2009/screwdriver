@@ -1,1 +1,10 @@
 #!/bin/bash
+if [ ! -z "`grep CDBOOT /proc/cmdline`" ];then
+	exec /domain/etc/rc.demo-cd-setup
+fi
+if [ ! -z "`grep PXEDEMO /proc/cmdline`" ]; then
+	exec /domain/etc/rc.demo-pxe-setup
+fi
+if [ ! -z "`cat /domain/etc/rootdisk`" ];then
+	exec /domain/sbin/rc.rootdisk-setup `cat /domain/etc/rootdisk`
+fi

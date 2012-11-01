@@ -14,5 +14,6 @@ qemu-kvm
 netboot
 pythonpkgs
 libvirt
+gstordemo
 debug
 
