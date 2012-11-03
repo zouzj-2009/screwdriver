@@ -1,6 +1,6 @@
-#lc
-#unionfs
-#modularize
+lc
+unionfs
+modularize
 #mod-shell
 #mod-testnode
 samba

@@ -1,8 +1,9 @@
 #!/bin/bash
 . /domain/etc/init/setupfunctions
+#shared_brick=/bricks/_shared
+#shared_vol=_shared
 
 [ ! -f /tmp/.demo.savebrick ] && echo "need disks to demo ..." && exit
-
 create_uuid(){
 
 	uuidfile=/var/lib/glusterd/glusterd.info
@@ -15,6 +16,8 @@ mkdir /var/log/glusterd -p
 /etc/init.d/glusterd start
 
 . /tmp/.demo.setup
+
+shared_brick=/bricks/`cat /tmp/.demo.savebrick`/$shared_vol
 
 newvol=
 ask_add_or_create()
@@ -70,10 +73,29 @@ okcnt=$?
 if [ $okcnt -ne 0 ];then
 	ask_for_volume_sync
 fi
+
+
+add_shared_volume(){
+	gluster volume list|grep $shared_vol >/dev/null 2>/dev/null
+	if [ $? -eq 0 ];then
+		#add bricks to 
+		echo "Join shared volume ..."
+		bricks=`gluster volume status $shared_vol|grep ^Brick|wc -l`
+		gluster volume add-brick $shared_vol replica $((bricks+1)) $internal_ip:/$shared_brick
+	else
+		#create new 
+		echo "Setup shared volume ..."
+		gluster volume create $shared_vol $internal_ip:/$shared_brick
+		gluster volume start $shared_vol
+	fi
+
+}
+
 if [ -f /tmp/.demo.newly ];then
 	#first time run-demo
 	#add all bricks to striped root volume
 	#add peers
+	add_shared_volume
 	gluster volume list 2>/dev/null|tee /tmp/.demo.volumelist|grep demovol >/dev/null
 	if [ $? -eq 0 ];then
 		#should not be 
@@ -88,6 +110,10 @@ if [ -f /tmp/.demo.newly ];then
 	else
 		act=create
 		volname=demovol
+	fi
+	if [ "$act" = "create" ];then
+		#todo, using shared vol as config
+		echo 
 	fi
 else
 	newcount=`cat /tmp/.demo.bricks-to-add|wc -l`	
@@ -105,6 +131,7 @@ else
 	fi
 	#gluster volume sync all
 fi
+peercount=$((nodecount-1))
 newcount=`cat /tmp/.demo.bricks-to-add|wc -l`	
 mode="stripe $nodecount"
 ask_for_strip_or_replica()
@@ -159,6 +186,7 @@ if [ -f /tmp/.demo.savebrick ];then
 fi
 
 #mount created volume's
+>/tmp/.demo.smbshare
 for volume in `gluster volume list|grep -v '^No volumes present'`
 do
 	mkdir /mnt/$volume
@@ -169,14 +197,30 @@ do
 	sleep 2
 	echo "Mount $volume OK!"
 	df -m|grep "^File\|/mnt/$volume$"
-	[ "$volume" = "demovol" -a ! -d /mnt/demovol/ctdb ]  && (
-		mkdir /mnt/$volume/ctdb -p
-		mkdir /mnt/$volume/public -p
-		chmod 777 /mnt/$volume/public
+	[ "$volume" = $shared_vol -a ! -d /mnt/$shared_vol/ctdb ]  && (
+		mkdir /mnt/$shared_vol/ctdb -p
+#		mkdir /mnt/$shared_vol/public -p
+#		chmod 777 /mnt/$shared_vol/public
 	)
+	[ "$volume" = $shared_vol ] && continue
 	chmod 777 /mnt/$volume
+	cat >>/tmp/.demo.smbshare <<EOF
+[$volume]
+	comment= $volume share
+	path = /mnt/$volume/
+	public = yes
+	writeable = yes
+
+EOF
 done
 
+
+mount|grep /mnt/$shared_vol >/dev/null
+if [ $? -ne 0 ];then
+	waitmsg "
+Demovol not mounted, this node fail to setup!"
+	exit 1
+fi
 
 mount|grep /mnt/demovol >/dev/null
 if [ $? -ne 0 ];then
@@ -184,6 +228,112 @@ if [ $? -ne 0 ];then
 Demovol not mounted, this node fail to setup!"
 	exit 1
 fi
+
+#
+#setup ctdb
+#
+mkdir /mnt/$shared_vol/config/ctdb -p
+mkdir /mnt/$shared_vol/config/samba -p
+rm /etc/ctdb/public_addresses 2>/dev/null
+ln -sf /mnt/$shared_vol/config/ctdb/public_addresses /etc/ctdb/public_addresses
+rm /etc/ctdb/nodes 2>/dev/null
+ln -sf /mnt/$shared_vol/config/ctdb/nodes /etc/ctdb/nodes
+rm /etc/sysconfig/ctdb 2>/dev/null
+ln -sf /mnt/$shared_vol/config/ctdb/ctdb /etc/sysconfig/ctdb
+rm /etc/samba/smb.conf 2>/dev/null
+ln -sf /mnt/$shared_vol/config/samba/smb.conf /etc/samba/smb.conf
+
+>/etc/ctdb/public_addresses
+for nid in `seq 0 $peercount`
+do
+	echo "$public_subnet.0.2$nid/16 $public_nic" >>/etc/ctdb/public_addresses
+done
+
+>/etc/ctdb/nodes 
+for nid in `seq 0 $peercount`
+do
+	echo "$internal_subnet.0.2$nid" >>/etc/ctdb/nodes
+done
+
+cat >/etc/sysconfig/ctdb <<EOF
+CTDB_RECOVERY_LOCK="/mnt/$shared_vol/ctdb/lock"
+# CTDB_PUBLIC_INTERFACE=eth0
+CTDB_PUBLIC_ADDRESSES=/etc/ctdb/public_addresses
+# CTDB_LVS_PUBLIC_IP=10.1.1.1
+CTDB_MANAGES_SAMBA=yes
+# CTDB_SAMBA_SKIP_SHARE_CHECK=yes
+# CTDB_NFS_SKIP_SHARE_CHECK=yes
+# CTDB_SAMBA_CHECK_PORTS="445"
+CTDB_MANAGES_WINBIND=yes
+# CTDB_MANAGES_VSFTPD=yes
+# CTDB_MANAGES_ISCSI=yes
+# CTDB_MANAGES_NFS=yes
+# CTDB_MANAGES_HTTPD
+# CTDB_INIT_STYLE=redhat
+# CTDB_SERVICE_SMB=smb
+# CTDB_SERVICE_NMB=nmb
+# CTDB_SERVICE_WINBIND=winbind
+ulimit -n 10000
+# CTDB_NODES=/etc/ctdb/nodes
+# CTDB_NOTIFY_SCRIPT=/etc/ctdb/notify.sh
+# CTDB_DBDIR=/var/ctdb
+# CTDB_DBDIR_PERSISTENT=/var/ctdb/persistent
+# CTDB_EVENT_SCRIPT_DIR=/etc/ctdb/events.d
+# CTDB_SOCKET=/tmp/ctdb.socket
+# CTDB_TRANSPORT="tcp"
+# CTDB_MONITOR_FREE_MEMORY=100
+# CTDB_START_AS_DISABLED="yes"
+# CTDB_CAPABILITY_RECMASTER=yes
+# CTDB_CAPABILITY_LMASTER=yes
+
+# CTDB_NATGW_PUBLIC_IP=10.0.0.227/24
+# CTDB_NATGW_PUBLIC_IFACE=eth0
+# CTDB_NATGW_DEFAULT_GATEWAY=10.0.0.1
+# CTDB_NATGW_PRIVATE_NETWORK=10.1.1.0/24
+# CTDB_NATGW_NODES=/etc/ctdb/natgw_nodes
+
+
+# PER_IP_ROUTING configuration
+# CTDB_PER_IP_ROUTING_DEBUG=yes lets the script print out
+# CTDB_DEBUGLEVEL=DEBUG implies CTDB_PER_IP_ROUTING_DEBUG=yes.
+#
+# CTDB_PER_IP_ROUTING_CONF="/etc/ctdb/per_ip_routing.conf"
+# CTDB_PER_IP_ROUTING_CONF="__auto_link_local__"
+# CTDB_PER_IP_ROUTING_TABLE_ID_LOW=10
+# CTDB_PER_IP_ROUTING_TABLE_ID_HIGH=250
+# CTDB_PER_IP_ROUTING_RULE_PREF=10000
+# CTDB_PER_IP_ROUTING_DEBUG=no
+
+# CTDB_PARTIALLY_ONLINE_INTERFACES="yes"
+
+# CTDB_LOGFILE=/var/log/log.ctdb
+CTDB_DEBUGLEVEL=ERR
+
+# CTDB_SUPPRESS_COREFILE=yes
+
+# CTDB_SYSLOG=no
+
+# CTDB_RUN_TIMEOUT_MONITOR=no
+
+# CTDB_MAX_PERSISTENT_CHECK_ERRORS=0
+
+# CTDB_LOG_RINGBUF_SIZE=500000
+#    CTDB_SET_TRAVERSETIMEOUT=60
+# CTDB_OPTIONS=
+
+EOF
+
+cat >/etc/samba/smb.conf <<EOF
+[global]
+	clustering = yes
+	idmap backend = tdb2
+#	private dir=/mnt/$shared_vol/ctdb
+	field:mapping = fsname
+	use mmap = no
+	nt acal support = yes
+	ea support = yes
+EOF
+cat /tmp/.demo.smbshare >>/etc/samba/smb.conf
 #start samba
 /etc/init.d/ctdb start
 
@@ -192,7 +342,6 @@ This node setup ok, when all nodes setup have been done, press Enter to saving t
 
 IF ALL nodes done, press Enter key here ..."
 
-peercount=$((nodecount-1))
 while true
 do
 	
@@ -208,6 +357,6 @@ done
 save=`cat /tmp/.demo.savebrick`
 if [ -d /bricks/$save ];then
 	cd /var/
-	tar zcf /bricks/$save/.saved.tgz lib/glusterd ctdb
+	tar zcf /bricks/$save/.saved.tgz lib/glusterd #ctdb
 	waitmsg "Configuration saved!"
 fi

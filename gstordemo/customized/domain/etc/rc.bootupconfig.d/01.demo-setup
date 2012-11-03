@@ -39,6 +39,7 @@ public_net=10.10
 public_nic=br1
 netmask=255.255.0.0
 product=`cat /domain/etc/product.name`
+shared_vol=_shared
 
 get_ip(){
 	ifconfig $1|grep 'inet addr'|cut -d':' -f2|cut -d' ' -f1
@@ -328,10 +329,11 @@ nodeid=$nodeid
 nodename=$nodename
 public_nic=$public_nic
 public_ip=$public_ip
-public_subnet=$public_subnet.0.0/16
+public_subnet=$public_subnet
 internal_nic=$internal_nic
 internal_ip=$internal_ip
 internal_subnet=$internal_subnet
+shared_vol=$shared_vol
 EOF
 
 #
@@ -339,106 +341,6 @@ EOF
 #
 
 ifconfig $internal_nic $internal_ip netmask 255.255.0.0 up
-
-#setup ctdb
-#
-cat >/etc/ctdb/public_addresses <<EOF
-$public_subnet.0.20/16 $public_nic
-$public_subnet.0.21/16 $public_nic
-$public_subnet.0.22/16 $public_nic
-$public_subnet.0.23/16 $public_nic
-EOF
-
-cat >/etc/ctdb/nodes <<EOF
-$internal_subnet.0.20
-$internal_subnet.0.21
-$internal_subnet.0.22
-$internal_subnet.0.23
-EOF
-
-cat >/etc/sysconfig/ctdb <<EOF
-CTDB_RECOVERY_LOCK="/mnt/demovol/ctdb/lock"
-# CTDB_PUBLIC_INTERFACE=eth0
-CTDB_PUBLIC_ADDRESSES=/etc/ctdb/public_addresses
-# CTDB_LVS_PUBLIC_IP=10.1.1.1
-CTDB_MANAGES_SAMBA=yes
-# CTDB_SAMBA_SKIP_SHARE_CHECK=yes
-# CTDB_NFS_SKIP_SHARE_CHECK=yes
-# CTDB_SAMBA_CHECK_PORTS="445"
-CTDB_MANAGES_WINBIND=yes
-# CTDB_MANAGES_VSFTPD=yes
-# CTDB_MANAGES_ISCSI=yes
-# CTDB_MANAGES_NFS=yes
-# CTDB_MANAGES_HTTPD
-# CTDB_INIT_STYLE=redhat
-# CTDB_SERVICE_SMB=smb
-# CTDB_SERVICE_NMB=nmb
-# CTDB_SERVICE_WINBIND=winbind
-ulimit -n 10000
-# CTDB_NODES=/etc/ctdb/nodes
-# CTDB_NOTIFY_SCRIPT=/etc/ctdb/notify.sh
-# CTDB_DBDIR=/var/ctdb
-# CTDB_DBDIR_PERSISTENT=/var/ctdb/persistent
-# CTDB_EVENT_SCRIPT_DIR=/etc/ctdb/events.d
-# CTDB_SOCKET=/tmp/ctdb.socket
-# CTDB_TRANSPORT="tcp"
-# CTDB_MONITOR_FREE_MEMORY=100
-# CTDB_START_AS_DISABLED="yes"
-# CTDB_CAPABILITY_RECMASTER=yes
-# CTDB_CAPABILITY_LMASTER=yes
-
-# CTDB_NATGW_PUBLIC_IP=10.0.0.227/24
-# CTDB_NATGW_PUBLIC_IFACE=eth0
-# CTDB_NATGW_DEFAULT_GATEWAY=10.0.0.1
-# CTDB_NATGW_PRIVATE_NETWORK=10.1.1.0/24
-# CTDB_NATGW_NODES=/etc/ctdb/natgw_nodes
-
-
-# PER_IP_ROUTING configuration
-# CTDB_PER_IP_ROUTING_DEBUG=yes lets the script print out
-# CTDB_DEBUGLEVEL=DEBUG implies CTDB_PER_IP_ROUTING_DEBUG=yes.
-#
-# CTDB_PER_IP_ROUTING_CONF="/etc/ctdb/per_ip_routing.conf"
-# CTDB_PER_IP_ROUTING_CONF="__auto_link_local__"
-# CTDB_PER_IP_ROUTING_TABLE_ID_LOW=10
-# CTDB_PER_IP_ROUTING_TABLE_ID_HIGH=250
-# CTDB_PER_IP_ROUTING_RULE_PREF=10000
-# CTDB_PER_IP_ROUTING_DEBUG=no
-
-# CTDB_PARTIALLY_ONLINE_INTERFACES="yes"
-
-# CTDB_LOGFILE=/var/log/log.ctdb
-CTDB_DEBUGLEVEL=ERR
-
-# CTDB_SUPPRESS_COREFILE=yes
-
-# CTDB_SYSLOG=no
-
-# CTDB_RUN_TIMEOUT_MONITOR=no
-
-# CTDB_MAX_PERSISTENT_CHECK_ERRORS=0
-
-# CTDB_LOG_RINGBUF_SIZE=500000
-#    CTDB_SET_TRAVERSETIMEOUT=60
-# CTDB_OPTIONS=
-
-EOF
-
-cat >/etc/samba/smb.conf <<EOF
-[global]
-	clustering = yes
-	idmap backend = tdb2
-	private dir=/mnt/demovol/ctdb
-	field:mapping = fsname
-	use mmap = no
-	nt acal support = yes
-	ea support = yes
-[public]
-	comment= public share
-	path = /mnt/demovol/public
-	public = yes
-	writeable = yes
-EOF
 
 
 #read -p "press Enter key to continue storage setup ..."
