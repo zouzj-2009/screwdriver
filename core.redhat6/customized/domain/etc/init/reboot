@@ -1,4 +1,5 @@
 #!/bin/bash
+logger -t domain "System REBOOT"
 /domain/sbin/run_dir /domain/etc/rc.reboot.d
 /sbin/swapoff -a
 /bin/umount -a -r
