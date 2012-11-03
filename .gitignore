@@ -1,4 +1,5 @@
 list.*
+.src.version
 php64
 */base-base
 demo-cd/boot-cd/packages/*

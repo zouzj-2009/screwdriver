@@ -1,6 +1,9 @@
 #!/bin/bash
 [ -d boot-cd ] && cdcfg=$PWD/boot-cd || cdcfg=$PWD/../demo-cd/boot-cd
 
+git log|head -n 1|cut -d' ' -f 2 >.src.version
+cat .src.version >$cdcfg/sourcever
+
 sign=/lib/modules/`uname -r`/build/usr/sign_initramfs_file
 ver=`$sign 2>&1|grep ver|awk '{print $5}'|sed s'/)$//g'|sed 's/^0x//g'`
 [ ! -d $cdcfg ] && echo "dir boot-cd not exist!" && exit 1

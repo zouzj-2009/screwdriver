@@ -1,3 +1,4 @@
 #!/bin/bash
+/domain/sbin/run_dir /domain/etc/rc.shutdown.d
 /sbin/swapoff -a
 /bin/umount -a -r

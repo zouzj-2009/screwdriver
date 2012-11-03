@@ -1,2 +1,5 @@
 #!/bin/bash
+/domain/sbin/run_dir /domain/etc/rc.reboot.d
+/sbin/swapoff -a
+/bin/umount -a -r
 /sbin/reboot
