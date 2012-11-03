@@ -29,6 +29,14 @@ if [ ! -z $bindnic ];then
 	ipv4=`nextip $ipv4 ${bindnic#eth}`
 fi
 
+get_ip(){
+	ifconfig $1|grep 'inet addr'|cut -d':' -f2|cut -d' ' -f1
+}
+
+get_mask(){
+	ifconfig $1|grep 'inet addr'|cut -d':' -f4|cut -d' ' -f1
+}
+
 check_bridge()
 {
 	br=$1
@@ -48,7 +56,9 @@ check_bridge()
 	brctl addif $br $eth
 	#brctl stp $br on
 	#todo set ip here?
-	ifconfig $br 0.0.0.0 -promisc up
+	oldip=`get_ip $eth`
+	oldmask=`get_mask $eth`
+	[ ! -z $oldip ] && ifconfig $br $oldip netmask $oldmask -promisc up || ifconfig $br 0.0.0.0 -promisc up
 	ifconfig $eth 0.0.0.0 -promisc up
 	echo $br
 	return 0

@@ -1,3 +1,3 @@
 #!/bin/bash
-/bin/umount -a -r
 /sbin/swapoff -a
+/bin/umount -a -r

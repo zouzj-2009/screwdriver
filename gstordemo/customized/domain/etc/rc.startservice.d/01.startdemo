@@ -1,0 +1,212 @@
+#!/bin/bash
+. /domain/etc/init/setupfunctions
+
+[ ! -f /tmp/.demo.savebrick ] && echo "need disks to demo ..." && exit
+
+create_uuid(){
+
+	uuidfile=/var/lib/glusterd/glusterd.info
+	[ -f $uuidfile ] && return 0
+	echo UUID=`uuidgen` >$uuidfile
+}
+
+create_uuid
+/etc/init.d/glusterd start
+
+. /tmp/.demo.setup
+
+newvol=
+ask_add_or_create()
+{
+	read -p "
+Demovol already exists, create new volume?[yes/NO] " cfm
+	[ "$cfm" != "yes" ] && newvol=demovol && return 0
+	while [ -z "$newvol" -o "$newvol" = "demovol" ]
+	do
+		read -p "
+New volume name?(waring, ever created same name volume will be wipped, all data on it will be lost!) " newvol
+		if [ ! -z "$newvol" -a ! -z "`grep ^$newvol$ /tmp/.demo.volumelist`" ];then
+			over=`waitinput "Volume $newvol already exits, add to this volume?[YES/no] " yes`
+			if [ "$over" = "yes" ];then
+				echo "Ok, new disk will be added to volume $newvol."
+				newvol=$newvol
+				return 0
+			fi
+		fi
+	done
+	return 1
+}
+
+probe_other(){
+	ret=0
+	for nid in `seq 0 $((nodecount-1))`
+	do
+		if [ "$nodename" = node$nid ];then
+			echo "Skip checking local node $nodename."
+			continue
+		fi
+		echo "Checking node$nid ..."
+		gluster peer probe $internal_subnet.0.2$nid
+		[ $? -eq 0 ] && let ret++
+	done
+	gluster peer status	
+	echo 
+	#ok peer count
+	return `gluster peer status|grep "(Connected)"|wc -l`
+}
+
+ask_for_volume_sync(){
+	cfm=`waitinput "Sync volume info with other nodes?[yes/NO] " no`
+	[ "$cfm" != "yes" ] && return
+	rm /var/lib/glusterd/vols/* -rf
+	echo "Syncing volume info from other nodes ..."
+	/etc/init.d/glusterd restart 2>/dev/null >/dev/null
+	sleep 2
+}
+
+probe_other
+okcnt=$?
+if [ $okcnt -ne 0 ];then
+	ask_for_volume_sync
+fi
+if [ -f /tmp/.demo.newly ];then
+	#first time run-demo
+	#add all bricks to striped root volume
+	#add peers
+	gluster volume list 2>/dev/null|tee /tmp/.demo.volumelist|grep demovol >/dev/null
+	if [ $? -eq 0 ];then
+		#should not be 
+		ask_add_or_create
+		if [ $? -eq 0 ];then
+		#add to demovol
+			act=add-brick
+		else
+			act=create
+		fi
+		volname=$newvol
+	else
+		act=create
+		volname=demovol
+	fi
+else
+	newcount=`cat /tmp/.demo.bricks-to-add|wc -l`	
+	if [ "$newcount" -ne 0 ];then
+		#todo, ask for new volname or just add to old		
+		#should not be 
+		ask_add_or_create
+		if [ $? -eq 0 ];then
+		#add to demovol
+			act=add-brick
+		else
+			act=create
+		fi
+		volname=$newvol
+	fi
+	#gluster volume sync all
+fi
+newcount=`cat /tmp/.demo.bricks-to-add|wc -l`	
+mode="stripe $nodecount"
+ask_for_strip_or_replica()
+{
+	m=`waitinput "Use newly added $newcount disks as replica/stripe/distributed mode [default=distributed]? " distributed`
+	[ "$m" = "stripe" ] && dc=$newcount || dc=2
+	[ "$m" = "distributed" ] && return 0
+	c=`waitinput "$m count [default=$dc] " $dc`
+	[ "$m" = "stripe" ] && echo "stripe $c"
+	[ "$m" = "replica" ] && echo "replica $c"
+}
+
+if [ $newcount -ne 0 ];then
+	#add all new bricks to demovol/or new create vol
+	bricks=
+	for br in `cat /tmp/.demo.bricks-to-add`
+	do
+		#todo: more securitty check for exitsted volume...
+		[ -d $br/$volname/.glusterfs ] && echo "Old volume info on $volname, this disk will not be added." && continue
+		mkdir -p $br/$volname
+		brn=$br/$volname
+		bricks=$bricks" $internal_ip:$brn"
+	done
+
+	[ "$act" = "create" ] && mode=`ask_for_strip_or_replica $nodecount` || mode=
+	[ -z "$mode" ] && nmode="distributed" || nmode=`echo $mode|cut -d' ' -f 1`
+
+	[ $act = 'create' ] && echo "Create new $nmode volume $volname ..." || echo "expand existed volume $volname ..."
+	#echo "	volume $act $volname $mode $bricks"
+	gluster volume $act $volname $mode $bricks
+	#[ $? -eq 0 ] && echo "Add disk OK." || echo "Add disk FAIL."
+	[ "$act" = "create" ] && gluster volume start $volname
+fi
+
+get_swap_size(){
+	maxsize=`df -m|grep $1|awk '{print $2}'`
+	if [ $maxsize -le 10240 ];then
+		echo $((maxsize/10))
+	else
+		echo 1024
+	fi
+}
+
+if [ -f /tmp/.demo.savebrick ];then
+	sdev=`cat /tmp/.demo.savebrick`
+	if [ ! -f /bricks/$sdev/.swap ];then
+		echo "Creating swap on disk $sdev ..."
+		dd if=/dev/zero of=/bricks/$sdev/.swap bs=1M count=`get_swap_size /bricks/$sdev` >/dev/null 2>/dev/null
+		mkswap /bricks/$sdev/.swap 2>/dev/null
+	fi	
+	swapon /bricks/$sdev/.swap
+fi
+
+#mount created volume's
+for volume in `gluster volume list|grep -v '^No volumes present'`
+do
+	mkdir /mnt/$volume
+#	mount -t glusterfs $internal_ip:/$volume /mnt/$volume
+	echo "Mounting $volume ..."
+	mount -t glusterfs 127.0.0.1:/$volume /mnt/$volume
+	[ $? -ne 0 ] && waitmsg "Mount $volume FAIL!" && continue
+	sleep 2
+	echo "Mount $volume OK!"
+	df -m|grep "^File\|/mnt/$volume$"
+	[ "$volume" = "demovol" -a ! -d /mnt/demovol/ctdb ]  && (
+		mkdir /mnt/$volume/ctdb -p
+		mkdir /mnt/$volume/public -p
+		chmod 777 /mnt/$volume/public
+	)
+	chmod 777 /mnt/$volume
+done
+
+
+mount|grep /mnt/demovol >/dev/null
+if [ $? -ne 0 ];then
+	waitmsg "
+Demovol not mounted, this node fail to setup!"
+	exit 1
+fi
+#start samba
+/etc/init.d/ctdb start
+
+read -p "
+This node setup ok, when all nodes setup have been done, press Enter to saving the configuation for next time bootup.
+
+IF ALL nodes done, press Enter key here ..."
+
+peercount=$((nodecount-1))
+while true
+do
+	
+	[ $okcnt -eq $peercount ] && break
+	m=`waitinput "Some nodes not detected, probe again?[YES/no] " yes`
+	[ "$m" = "no" ] && break
+	probe_other
+	okcnt=$?
+done
+	
+
+#saving configuration
+save=`cat /tmp/.demo.savebrick`
+if [ -d /bricks/$save ];then
+	cd /var/
+	tar zcf /bricks/$save/.saved.tgz lib/glusterd ctdb
+	waitmsg "Configuration saved!"
+fi

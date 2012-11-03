@@ -16,7 +16,7 @@ getfileloc()
 }
 for file in `find $mydir|grep -v "$mydir$"`
 do
-	lfile=`getfileloc $file`
+	lfile=`getfileloc $file|sed 's/\/\//\//g'`
 	[ ! -z $2 ] && [ -f $2 ] && [ ! -z `grep $lfile $2` ] && continue
 	if [ -L $file ];then
 		target=`ls -ld $file|awk '{print $11}'`

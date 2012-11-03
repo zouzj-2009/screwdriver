@@ -1,5 +1,7 @@
 #!/bin/bash
 #set -x
+[ -z "`cat /domain/etc/rootdisk`" ] && exit 0
+
 . /domain/etc/init/setupfunctions
 [ ! -z "$1" ] && dev=$1 || dev=`cat /domain/etc/rootdisk`
 part=$dev"2"

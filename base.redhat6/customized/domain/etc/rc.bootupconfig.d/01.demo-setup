@@ -1,4 +1,5 @@
 #!/bin/bash
+[ -z "`grep CDBOOT /proc/cmdline`" ] && exit 0
 
 #or override this!
 

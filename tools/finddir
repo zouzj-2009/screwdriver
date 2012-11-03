@@ -1,0 +1,8 @@
+#!/bin/bash
+for dir in `ls ..`
+do
+	[ -L ../$dir ] && continue
+	[ ! -d ../$dir ] && continue
+	[ ! -d ../$dir/customized ] && continue
+	find ../$dir/customized/$1 2>/dev/null
+done

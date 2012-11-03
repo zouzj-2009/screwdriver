@@ -68,6 +68,8 @@ mount -t sysfs sys /sys
 #	rm /etc/rcS >/dev/null 2>/dev/null
 #fi
 
+rm /etc/rcS
+
 
 ifconfig lo 127.0.0.1 up
 #modlues && udev stuff
@@ -102,15 +104,26 @@ mount devpts
 [ -x /domain/etc/rc.installpkgs ] && /domain/etc/rc.installpkgs || echo "Skip Package installation ..."
 
 #cleanup key/encrypted stuff, and do bootup config from saved config
-[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before cleanup & bootupconfig) ..." && /bin/cttyhack /domain/bin/xsh
-[ -x /domain/etc/rc.cleanup ] && /domain/etc/rc.cleanup 
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before bootupconfig) ..." && /bin/cttyhack /domain/bin/xsh
 [ -x /domain/etc/rc.bootupconfig ] && /domain/etc/rc.bootupconfig || echo "Skip Bootup config ..."
+[ -z "`grep KEEPRCS /proc/cmdline`" ] && rm /domain/etc/rc.bootupconfig.d/* >/dev/null 2>/dev/null
 
-#start services
+#start domain services
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before service start) ..." && /bin/cttyhack /domain/bin/xsh
 [ -x /domain/etc/rc.startservice ] && /domain/etc/rc.startservice || echo "No Service started ..."
+[ -z "`grep KEEPRCS /proc/cmdline`" ] && rm /domain/etc/rc.startservice.d/* >/dev/null 2>/dev/null
+
+#start vpc modules
+[ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before modules start) ..." && /bin/cttyhack /domain/bin/xsh
+[ -x /domain/etc/rc.startmodules ] && /domain/etc/rc.startmodules || echo "No Modules started ..."
+[ -z "`grep KEEPRCS /proc/cmdline`" ] && rm /domain/etc/rc.startmodules.d/* >/dev/null 2>/dev/null
 
 #login
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before login) ..." && /bin/cttyhack /domain/bin/xsh || clear
+#do clean up and setup welcome!
+[ -x /domain/etc/rc.cleanup ] && /domain/etc/rc.cleanup 
+rm /domain/etc/rc.bootupconfig.d/* 2>/dev/null >/dev/null
+rm /domain/etc/rc.startservice.d/* 2>/dev/null >/dev/null
+rm /domain/etc/rc.startmodules.d/* 2>/dev/null >/dev/null
 cat /etc/welcome 2>/dev/null
 /bin/busybox setconsole /dev/tty0

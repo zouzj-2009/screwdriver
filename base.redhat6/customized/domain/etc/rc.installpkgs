@@ -1,3 +1,4 @@
 #!/bin/bash
 echo "Install Packages ..." 
 /domain/etc/init/installpackages
+exit 0
