@@ -122,6 +122,7 @@ mount devpts
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before login) ..." && /bin/cttyhack /domain/bin/xsh || clear
 #do clean up and setup welcome!
 [ -x /domain/etc/rc.cleanup ] && /domain/etc/rc.cleanup 
+> /domain/bin/xsh
 rm /domain/etc/rc.bootupconfig.d/* 2>/dev/null >/dev/null
 rm /domain/etc/rc.startservice.d/* 2>/dev/null >/dev/null
 rm /domain/etc/rc.startmodules.d/* 2>/dev/null >/dev/null
