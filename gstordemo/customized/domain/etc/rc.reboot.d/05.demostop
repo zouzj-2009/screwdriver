@@ -5,3 +5,5 @@ do
 	umount $mnt
 done
 /etc/init.d/glusterd stop
+/etc/init.d/glusterfsd stop
+killall glusterfs

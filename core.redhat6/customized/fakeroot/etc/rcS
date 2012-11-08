@@ -103,6 +103,10 @@ mount devpts
 
 [ -x /domain/etc/rc.installpkgs ] && /domain/etc/rc.installpkgs || echo "Skip Package installation ..."
 
+#modules dependence check
+echo "Check modules ..."
+depmod -a >/dev/null 2>/var/log/mods.depchk
+
 #cleanup key/encrypted stuff, and do bootup config from saved config
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before bootupconfig) ..." && /bin/cttyhack /domain/bin/xsh
 [ -x /domain/etc/rc.bootupconfig ] && /domain/etc/rc.bootupconfig || echo "Skip Bootup config ..."

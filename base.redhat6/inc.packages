@@ -1,12 +1,13 @@
 lc
 unionfs
 modularize
-#mod-shell
-#mod-testnode
+mod-shell
+mod-testnode
 samba
 python
 glfs
 fss
+zfs
 #mod-nasnode
 #mod-stornode
 install
@@ -14,5 +15,6 @@ install
 netboot
 #pythonpkgs
 #libvirt
+vnetwork
 gstordemo
 debug

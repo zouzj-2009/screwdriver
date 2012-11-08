@@ -2,3 +2,4 @@ glusterfs
 glusterfs-server
 glusterfs-geo-replication
 glusterfs-fuse
+glusterfs-rdma

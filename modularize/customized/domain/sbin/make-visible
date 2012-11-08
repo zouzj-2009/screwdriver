@@ -1,4 +1,6 @@
 #!/bin/bash
+#only bridge need this!
+[ -z "`lsmod|grep ^bridge`" ] && exit 0
 [ -z "$1" ] && echo "need container name!" && exit 1
 cont=$1	#such as shell
 debug=`cat /domain/var/lib/lxc/$cont/config|grep network.debug|awk -F= '{print $2}'|sed 's/ //g'`
