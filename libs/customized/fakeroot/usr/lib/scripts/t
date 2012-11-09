@@ -1,0 +1,18 @@
+#!/bin/bash
+. ui
+#choose_disk
+ret=`menu_choose \
+	"Select Disk/Part to Install" \
+	"\nName    Type  Size  Mountpoint                    Model" \
+	lsblk -nl -o NAME,TYPE,SIZE,MOUNTPOINT,MODEL`
+echo $ret $?
+msg_box "Message" "\nThis is a test message!"
+confirm_box "Confirm!" "\nThis operation will be dangours! ..."
+echo $? #0 means 'yes', other means 'no'
+ret=`input_line "Input" "\nInput the file name ...." "default value is here"`
+echo $ret
+ret=`input_text "Input" "\nInput a text note for these... "`
+echo $ret
+ret=`input_ip   "Input" "\nInput ip or netmask for eth0..."`
+echo $ret
+

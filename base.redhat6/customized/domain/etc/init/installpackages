@@ -21,7 +21,7 @@ install_allpkgs()
 			installpkg /pkgsrc/$pkg
 			[ remove = "$1" ] && rm /pkgsrc/$pkg
 		else
-			echo "$pkg not found, skip installation."
+			echo "$pkg not found, skip initialize."
 			continue
 		fi
 	done
@@ -31,7 +31,7 @@ installpkg(){
 	pkgname=`basename $1|sed 's/^pkg\.//g'`
 	[ -d /domain/etc/pkgs/$pkgname ] && refresh=0 || refresh=1
 	mkdir -p /domain/etc/pkgs/$pkgname
-	[ $refresh -ne 0 ] && echo "Install package $pkgname ..." || echo "Update package $pkgname ..."
+	[ $refresh -ne 0 ] && echo "Initialize package $pkgname ..." || echo "Update package $pkgname ..."
 #	cd /fakeroot >/dev/null
 	#check meta first
 	metaname=`dd if=$1 bs=1k count=128 2>/dev/null|gpg -u XOSTE 2>/tmp/.trace.gpg.$pkgname| dd bs=1k count=4 2>/dev/null|tee /domain/etc/pkgs/$pkgname/meta|head -n 1|sed 's/^pkgname=//g'`
@@ -134,12 +134,23 @@ else #from rootdisk or pxed but read pkg from rootdisk!
 	mount -o ro $pkgsrc  /pkgsrc
 	[ $? -ne 0 ] && echo "mount $pkgsrc fail! packages will not be installed." && exit 1
 	/encrypted/checksig.sh /domain/etc/sys.sig pkg >/domain/etc/packages
-	echo "Enabled pkgs:"
-	cat /domain/etc/packages|sed "s/^/\t/g"
-	[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig klic >/domain/etc/sysconfig/license.dat
-	[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig ulic >/domain/etc/sysconfig/license.txt
-	[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig pcfg >/domain/etc/product.cfg
-	[ $? -ne 0 ] && echo "Bad sys sig, check your rootdisk: $pkgsrc!" && exit 1
+	if [ `cat /domain/etc/packages|wc -l` -eq 0 ];then
+		/encrypted/checksig.sh /domain/etc/sys.sig demopkg >/domain/etc/packages
+		read -p "Evaluate mode, enabled pkgs:"
+		cat /domain/etc/packages|sed "s/^/\t/g"
+		[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt
+		read -p "Press Enter to continue (Agree License) ..."
+	else
+		echo "Enabled pkgs:"
+		cat /domain/etc/packages|sed "s/^/\t/g"
+		[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig klic >/domain/etc/sysconfig/license.dat
+		[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig ulic >/domain/etc/sysconfig/license.txt
+		[ -e /domain/etc/sys.sig ] && /encrypted/checksig.sh /domain/etc/sys.sig pcfg >/domain/etc/product.cfg
+		[ $? -ne 0 ] && echo "Bad sys sig, check your rootdisk: $pkgsrc!" && (
+			umount /pkgsrc
+			exit 1
+		)
+	fi
 
 	install_allpkgs
 	

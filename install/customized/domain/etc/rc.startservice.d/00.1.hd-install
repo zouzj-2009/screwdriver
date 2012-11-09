@@ -1,0 +1,3 @@
+#!/bin/bash
+[ -z "`grep INSTALL /proc/cmdline`" ] && exit 0
+hd-install

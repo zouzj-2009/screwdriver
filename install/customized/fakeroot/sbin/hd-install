@@ -1,2 +1,251 @@
 #!/bin/bash
+export TERM=linux
+LIB=/usr/lib/scripts
+export bootfs=ext3
+export datafs=ext3
+. $LIB/ui
+while true
+do
+	rm /tmp/.fresh_install 2>/dev/null
+	hd=`menu_choose "Choose Disk/Partition to Install ..." \
+	"\nName    Type  Size  Mountpoint                    Model" \
+	lsblk -nl -o NAME,TYPE,SIZE,MOUNTPOINT,MODEL`
+	if [ -z "$hd" ];then
+		exit 1
+	fi
+	dev=`echo $hd|sed 's/[0-9]*$//g'`
+	if [ "$dev" != "$hd" -a "${dev}1" != "$hd" ];then
+		msg_box "Message" "\n  Only New disk or First Partition could be used for installation."
+		continue
+	fi
+	if [ $dev = $hd ];then
+	#new disk
+		confirm_box "Warning" "\n Whole disk choosed, Disk $dev will be re-partitioned to install the system!"
+		[ $? -ne 0 ] && continue
+		#part this disk!
+		size=`input_line "SYSTEM partition size" "\nSystem, at least 256M needed:" 256M`
+		varsize=`input_line "DATA partition szie" "\nData, suggest 256M or more:" 256M`
+		swapsize=`input_line "SWAP partition size" "\nSwap, suggest 1024M or more, ESC to disable swap on this disk:" 1024M`
+		[ -z "$size" ] && continue
+	fi
+	#now install on ${dev}1 
+(
+	if [ $dev = $hd ];then
+cat <<EOF
+XXX
+0
+Clean Disk /dev/${dev}
+XXX
+EOF
+		touch /tmp/.fresh_install
+		dd if=/dev/zero of=/dev/$dev bs=512 count=1 2>/dev/null
+		blockdev --rereadpt /dev/$sdev 2>/dev/null
+cat <<EOF
+XXX
+10
+Create system partitions on /dev/${dev}
+XXX
+EOF
+		fdisk /dev/$dev >/tmp/.fdisk 2>&1 <<EOF
+n
+p
+1
 
++$size
+a
+1
+w
+q
+EOF
+		blockdev --rereadpt /dev/$dev 2>/dev/null
+cat <<EOF
+XXX
+18
+Create data partitions on /dev/${dev}
+XXX
+EOF
+		if [ ! -z "$varsize" ];then
+			fdisk /dev/$dev >>/tmp/.fdisk 2>&1 <<EOF
+n
+p
+2
+
++$varsize
+w
+q
+EOF
+			blockdev --rereadpt /dev/$dev 2>/dev/null
+			mkfs.$datafs /dev/${dev}2 2>/dev/null
+		fi
+cat <<EOF
+XXX
+16
+Create swap partitions on /dev/${dev}
+XXX
+EOF
+		if [ ! -z "$swapsize" ];then
+			spsize=+$swapsize
+		else
+			spsize="\n"
+		fi
+
+		fdisk /dev/$dev >>/tmp/.fdisk 2>&1 <<EOF
+n
+p
+3
+
+$spsize
+w
+q
+EOF
+		blockdev --rereadpt /dev/$dev 2>/dev/null
+		if [ ! -z "$swapsize" ];then
+			mkswap /dev/${dev}3
+		fi
+	fi
+	mkdir /boot -p
+cat <<EOF
+XXX
+25
+Check filesystem on /dev/${dev}1
+XXX
+EOF
+
+	mount -t $bootfs /dev/${dev}1 /boot  2>/dev/null
+	if [ $? -ne 0 ];then
+#		confirm_box "Warning" "\n  Disk ${dev}1 need to be format, are you sure?"
+#		[ $? -ne 0 ] && continue
+cat <<EOF
+XXX
+30
+Format partition /dev/${dev}1 ...
+XXX
+EOF
+		touch /tmp/.fresh_install
+		mkfs.$bootfs /dev/${dev}1 2>/dev/null
+		if [ $? -ne 0 ];then
+			exit 2
+			#msg_box "Warning" "\n Format Disk ${dev}1 fail! check your setting or choose another disk."
+			#continue
+		fi
+sleep 1
+cat <<EOF
+XXX
+50
+Format partition /dev/${dev}1 OK!
+Install boot loader ...
+XXX
+EOF
+sleep 1
+		mount -t $bootfs /dev/${dev}1 /boot 2>/dev/null
+		if [ $? -ne 0 ];then
+			exit 3
+			#msg_box "Warning" "\n Format Disk ${dev}1 fail! check your setting or choose another disk."
+			#continue
+		fi
+	else
+cat <<EOF
+XXX
+30
+Filesystem on /dev/${dev}1 ok.
+Update system, re-install boot loader ...
+XXX
+EOF
+	
+	fi
+	grub-install --no-floppy --root-directory=/boot /dev/${dev} >/tmp/.installed 2>&1
+	if [ $? -eq 0 ];then
+cat <<EOF
+XXX
+70
+Install grub on /dev/${dev}1 OK!
+Grub installed on: `cat /tmp/.installed|grep ${dev}`
+Copy system files ...
+XXX
+EOF
+sleep 1
+	else
+		umount /boot
+		#text_box "Warning" "\n Install grub on ${dev} Fail!" /tmp/.installed
+		exit 4
+	fi
+	mkdir /boot/boot/grub -p
+	hd=`cat /boot/boot/grub/device.map|grep /dev/${dev}$|awk '{print $1}'|sed 's/[()]//g'`
+	cat >/boot/boot/grub/grub.conf <<EOF
+#boot=/dev/${dev}
+default=0
+timeout=5
+#splashimage=($hd,0)/grub/splash.xpm.gz
+hiddenmenu
+title Go!
+	root ($hd,0)
+	kernel /vmlinuz
+title Go(debug)
+	root ($hd,0)
+	kernel /vmlinuz vga=6
+EOF
+	#copy files via CD or PXE
+	mkdir /media -p
+	mount /dev/cdrom /media 2>/dev/null
+	if [ $? -ne 0 ];then
+		#msg_box "Warning" "\n Count not mount CD-ROM, installation fail."
+		exit 5
+	fi
+	#todo: gauge it
+	cp /media/isolinux/vmlinuz /boot/
+	cp /media/packages/* /boot
+	cp /media/demo.sig /boot
+	cp /media/demo.sig /tmp/
+	umount /media
+	umount /boot
+cat <<EOF
+XXX
+100
+Install system OK!
+XXX
+EOF
+sleep 1
+	exit 0
+) | $DIALOG --gauge "Install system ..." 10 70 0
+	case ${PIPESTATUS[0]} in
+	2)
+		msg_box "Message" "\n Format Disk ${dev}1 fail! check your setting or choose another disk."
+		continue
+		;;
+	3)
+		msg_box "Warning" "\n Format Disk ${dev}1 fail! check your setting or choose another disk."
+		continue
+		;;
+	4)
+		text_box "Warning" "\n Install grub on ${dev} Fail!" /tmp/.installed
+		continue
+		;;
+	5)
+		msg_box "Warning" "\n Count not mount CD-ROM, installation fail."
+		continue
+		;;
+	esac
+	if [ ! -f /tmp/.fresh_install ];then
+		confirm_box "Clean old configuration and data?" "\n This is an update installation on /dev/${dev}, would you like to CLEAN OLD configuration and data?"
+		if [ $? -eq 0 ];then
+			( 
+				echo "Format /dev/${dev}2 ..."
+				mkfs.$datafs /dev/${dev}2
+			)|$DIALOG --processbox 20 60
+			ret=${PIPESTATUS[0]}
+			sleep 1
+			if [ $ret -ne 0 ];then
+				msg_box "Warning" "\nFormat /dev/${dev}2 Fail! Old configuration and data MAY NOT be cleaned."
+			else
+				msg_box "Message" "\nOld configuration and data were cleaned."
+			fi
+		fi
+	else
+		#create demo.sig to 
+		/sbin/signrootdisk.sh /tmp/demo.sig /dev/${dev} >/tmp/.signresult
+		msg_box "Message" "\nNewly installed system, this system can be run under evaluate mode, or can be update to product mode later."
+	fi
+	confirm_box "Message" "\n System installed on ${dev}1 successfully, reboot now?"
+	[ $? -eq 0 ] && reboot
+	exit 0
+done

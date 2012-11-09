@@ -1,4 +1,5 @@
 list.*
+*.c32
 .src.version
 php64
 */base-base

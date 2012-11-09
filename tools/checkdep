@@ -15,7 +15,7 @@ do
 #	[ ! -x $file ] && continue
 	[ -z "`file $file|grep "ELF"`" ] && continue
 	[ $debug -eq 1 ] && echo "strip file $file ..."
-	#strip -g -S -d $file
+	strip -g -S -d $file
 	notfound=`ldd $file|grep 'not found'`
 	if [ ! -z "$notfound" ];then
 		echo "Lack libs:"

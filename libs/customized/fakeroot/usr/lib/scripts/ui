@@ -1,0 +1,63 @@
+#!/bin/sh
+# $Id: menubox9,v 1.1 2003/09/23 23:02:08 tom Exp $
+: ${DIALOG=dialog}
+tmpfile=/tmp/.dia.tmp.$$
+trap "rm -f $tmpfile" 0 1 2 5 15
+#These vars must be defined
+#choose_title 	:	box's title
+#choose_header	:	menu header text
+#choose_func	:	cmd to get menu text, first word will be tag, rest as item 
+
+#return these vars
+#choose_value	:	tag been choosen
+#choose_retval	:	return value of dialog
+
+menu_choose(){
+choose_title=$1
+choose_header=$2
+shift 2
+cat >$tmpfile <<EOF
+rm /tmp/.tmp.$$ -f
+exec 3>&2
+choose_value=\`$DIALOG \
+	--clear \
+	--no-cancel \
+	--title "$choose_title" \
+	--menu "$choose_header" \
+	13 70 5 \
+	`$*|sed 's/\([^ ]*\) *\(.*\)$/"\1" "\2"/g'|tr "\n" ' '` \
+2>&1 1>&3\`
+EOF
+. $tmpfile
+choose_retval=$?
+exec 3>&-
+echo $choose_value
+return $choose_retval
+}
+
+input_line(){
+exec 3>&2
+$DIALOG \
+	--clear \
+	--title "$1" \
+	--inputbox "$2" \ 10 70 "$3" \
+	2>&1 1>&3
+}
+
+confirm_box(){
+$DIALOG --clear \
+	--title "$1" \
+	--yesno "$2" 10 60		
+}
+msg_box()
+{
+$DIALOG --clear \
+	--title "$1" \
+	--msgbox "$2" 10 60		
+}
+text_box()
+{
+$DIALOG --clear \
+	--title "$1: $2" \
+	--textbox $3 15 70
+}
