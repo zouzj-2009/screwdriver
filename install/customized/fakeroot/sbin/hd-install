@@ -7,7 +7,7 @@ export datafs=ext3
 while true
 do
 	rm /tmp/.fresh_install 2>/dev/null
-	hd=`menu_choose "Choose Disk/Partition to Install ..." \
+	hd=`menu_choose "Choose Disk/Partition to Install/Update ..." \
 	"\nName    Type  Size  Mountpoint                    Model" \
 	lsblk -nl -o NAME,TYPE,SIZE,MOUNTPOINT,MODEL`
 	if [ -z "$hd" ];then
