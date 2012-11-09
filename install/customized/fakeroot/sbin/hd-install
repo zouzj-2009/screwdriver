@@ -242,7 +242,7 @@ sleep 1
 		fi
 	else
 		#create demo.sig to 
-		/sbin/signrootdisk.sh /tmp/demo.sig /dev/${dev} >/tmp/.signresult
+		/sbin/signrootdisk.sh /tmp/demo.sig ${dev} >/tmp/.signresult
 		msg_box "Message" "\nNewly installed system, this system can be run under evaluate mode, or can be update to product mode later."
 	fi
 	confirm_box "Message" "\n System installed on ${dev}1 successfully, reboot now?"
