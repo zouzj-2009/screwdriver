@@ -1,4 +1,5 @@
 #file /fakeroot/etc/udev/rules.d/70-persistent-cd.rules /etc/udev/rules.d/70-persistent-cd.rules 0644 0 0
+file /bin/ls /bin/ls 0755 0 0
 dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/scsi/megaraid 0755 0 0
 file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/scsi/megaraid/megaraid_sas.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/scsi/megaraid/megaraid_sas.ko 0744 0 0
 file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/scsi/megaraid/megaraid_mbox.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/scsi/megaraid/megaraid_mbox.ko 0744 0 0

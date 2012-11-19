@@ -1,6 +1,6 @@
 bridge-utils
 iproute
-util-linux-ng
+#util-linux-ng
 coreutils
 MAKEDEV
 iptables
