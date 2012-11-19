@@ -4,6 +4,6 @@ do
 	[ -L ../$dir ] && continue
 	[ ! -d ../$dir ] && continue
 	[ ! -d ../$dir/customized ] && continue
-	grep $1 ../$dir/customized/* 2>/dev/null
+	grep $1 ../$dir/customized/* -r 2>/dev/null
 	grep $1 ../$dir/meta/* 2>/dev/null
 done

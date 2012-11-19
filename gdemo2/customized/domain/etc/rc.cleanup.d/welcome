@@ -1,0 +1,10 @@
+#!/bin/bash
+clear
+cat <<EOF
+
+This Node setup Done. after all nodes set done. You can visit NAS by:
+
+`cat /tmp/.sharelinks`
+
+This is a DEMO version, for product version, please contact...
+EOF

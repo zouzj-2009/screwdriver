@@ -1,0 +1,513 @@
+#!/bin/bash
+#set -x
+. /domain/etc/init/setupfunctions
+alias tftp='busybox tftp'
+ifconfig lo 127.0.0.1
+#wrong dns setting is painful
+>/etc/resolv.conf
+[ ! -z "`grep PXEDEMO /proc/cmdline`" ] && is_cdbootup=0 || is_cdbootup=1
+#[ "`basename $0`" = "rc.demo-cd-setup" ] && is_cdbootup=1 || is_cdbootup=0
+
+#setup nodeid, subnet, weather or not as an pxe server to bootup other nodes.
+#setup other nodes pxe config
+#setup glusterfs bricks, if one disk is not initialized, ask to add as a brick
+#setup ctdb service configure by asking how many nodes added
+#only two 1000Mbps+ link will be used: one for gluster, one for ctdb
+
+#IP Policy
+#public IP
+#	main IP
+#	demo-cd node: SUBNET.20, (40 for shell, if any)
+#	demo-pxe node: SUBNET.21~23	#4 nodes MAX
+
+#	reserved IP for each node, 4 max per node: 30+(nodeip-20)*4~(nodeip-20)*4+3
+#internal node IP, on second(eth1) nic
+#	same as public IP, SUBNET is 192.9.0.0/16 default
+
+#storage Policy
+#	filesystem XFS
+#	ask for each disk without whole disk XFS filesystem, then format it as a brick
+#	brickname same as devname
+#	persistent config such as /var/lib/* will be stored in first brick! and restore when bootup next time, under $dir/.democonfig/.
+#	a lock volume will be created on demo-cd node, mount as ctdb lock dir
+#	all formatted as XFS and with gluster signed dev will be mount under /bricks/devname
+
+#default setting
+internal_subnet=192.9
+internal_nic=bond0
+public_net=10.10
+public_nic=bond0
+netmask=255.255.0.0
+product=`cat /domain/etc/product.name`
+shared_vol=_shared
+
+get_ip(){
+	ifconfig $1|grep 'inet addr'|cut -d':' -f2|cut -d' ' -f1
+}
+
+get_mask(){
+	ifconfig $1|grep 'inet addr'|cut -d':' -f4|cut -d' ' -f1
+}
+
+bond_setup(){
+	modprobe bonding  mode=6 miimon=50
+	ifconfig bond0 up
+}
+br_setup(){
+	br=$1
+	eth=$2
+	brctl addbr $br
+	brctl setfd $br 0
+	brctl addif $br $eth
+	#brctl stp $br on
+	#todo set ip here?
+	oldip=`get_ip $eth`
+	oldmask=`get_mask $eth`
+	[ ! -z $oldip ] && ifconfig $br $oldip netmask $oldmask -promisc up || ifconfig $br 0.0.0.0 -promisc up
+	ifconfig $eth 0.0.0.0 -promisc up
+}
+
+check_nics(){
+	oknic=0
+	for nic in `cat /proc/net/dev|grep 'eth[0-9]*:'|cut -d: -f1|sed 's/ //g'`
+	do
+		link=`ethtool $nic|grep 'Speed:'|cut -d' ' -f2`
+		if [ "$link" != '1000Mb/s' -a "$link" != "10000Mb/s" ];then
+			echo "NIC $nic link at speed $link, will not be used."	
+			continue
+		fi
+		let oknic++
+		if [ $oknic -eq 1 ];then
+			echo "NIC $nic link at speed $link, will be used for connection."
+			bond_setup
+			ifenslave bond0 $nic
+			ifconfig $nic up
+		elif [ $oknic -gt 1 ];then
+			echo "NIC $nic link at speed $link, will be used for connection"
+			ifenslave bond0 $nic
+			ifconfig $nic up
+		fi
+	done
+	if [ $oknic -lt 2 ];then
+		read -p "
+We need MORE 1000Mbps/10000Mbps ethernet link, only $oknic found. please check your server NIC links, the demo performance maybe not satisfied.
+
+press Enter key to continue ..."
+		
+	fi
+	return 0
+}
+
+get_pxe_nodeid(){
+	. /etc/pxeinfo
+	#sample
+	#dns=198.88.88.1
+	#interface=eth0
+	#ip=198.88.88.172
+	#lease=7200
+	#mask=24
+	#opt53=05
+	#router=198.88.88.1
+	#serverid=198.88.88.1
+	#subnet=255.255.255.0
+}
+
+get_public_subnet(){
+
+	public_subnet=`waitinput "
+Public network prefix? default is 10.10, thus, public network is 10.10.0.0/16, input your setting: " 10.10`
+	#todo check ip validation?
+	ifconfig $public_nic $public_subnet.100.1
+	return $?
+}
+
+check_mac(){
+	echo $1
+}
+
+get_pxe_entry(){
+	ip=$1
+	a=`echo $ip|cut -d. -f1`
+	b=`echo $ip|cut -d. -f2`
+	c=`echo $ip|cut -d. -f3`
+	d=`echo $ip|cut -d. -f4`
+	printf "%02X%02X%02X%02X" $a $b $c $d
+}
+
+allow_blank_mac=0
+setup_pxe_server(){
+	echo "
+Setup up PXE server ...
+"	
+mac1=#
+mac2=#
+mac3=#
+for nid in `seq 1 $1`
+do
+	mac=
+	while [ -z "${mac}" ]
+	do
+		read -p "MAC address of node$nid(x:x:x:x:x:x): " mac
+		[ -z "$mac" -a $allow_blank_mac -eq 0 ] && echo "	mac address can't be blank." && continue
+		[ -z "$mac" ] && echo "	node$nid will auto-determined by dhcp request" && mac="#hardware ethernet unknown #for node$nid" && break
+		nmac=`check_mac $mac`
+		[ -z "$nmac" -a $allow_blank_mac -eq 0 ] && echo "	mac address $mac is invalid." && continue
+		mac="hardware ethernet $nmac"
+		break;
+	done
+	declare mac$nid="$mac"
+done
+
+mkdir /tftproot/boot/ -p
+mkdir /tftproot/pxelinux.cfg/ -p
+mount /dev/cdrom /tftproot/boot
+cp -a /usr/share/syslinux/* /tftproot/ 2>/dev/null
+
+nc=$1
+let nc++
+
+for nid in `seq 1 $1`
+do
+	pip=$internal_subnet.0.$((20+nid))
+	pxentry=`get_pxe_entry $pip`
+
+cat >/tftproot/pxelinux.cfg/$pxentry <<EOF
+default menu.c32
+prompt 0
+menu title PXE BOOTUP
+MENU AUTOBOOT Staring $product Server in 10 seconds
+
+label bootlocal
+  menu label ^Local Boot
+  localboot 0
+  timeout 80
+  TOTALTIMEOUT 9000
+
+LABEL pxedemo
+  menu label ^$product Server
+  menu default
+  kernel /boot/isolinux/vmlinuz
+  append PXEDEMO splash NODEID=$nid NODECNT=$nc NETID=$public_subnet
+  
+LABEL hdt
+  menu label ^Hardware Detection
+  kernel hdt.c32
+  
+LABEL reboot
+  menu label ^Warm-Reboot 
+  com32 reboot.c32
+  append -w
+  
+LABEL reboot
+  menu label ^Cold-Reboot
+  com32 reboot.c32
+  
+EOF
+done
+
+cat >/tmp/.dhcpd.conf <<EOF
+allow booting;
+allow bootp;
+
+# Standard configuration directives...
+
+option domain-name "gstor.cn";
+option subnet-mask 255.255.0.0;
+option broadcast-address $internal_subnet.255.255;
+option domain-name-servers $internal_subnet.0.1;
+option routers $internal_subnet.0.1;
+
+# Group the PXE bootable hosts together
+subnet $internal_subnet.0.0 netmask 255.255.0.0{
+	range $internal_subnet.0.21 $internal_subnet.0.23;
+	deny unknown-clients;
+}
+
+group {
+	# PXE-specific configuration directives...
+	next-server $internal_subnet.0.20;
+	filename "/pxelinux.0";
+
+	# You need an entry like this for every host
+	# unless you're using dynamic addresses
+	host node1 {
+		$mac1;
+		fixed-address $internal_subnet.0.21;
+	}
+	host node2 {
+		$mac2; 
+		fixed-address $internal_subnet.0.22;
+	}
+	host node3 {
+		$mac3; 
+		fixed-address $internal_subnet.0.23;
+	}
+}
+EOF
+
+echo "tftp dgram udp nowait root tftpd tftpd -l /tftproot" >>/etc/inetd.conf
+/etc/init.d/inetd reload
+dhcpd -cf /tmp/.dhcpd.conf bond0
+
+}
+
+#let's begin
+clear
+read -p "
+This is a DEMO node for $product, we need ONE 1000Mbps/10000Mbps NIC, and at least TWO (more is better) local SCSI disk to accomplish this demostration, please check the server for these conditions.
+
+press Enter key to continue ..."
+
+#we need two giga/10g nic for demo
+while true
+do
+	check_nics && break
+done
+
+if [ $is_cdbootup -eq 1 ];then
+	while true
+	do
+		get_public_subnet && break
+	done
+	#CD boot need this!
+	nodeid=0
+	while true
+	do
+		nodeid=`waitinput "
+Is this the first node of $product? if not, given a number (1-3) as node ID " 0|sed 's/[^0-3]//g'`
+		[ -z "$nodeid" -o "$nodeid" -gt 3 -o "$nodeid" -lt 0 ] && continue
+		break;
+	done
+else
+	#PXE boot up
+	nodeid=`cat /proc/cmdline|sed "s/ /\n/g"|grep NODEID|cut -d= -f2`
+	public_subnet=`cat /proc/cmdline|sed "s/ /\n/g"|grep NETID|cut -d= -f2`
+	nodecount=`cat /proc/cmdline|sed "s/ /\n/g"|grep NODECNT|cut -d= -f2`
+fi
+
+nodename=node$nodeid
+hostname $nodename
+
+case $nodeid in
+0)
+	public_ip=$public_subnet.0.20
+	internal_ip=$internal_subnet.0.20
+	;;
+1)
+	public_ip=$public_subnet.0.21
+	internal_ip=$internal_subnet.0.21
+	;;
+2)
+	public_ip=$public_subnet.0.22
+	internal_ip=$internal_subnet.0.22
+	;;
+3)
+	public_ip=$public_subnet.0.23
+	internal_ip=$internal_subnet.0.23
+	;;
+esac
+
+ifconfig $internal_nic $internal_ip netmask 255.255.0.0 up
+ip addr add dev $public_nic $public_ip/16
+ifconfig $public_nic up
+
+#should we server the other nodes?
+if [ $is_cdbootup -eq 1 -a $nodeid -eq 0 ];then
+	othercount=`waitinput "
+How many other nodes will be setup for demostration? (The other nodes will be bootup by PXE, range 0-4, default is 1) " 1|sed 's/[^0-9]//g'`
+	nodecount=$((1+othercount))
+
+	if [ "$othercount" -ge 1 ];then
+		setup_pxe_server $othercount
+		read -p "
+The other nodes can be boot up by PXE now, please assure there is no other unused server or client using DHCP to request the ip for demo nodes during the demo nodes bootup!
+
+press Enter key to continue ..."
+	fi
+fi
+
+
+#now setup config files
+cat >/tmp/.demo.setup <<EOF
+nodecount=$nodecount
+nodeid=$nodeid
+nodename=$nodename
+public_nic=$public_nic
+public_ip=$public_ip
+public_subnet=$public_subnet
+internal_nic=$internal_nic
+internal_ip=$internal_ip
+internal_subnet=$internal_subnet
+shared_vol=$shared_vol
+EOF
+
+for ni in `seq 1 $nodecount`
+do
+	echo "\\\\$public_subnet.0."$((19+ni))"\demovol" >>/tmp/.sharelinks
+done
+
+#
+#setup ip
+#
+
+ifconfig $internal_nic $internal_ip netmask 255.255.0.0 up
+
+
+#read -p "press Enter key to continue storage setup ..."
+
+>/tmp/.demo.newbricks
+>/tmp/.demo.freebricks
+>/tmp/.demo.usedbricks
+
+getdiskinfo(){
+	dev=$1
+	fdisk -l /dev/$dev 2>/dev/null|grep ^Disk|grep -v iden
+}
+
+getusedinfo(){
+	dev=$1
+	cat /tmp/.demo.checking|grep "/dev/$dev[0-9]*"|sed 's/"//g'|sed 's/UUID.*TYPE=//g'
+}
+
+ask_for_brick(){
+	dev=$2
+	if [ "$1" = "clean" ];then
+		info=`getdiskinfo $dev`
+		cfm=`waitinput "Disk $dev($info) is FREE now, add to storage pool[yes/NO]? " no`
+		if [ "$cfm" = "yes" ];then
+			echo $dev >>/tmp/.demo.newbricks
+		else
+			echo $dev >>/tmp/.demo.freebricks
+		fi
+	else
+		info=`getdiskinfo $dev`
+		used=`getusedinfo $dev`
+		cfm=`waitinput "Disk $dev($info) is USED now: 
+$used
+
+Add $dev to storage pool[yes/NO]? " no`
+		if [ "$cfm" = "yes" ];then
+			echo $dev >>/tmp/.demo.newbricks
+		fi
+	fi
+}
+
+ask_re_format(){
+	dev=$1
+	cfm=`waitinput "Disk $dev is already formatted, need RE-FORMAT? (will CLEAN ALL DATA ON $dev!)[yes/NO] " no`
+	
+	[ "$cfm" != "yes" ] && return 1
+	umount /dev/$dev 
+	ret=$?
+	[ $ret -ne 0 ] && echo "$dev busy, will NOT be re-formatted." || echo "$dev will be formatted."
+	sync
+	[ $ret -ne 0 ] && return 2	#format fail!
+	return 0
+#todo: really need this?
+}
+
+brickno=0
+
+check_brick()
+{
+	sdev=$1
+	[ "`cat /domain/etc/rootdisk`" = $sdev ] && return 0
+	cat /tmp/.demo.checking|grep "/dev/$sdev[0-9]*" >/dev/null
+	if [ $? -ne 0 ];then
+		#it's free
+		ask_for_brick clean $sdev
+	else
+		blkid /dev/$sdev -t TYPE=xfs>/dev/null
+		if [ $? -eq 0 ];then
+			#try to mount it as an bricks
+			mkdir /bricks/$sdev -p
+			mount -t xfs -o rw,quota,noatime /dev/$sdev /bricks/$sdev
+			if [ $? -eq 0 ];then
+				#attr -l /bricks/$sdev|grep glusterfs.volume-id >/dev/null
+				[ -d /bricks/$sdev/.demo.added ] && (
+	ask_re_format $sdev 
+	ret=$?
+	if [ $ret -eq 0 ];then
+	#re-formated
+		echo $sdev >>/tmp/.demo.newbricks 
+	elif [ $ret -eq 1 ];then
+	#not-formated
+		echo $sdev >>/tmp/.demo.usedbricks && let brickno++ 
+		[ $brickno -eq 1 -a ! -f /tmp/.demo.savebrick ] && echo $sdev >/tmp/.demo.savebrick || :
+	fi
+) && return 0
+				#xfs but not bricks
+				#ask it first
+				umount /dev/$sdev
+				ask_for_brick dirty $sdev
+				return $?
+			fi
+		else
+			ask_for_brick dirty $sdev	
+		fi
+	fi
+}
+
+blkid >/tmp/.demo.checking 2>/dev/null
+
+#check block devs
+#result:	/tmp/.demo.checking, all
+#		/tmp/.demo.usedbricks, used, mounted
+#		/tmp/.demo.freebricks, free, but will not be used
+#		/tmp/.demo.newbricks, free, need to be added
+#		/tmp/.demo.savebrick, used, first brick, configuration, swap will be here.
+
+for sdev in `ls /sys/block|grep ^sd`
+do
+	check_brick $sdev
+done
+
+
+#format new bricks
+>/tmp/.demo.bricks-to-add
+newbcount=0
+echo 
+for sdev in `cat /tmp/.demo.newbricks`
+do
+	cfm=`waitinput "Disk $sdev will be formatted, ALL DATA ON $sdev WILL BE LOSE! would you like to do this?[yes/NO] " no`
+	[ "$cfm" != "yes" ] && continue;
+	echo "Format disk $sdev ..."
+	mkfs.xfs -f /dev/$sdev 2>/dev/null >/dev/null
+	[ $? -ne 0 ] && read -p "Fail to format $sdev, skip to add to pool." && continue
+	mkdir /bricks/$sdev -p
+	mount -t xfs -o rw,quota,noatime /dev/$sdev /bricks/$sdev 2>/dev/null >/dev/null	
+	[ $? -ne 0 ] && readp -p "Fail to add $sdev, skip to add to pool." && continue
+	mkdir -p /bricks/$sdev/.demo.added
+	echo "/bricks/$sdev" >>/tmp/.demo.bricks-to-add	
+	let brickno++
+	let newbcount++
+	[ $brickno -eq 1 -a ! -f /tmp/.demo.savebrick ] && echo $sdev >/tmp/.demo.savebrick || :	
+done
+
+#now initialize savebrick
+if [ -f /tmp/.demo.savebrick ];then
+	sdev=`cat /tmp/.demo.savebrick`
+	if [ -f /bricks/$sdev/.saved.tgz ];then
+		echo "Loading configuration ..."
+		tar zxf /bricks/$sdev/.saved.tgz -C /var/
+	else
+		mkdir /bricks/$sdev/demovol -p
+		attr -l /bricks/$sdev/demovol|grep gfid >/dev/null
+		if [ $? -eq 0 ];then
+			#aleady mounted
+			read -p "
+Saved configuration miss. demostration maybe unexpectable, to clean the enviroment, please re-format disk $sdev, and run demo again!
+
+press Enter to continue demostration ..."
+		else
+			echo "Fresh setup ..."
+			#newly setup, to setup volumes, later
+			touch /tmp/.demo.newly
+		fi
+	fi
+else
+	read -p "
+No disk avaliable for demostration!
+press Enter to continue, or press Ctrl+Alt+Del to reboot and config again ..."
+fi
+
