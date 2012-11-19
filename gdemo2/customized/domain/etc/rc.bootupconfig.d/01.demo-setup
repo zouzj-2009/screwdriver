@@ -175,7 +175,7 @@ cat >/tftproot/pxelinux.cfg/$pxentry <<EOF
 default menu.c32
 prompt 0
 menu title PXE BOOTUP
-MENU AUTOBOOT Staring $product Server in 10 seconds
+MENU AUTOBOOT Staring $product Node in 10 seconds
 
 label bootlocal
   menu label ^Local Boot
@@ -184,7 +184,7 @@ label bootlocal
   TOTALTIMEOUT 9000
 
 LABEL pxedemo
-  menu label ^$product Server
+  menu label ^$product Node
   menu default
   kernel /boot/isolinux/vmlinuz
   append PXEDEMO splash NODEID=$nid NODECNT=$nc NETID=$public_subnet

@@ -24,7 +24,15 @@ rm /croots/shared/dev/log
 mkdir -p /domain/vars
 rootdisk=`cat /domain/etc/rootdisk`
 if [ ! -z $rootdisk ];then
-	mount /dev/${rootdisk}2 /domain/vars
+	mountpoint /domain/etc/userdata >/dev/null 2>/dev/null
+	if [ $? -eq 0 ];then
+		mkdir /domain/etc/userdata/vars -p
+		rm /domain/vars
+		ln -s /domain/etc/userdata/vars /domain/vars
+	else
+		#try to mount 
+		mount /dev/${rootdisk}2 /domain/vars
+	fi
 fi
 
 

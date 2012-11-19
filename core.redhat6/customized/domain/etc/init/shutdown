@@ -1,5 +1,8 @@
 #!/bin/bash
+exec 2>/var/log/shutdown
 logger -t domain "System SHUTDOWN"
 /domain/sbin/run_dir /domain/etc/rc.shutdown.d
+/domain/etc/rc.domainsvcs stop
 /sbin/swapoff -a
-/bin/umount -a -r
+/bin/umount -a 
+/bin/busybox poweroff

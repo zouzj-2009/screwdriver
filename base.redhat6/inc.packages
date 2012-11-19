@@ -4,8 +4,8 @@ php64
 lc
 unionfs
 modularize
-mod-shell
-mod-testnode
+#mod-shell
+#mod-testnode
 samba
 python
 glfs

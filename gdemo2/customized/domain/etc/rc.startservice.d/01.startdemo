@@ -189,7 +189,7 @@ fi
 >/tmp/.demo.smbshare
 for volume in `gluster volume list|grep -v '^No volumes present'`
 do
-	mkdir /mnt/$volume
+	mkdir /mnt/$volume -p
 #	mount -t glusterfs $internal_ip:/$volume /mnt/$volume
 	echo "Mounting $volume ..."
 	mount -t glusterfs 127.0.0.1:/$volume /mnt/$volume

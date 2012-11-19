@@ -1,7 +1,15 @@
 #!/bin/bash
-echo "============== Domain Services ==================="
-dmesg >/var/log/dmesg
-/etc/init.d/syslog start
-[ ! -f /domain/config/services/no.sshd ] && /etc/init.d/sshd start
-[ ! -f /domain/config/services/no.inetd ] && /etc/init.d/inetd start
-[ ! -f /domain/config/services/no.httpd ] && /etc/init.d/httpd start
+if [ "$1" != "stop" ];then
+	echo "============== Domain Services ==================="
+	dmesg >/var/log/dmesg
+	/etc/init.d/syslog start
+	[ ! -f /domain/config/services/no.sshd ] && /etc/init.d/sshd start
+	[ ! -f /domain/config/services/no.inetd ] && /etc/init.d/inetd start
+	[ ! -f /domain/config/services/no.httpd ] && /etc/init.d/httpd start
+else
+	/etc/init.d/httpd stop
+	/etc/init.d/inetd stop
+	/etc/init.d/sshd stop
+	/etc/init.d/syslogd stop
+fi
+
