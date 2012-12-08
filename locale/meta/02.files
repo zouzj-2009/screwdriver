@@ -1,0 +1,20 @@
+#dir /fakeroot/etc/default 0755 0 0
+#file /fakeroot/etc/default/nss /etc/default/nss 0644 0 0
+#file /fakeroot/etc/gai.conf /etc/gai.conf 0644 0 0
+#file /fakeroot/usr/bin/catchsegv /usr/bin/catchsegv 0755 0 0
+#file /fakeroot/usr/bin/gencat /usr/bin/gencat 0755 0 0
+#file /fakeroot/usr/bin/getconf /usr/bin/getconf 0755 0 0
+#file /fakeroot/usr/bin/getent /usr/bin/getent 0755 0 0
+#file /fakeroot/usr/bin/iconv /usr/bin/iconv 0755 0 0
+#file /fakeroot/usr/bin/ldd /usr/bin/ldd 0755 0 0
+file /domain/usr/bin/locale /usr/bin/locale 0755 0 0
+file /domain/usr/bin/localedef /usr/bin/localedef 0755 0 0
+#file /fakeroot/usr/bin/rpcgen /usr/bin/rpcgen 0755 0 0
+#file /fakeroot/usr/bin/sprof /usr/bin/sprof 0755 0 0
+#file /fakeroot/usr/bin/tzselect /usr/bin/tzselect 0755 0 0
+#file /fakeroot/usr/lib/locale/locale-archive.tmpl /usr/lib/locale/locale-archive.tmpl 0644 0 0
+#file /fakeroot/usr/libexec/pt_chown /usr/libexec/pt_chown 0711 0 0
+#file /fakeroot/usr/sbin/build-locale-archive /usr/sbin/build-locale-archive 0700 0 0
+#file /fakeroot/usr/sbin/tzdata-update /usr/sbin/tzdata-update 0700 0 0
+#file /fakeroot/usr/sbin/zdump /usr/sbin/zdump 0755 0 0
+#file /fakeroot/usr/sbin/zic /usr/sbin/zic 0755 0 0

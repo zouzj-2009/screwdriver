@@ -19,5 +19,6 @@ netboot
 #pythonpkgs
 #libvirt
 vnetwork
+locale
 gdemo2
 debug

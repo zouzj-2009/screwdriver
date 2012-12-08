@@ -337,6 +337,7 @@ cat /tmp/.demo.smbshare >>/etc/samba/smb.conf
 #start samba
 /etc/init.d/ctdb start
 
+
 read -p "
 This node setup ok, when all nodes setup have been done, press Enter to saving the configuation for next time bootup.
 
@@ -351,7 +352,6 @@ do
 	probe_other
 	okcnt=$?
 done
-	
 
 #saving configuration
 save=`cat /tmp/.demo.savebrick`
@@ -360,3 +360,9 @@ if [ -d /bricks/$save ];then
 	tar zcf /bricks/$save/.saved.tgz lib/glusterd #ctdb
 	waitmsg "Configuration saved!"
 fi
+
+read -t 5 -p "Waiting server start ..."
+smbpasswd -a nobody -s <<EOF
+demo
+demo
+EOF

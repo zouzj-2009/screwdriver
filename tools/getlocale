@@ -1,0 +1,6 @@
+#!/bin/bash
+for loc in `cat locale.packed`
+do
+echo "packing locale $loc ..." >&2
+./tools/getdir /usr/share/locale/$loc "" /fakeroot|sed "s/\/\//\/usr\/share\/locale\/$loc\//g"|grep 'libc\|ES '
+done

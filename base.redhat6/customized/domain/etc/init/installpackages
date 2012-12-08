@@ -99,6 +99,9 @@ elif [ ! -z "`grep PXEDEMO /proc/cmdline`" ]; then #pxe boot demo
 	tftp -g -r /boot/license.txt $serverid
 	tftp -g -r /boot/demo.sig $serverid
 	[ ! -e /mnt/media/demo.sig ] && read -p "No demo.sig, packages will not be installed" && exit 1
+	rm downurl 2>/dev/null
+	tftp -g -r /downurl $serverid
+	downurl=`cat downurl 2>/dev/null`
 	/encrypted/checksig.sh /mnt/media/demo.sig demopkg >/domain/etc/packages
 	/encrypted/checksig.sh /mnt/media/demo.sig demoulic >/domain/etc/sysconfig/license.txt
 	/encrypted/checksig.sh /mnt/media/demo.sig demoklic >/domain/etc/sysconfig/license.dat
@@ -110,8 +113,13 @@ elif [ ! -z "`grep PXEDEMO /proc/cmdline`" ]; then #pxe boot demo
 	#download all pkgs
 	for pkg in `cat /domain/etc/packages|grep ^pkg\.`
 	do
-		tftp -g -r /boot/packages/$pkg $serverid	
-		[ $? -ne 0 ] && read -p "Bad pkg file $pkg, check your PXE Server!" && exit 1
+		if [ ! -z "$downurl" ];then
+			wget "$downurl/$pkg" 2>&1|grep -v "^Connecting "
+			[ $? -ne 0 ] && read -p "Bad pkg file $pkg, check your PXE Server!" && exit 1
+		else
+			tftp -g -r /boot/packages/$pkg $serverid	
+			[ $? -ne 0 ] && read -p "Bad pkg file $pkg, check your PXE Server!" && exit 1
+		fi
 	done
 	cd - >/dev/null
 	echo "PXE DEMO, enabled pkgs:"

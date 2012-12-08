@@ -1,0 +1,10 @@
+dir /fakeroot/usr/share/locale/en/LC_MESSAGES 0755 0 0
+dir /fakeroot/usr/share/locale/en_US/LC_MESSAGES 0755 0 0
+dir /fakeroot/usr/share/locale/zh/LC_MESSAGES 0755 0 0
+dir /fakeroot/usr/share/locale/zh_CN/LC_MESSAGES 0755 0 0
+file /fakeroot/usr/share/locale/zh_CN/LC_MESSAGES/libc.mo /usr/share/locale/zh_CN/LC_MESSAGES/libc.mo 0644 0 0
+dir /fakeroot/usr/share/locale/zh_CN.GB2312/LC_MESSAGES 0755 0 0
+dir /fakeroot/usr/share/locale/zh_HK/LC_MESSAGES 0755 0 0
+dir /fakeroot/usr/share/locale/zh_TW/LC_MESSAGES 0755 0 0
+file /fakeroot/usr/share/locale/zh_TW/LC_MESSAGES/libc.mo /usr/share/locale/zh_TW/LC_MESSAGES/libc.mo 0644 0 0
+dir /fakeroot/usr/share/locale/zh_TW.Big5/LC_MESSAGES 0755 0 0

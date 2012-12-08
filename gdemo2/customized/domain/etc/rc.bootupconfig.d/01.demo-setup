@@ -161,6 +161,9 @@ done
 mkdir /tftproot/boot/ -p
 mkdir /tftproot/pxelinux.cfg/ -p
 mount /dev/cdrom /tftproot/boot
+mkdir /etc/www -p
+ln -s /tftproot/boot/packages /etc/www/bootpkgs
+echo "http://$internal_subnet.0.20/bootpkgs" >/tftproot/downurl
 cp -a /usr/share/syslinux/* /tftproot/ 2>/dev/null
 
 nc=$1

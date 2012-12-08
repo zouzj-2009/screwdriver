@@ -6,5 +6,7 @@ This Node setup Done. after all nodes set done. You can visit NAS by:
 
 `cat /tmp/.sharelinks`
 
+Client Username/Password: nobody/demo
+
 This is a DEMO version, for product version, please contact...
 EOF
