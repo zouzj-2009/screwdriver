@@ -22,9 +22,9 @@ if [ -z "$found" -a "$1" != "nowait" ];then
 	exit 1
 else
 	echo "Check boot area ..."
-	fsck -T -a -y /dev/${found}1
+	fsck -T -a /dev/${found}1
 	echo "Check data area ..."
-	fsck -T -a -y /dev/${found}2
+	fsck -T -a /dev/${found}2
 fi
 echo "$found" >/domain/etc/rootdisk
 echo

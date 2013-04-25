@@ -67,16 +67,26 @@ if [ ! -z "`grep CDBOOT /proc/cmdline`" ]; then
 	/encrypted/checksig.sh /mnt/media/demo.sig demoklic >/domain/etc/sysconfig/license.dat
 	/encrypted/checksig.sh /mnt/media/demo.sig demopcfg >/domain/etc/product.cfg
 	[ $? -ne 0 ] && read -p "Bad sig file demo.sig, check your CD!" && exit 1
-	echo "Demo CD, enabled pkgs:"
-	cat /domain/etc/packages|sed "s/^/\t/g"
-	[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt
-	read -p "Press Enter to continue (Agree License) ..."
 	#should setup shared union fs after pkg installed
 #	[ -x /domain/sbin/democd-setup.sh ] && /domain/sbin/democd-setup.sh && read -p "Setup OK, Press Enter to continue ..."
 #	mkdir -p /domain/etc/userdata/sysconfig
 #	cp -a /domain/etc/default.config/* /domain/etc/userdata/sysconfig 
 
-	install_allpkgs
+	if [ ! -z "`grep INSTALLHD /proc/cmdline`" ];then
+		#only pkg.install 
+		if [ ! -e /pkgsrc/pkg.install -o ! -e /pkgsrc/pkg.libs ];then
+			read -p "Can't found Installation pkg, check your CD ..."
+		else
+			installpkg /pkgsrc/pkg.libs
+			installpkg /pkgsrc/pkg.install
+		fi
+	else
+		echo "Demo CD, enabled pkgs:"
+		cat /domain/etc/packages|sed "s/^/\t/g"
+		[ -e /mnt/media/license.txt ] && cat /mnt/media/license.txt
+		read -p "Press Enter to continue (Agree License) ..."
+		install_allpkgs
+	fi
 
 	umount /mnt/media
 

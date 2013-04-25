@@ -2,7 +2,7 @@
 export TERM=linux
 LIB=/usr/lib/scripts
 export bootfs=vfat
-export datafs=ext4
+export datafs=ext3
 . $LIB/ui
 while true
 do
@@ -11,7 +11,9 @@ do
 	"\nName    Type  Size  Mountpoint                    Model" \
 	lsblk -nl -o NAME,TYPE,SIZE,MOUNTPOINT,MODEL`
 	if [ -z "$hd" ];then
-		exit 1
+		confirm_box "Message" "\n Exit installation?"
+		[ $? -eq 0 ] && exit 1
+		continue	
 	fi
 	dev=`echo $hd|sed 's/[0-9]*$//g'`
 	if [ "$dev" != "$hd" -a "${dev}1" != "$hd" ];then
@@ -38,8 +40,8 @@ Clean Disk /dev/${dev}
 XXX
 EOF
 		touch /tmp/.fresh_install
-		dd if=/dev/zero of=/dev/$dev bs=512 count=1 2>/dev/null
-		blockdev --rereadpt /dev/$sdev 2>/dev/null
+		dd if=/dev/zero of=/dev/$dev bs=1M count=1 >/dev/null 2>/dev/null
+		blockdev --rereadpt /dev/$sdev 2>/dev/null >/dev/null
 cat <<EOF
 XXX
 10
@@ -57,10 +59,10 @@ a
 w
 q
 EOF
-		blockdev --rereadpt /dev/$dev 2>/dev/null
+		blockdev --rereadpt /dev/$dev 2>/dev/null >/dev/null
 cat <<EOF
 XXX
-18
+15
 Create data partitions on /dev/${dev}
 XXX
 EOF
@@ -75,20 +77,19 @@ w
 q
 EOF
 			blockdev --rereadpt /dev/$dev 2>/dev/null
-			mkfs.$datafs /dev/${dev}2 2>/dev/null
+			mkfs.$datafs -L DATA /dev/${dev}2 >/tmp/.rootfmt.data 2>/dev/null
 		fi
 cat <<EOF
 XXX
-16
+20
 Create swap partitions on /dev/${dev}
 XXX
 EOF
 		if [ ! -z "$swapsize" ];then
-			spsize=+$swapsize
+			spsize="+$swapsize"
 		else
 			spsize="\n"
 		fi
-
 		fdisk /dev/$dev >>/tmp/.fdisk 2>&1 <<EOF
 n
 p
@@ -98,9 +99,9 @@ $spsize
 w
 q
 EOF
-		blockdev --rereadpt /dev/$dev 2>/dev/null
-		if [ ! -z "$swapsize" ];then
-			mkswap /dev/${dev}3
+		blockdev --rereadpt /dev/$dev 2>/dev/null >/dev/null
+		if [ ! -z "$swapsize" -a -e /dev/${dev}3 ];then
+			mkswap /dev/${dev}3 >/dev/null
 		fi
 	fi
 	mkdir /boot -p
@@ -111,7 +112,7 @@ Check filesystem on /dev/${dev}1
 XXX
 EOF
 
-	mount -t $bootfs /dev/${dev}1 /boot  2>/dev/null
+	mount -t $bootfs /dev/${dev}1 /boot >/dev/null 2>/dev/null
 	if [ $? -ne 0 ];then
 #		confirm_box "Warning" "\n  Disk ${dev}1 need to be format, are you sure?"
 #		[ $? -ne 0 ] && continue
@@ -122,7 +123,7 @@ Format partition /dev/${dev}1 ...
 XXX
 EOF
 		touch /tmp/.fresh_install
-		mkfs.$bootfs /dev/${dev}1 2>/dev/null
+		mkfs.$bootfs -n BOOT /dev/${dev}1 >/tmp/.rootfmt.boot 2>/dev/null
 		if [ $? -ne 0 ];then
 			exit 2
 			#msg_box "Warning" "\n Format Disk ${dev}1 fail! check your setting or choose another disk."
@@ -137,7 +138,7 @@ Install boot loader ...
 XXX
 EOF
 sleep 1
-		mount -t $bootfs /dev/${dev}1 /boot 2>/dev/null
+		mount -t $bootfs /dev/${dev}1 /boot 2>/dev/null >/dev/null
 		if [ $? -ne 0 ];then
 			exit 3
 			#msg_box "Warning" "\n Format Disk ${dev}1 fail! check your setting or choose another disk."
@@ -233,8 +234,8 @@ sleep 1
 		if [ $? -eq 0 ];then
 			( 
 				echo "Format /dev/${dev}2 ..."
-				mkfs.$datafs /dev/${dev}2
-			)|$DIALOG --processbox 20 60
+				mkfs.$datafs -L DATA /dev/${dev}2
+			)|$DIALOG --progressbox 20 60
 			ret=${PIPESTATUS[0]}
 			sleep 1
 			if [ $ret -ne 0 ];then
@@ -250,5 +251,7 @@ sleep 1
 	fi
 	confirm_box "Message" "\n System installed on ${dev}1 successfully, reboot now?"
 	[ $? -eq 0 ] && reboot
+	confirm_box "Message" "\n Install an other copy?"
+	[ $? -eq 0 ] && continue
 	exit 0
 done
