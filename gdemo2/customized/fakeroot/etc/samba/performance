@@ -1,0 +1,10 @@
+[global]
+	strict allocate = yes
+	socket options = TCP_NODELAY IPTOS_LOWDELAY
+	aio read size = 16384
+	aio write size = 16384
+	write cache size = 262144
+	strick locking = no
+	use sendfile = yes
+	allocation roundup size = 1048576
+	min receivefile size = 16384

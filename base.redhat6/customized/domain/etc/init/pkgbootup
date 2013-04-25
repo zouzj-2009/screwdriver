@@ -5,4 +5,5 @@ do
 	[ -e /etc/pkgs/$pkgname/booted ] && refresh=1 || refresh=0
 	[ $refresh -eq 1 -a -x /etc/pkgs/$pkgname/bootup ] && /etc/pkgs/$pkgname/bootup
 	[ $refresh -eq 0 -a -x /etc/pkgs/$pkgname/update ] && /etc/pkgs/$pkgname/update
+	touch /etc/pkgs/$pkgname/booted
 done

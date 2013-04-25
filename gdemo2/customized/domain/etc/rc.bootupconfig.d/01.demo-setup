@@ -1,4 +1,7 @@
 #!/bin/bash
+modprobe megaraid_sas
+modprobe mptsas
+modprobe mpt2sas
 #set -x
 . /domain/etc/init/setupfunctions
 alias tftp='busybox tftp'
@@ -50,7 +53,7 @@ get_mask(){
 }
 
 bond_setup(){
-	modprobe bonding  mode=6 miimon=50
+	modprobe bonding  mode=6 miimon=50 updelay=100 downdelay=100
 	ifconfig bond0 up
 }
 br_setup(){

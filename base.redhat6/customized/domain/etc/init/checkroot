@@ -20,6 +20,11 @@ done
 if [ -z "$found" -a "$1" != "nowait" ];then
 	[ -z "`grep CDBOOT /proc/cmdline`" ] && read -t 30 -p "Root Disk Not Found! Press Enter to continue ..."
 	exit 1
+else
+	echo "Check boot area ..."
+	fsck -T -a -y /dev/${found}1
+	echo "Check data area ..."
+	fsck -T -a -y /dev/${found}2
 fi
 echo "$found" >/domain/etc/rootdisk
 echo

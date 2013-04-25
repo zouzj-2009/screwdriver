@@ -1,4 +1,11 @@
 #!/bin/bash
+[ ! -z `cat /proc/cmdline|grep USBOOT` ] && read -t 5 -p "Waitting USB devices ..."
 echo "Searching root disk ..."
 /domain/etc/init/checkroot
-[ $? -ne 0 ] && touch /domain/etc/rootdisk 
+if [ $? -ne 0 ];then
+	if [ ! -z `cat /proc/cmdline|grep USBOOT` ];then
+		read -t 10 -p "Wait USB devices 10 seconds, and try again ..."
+		/domain/etc/init/checkroot
+	fi
+fi
+touch /domain/etc/rootdisk 

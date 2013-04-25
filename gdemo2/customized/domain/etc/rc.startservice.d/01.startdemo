@@ -332,6 +332,7 @@ cat >/etc/samba/smb.conf <<EOF
 	use mmap = no
 	nt acal support = yes
 	ea support = yes
+	include = /etc/samba/performance
 EOF
 cat /tmp/.demo.smbshare >>/etc/samba/smb.conf
 #start samba
