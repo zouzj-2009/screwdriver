@@ -2,6 +2,12 @@
 modprobe megaraid_sas
 modprobe mptsas
 modprobe mpt2sas
+#up ethlinks
+for eth in `ls /sys/class/net|grep eth`
+do
+	ifconfig $eth up
+done
+read -t2 -p "Waiting ethernet link up ..."
 #set -x
 . /domain/etc/init/setupfunctions
 alias tftp='busybox tftp'
