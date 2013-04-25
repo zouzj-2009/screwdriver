@@ -1,8 +1,8 @@
 #!/bin/bash
 export TERM=linux
 LIB=/usr/lib/scripts
-export bootfs=ext3
-export datafs=ext3
+export bootfs=vfat
+export datafs=ext4
 . $LIB/ui
 while true
 do
@@ -171,6 +171,9 @@ sleep 1
 	fi
 	mkdir /boot/boot/grub -p
 	hd=`cat /boot/boot/grub/device.map|grep /dev/${dev}$|awk '{print $1}'|sed 's/[()]//g'`
+	#usb boot device
+	[ "`cat /sys/block/${dev}/removable`" = 1 ] && hd=hd0
+	[ "`cat /sys/block/${dev}/removable`" = 1 ] && isusb=USBOOT
 	cat >/boot/boot/grub/grub.conf <<EOF
 #boot=/dev/${dev}
 default=0
@@ -179,10 +182,10 @@ timeout=5
 hiddenmenu
 title Go!
 	root ($hd,0)
-	kernel /vmlinuz
+	kernel /vmlinuz $isusb
 title Go(debug)
 	root ($hd,0)
-	kernel /vmlinuz vga=6
+	kernel /vmlinuz $isusb vga=6
 EOF
 	#copy files via CD or PXE
 	mkdir /media -p
