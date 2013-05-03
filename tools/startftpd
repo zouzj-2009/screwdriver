@@ -1,0 +1,44 @@
+#!/bin/bash
+cat >/tmp/dhcpd.conf <<EOF
+allow booting;
+allow bootp;
+
+# Standard configuration directives...
+
+option domain-name "gstor.cn";
+option subnet-mask 255.255.0.0;
+option broadcast-address 192.9.255.255;
+option domain-name-servers 192.9.0.1;
+option routers 192.9.0.1;
+
+# Group the PXE bootable hosts together
+subnet 192.9.0.0 netmask 255.255.0.0{
+	range 192.9.0.21 192.9.0.23;
+	deny unknown-clients;
+}
+
+group {
+	# PXE-specific configuration directives...
+	next-server 192.9.0.20;
+	filename "/pxelinux.0";
+
+	# You need an entry like this for every host
+	# unless you're using dynamic addresses
+	host node1 {
+		hardware ethernet 00:0c:29:e0:34:03;
+		fixed-address 192.9.0.21;
+	}
+	host node2 {
+		hardware ethernet 00:0c:29:16:aa:bc; 
+		fixed-address 192.9.0.22;
+	}
+	host node3 {
+		hardware ethernet 00:0c:29:16:aa:bd; 
+		fixed-address 192.9.0.23;
+	}
+}
+
+EOF
+ifconfig eth0 192.9.0.100
+dhcpd -cf /tmp/dhcpd.conf eth0
+udpsvd -vE 0.0.0.0 69 tftpd /tftproot/ &

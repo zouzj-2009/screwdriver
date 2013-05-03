@@ -1,4 +1,5 @@
 #!/bin/bash
+debugconsole /dev/tty9 >/dev/null 2>/dev/null &
 modprobe megaraid_sas
 modprobe mptsas
 modprobe mpt2sas

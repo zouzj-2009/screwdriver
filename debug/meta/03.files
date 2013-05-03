@@ -1,2 +1,4 @@
 file /fakeroot/usr/bin/netperf /usr/bin/netperf 0755 0 0
 file /fakeroot/usr/bin/netserver /usr/bin/netserver 0755 0 0
+file /fakeroot/usr/bin/fio /usr/local/bin/fio 0755 0 0
+file /fakeroot/usr/bin/fio_generate_plots /usr/local/bin/fio_generate_plots 0755 0 0

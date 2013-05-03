@@ -187,6 +187,9 @@ title Go!
 title Go(debug)
 	root ($hd,0)
 	kernel /vmlinuz $isusb vga=6
+title Liev Demo #WARN! May Destroy your data!
+	root ($hd,0)
+	kernel /vmlinuz $isusb LIVEDEMO
 EOF
 	#copy files via CD or PXE
 	mkdir /media -p
