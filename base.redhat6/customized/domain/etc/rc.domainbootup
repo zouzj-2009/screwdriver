@@ -1,7 +1,9 @@
 #!/bin/bash
 #set -x
 [ -z "`cat /domain/etc/rootdisk`" ] && exit 0
+#Don't mount config fs when live or install
 [ ! -z "`grep LIVEDEMO /proc/cmdline`" ] && exit 0
+[ ! -z "`grep INSTALLHD /proc/cmdline`" ] && exit 0
 
 . /domain/etc/init/setupfunctions
 [ ! -z "$1" ] && dev=$1 || dev=`cat /domain/etc/rootdisk`

@@ -6,6 +6,8 @@ php64
 demo-cd/boot-cd/packages/*
 demo-cd/boot-cd/isolinux/vmlinuz
 demo-cd/boot-cd/demo.sig
+demo-cd/ver
+demo-cd/sourcever
 build-from-source*
 */base
 */initramfs/*
