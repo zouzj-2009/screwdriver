@@ -1,0 +1,7 @@
+#!/bin/bash
+[ -z "$1" ] && con="/dev/tty5" || con="$1"
+while true
+do
+login 2>&1 >$con <$con
+sleep 1
+done
