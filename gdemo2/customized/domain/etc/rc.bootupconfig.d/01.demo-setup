@@ -3,6 +3,10 @@ debugconsole /dev/tty9 >/dev/null 2>/dev/null &
 modprobe megaraid_sas
 modprobe mptsas
 modprobe mpt2sas
+[ ! -f /tmp/.netmon ] && (
+	netmon >/dev/tty8 &
+	touch /tmp/.netmon
+)
 #up ethlinks
 for eth in `ls /sys/class/net|grep eth`
 do
@@ -272,8 +276,18 @@ This is a DEMO node for $product, we need ONE 1000Mbps/10000Mbps NIC, and at lea
 press Enter key to continue ..."
 
 #we need two giga/10g nic for demo
+usebond=1
 while true
 do
+	read -p "Use Bonding?[yes/NO] " cfm
+	if [ "$cfm" = "yes" ];then
+		usebond=1
+	else
+		internal_nic=eth0
+		public_nic=eth0
+		usebond=0
+		break;
+	fi
 	check_nics && break
 done
 
@@ -300,34 +314,52 @@ fi
 
 nodename=node$nodeid
 hostname $nodename
+startip=20
+nics=`ls /sys/class/net|grep ^eth|wc -l`
 
 case $nodeid in
 0)
+	startip=20
 	public_ip=$public_subnet.0.20
 	internal_ip=$internal_subnet.0.20
 	;;
 1)
-	public_ip=$public_subnet.0.21
-	internal_ip=$internal_subnet.0.21
+	startip="$((startip+nics*1))"
+	public_ip=$public_subnet.0.$startip
+	internal_ip=$internal_subnet.0.$startip
 	;;
 2)
-	public_ip=$public_subnet.0.22
-	internal_ip=$internal_subnet.0.22
+	startip="$((startip+nics*2))"
+	public_ip=$public_subnet.0.$startip
+	internal_ip=$internal_subnet.0.$startip
 	;;
 3)
-	public_ip=$public_subnet.0.23
-	internal_ip=$internal_subnet.0.23
+	startip="$((startip+nics*3))"
+	public_ip=$public_subnet.0.$startip
+	internal_ip=$internal_subnet.0.$startip
 	;;
 esac
 
-ifconfig $internal_nic $internal_ip netmask 255.255.0.0 up
-ip addr add dev $public_nic $public_ip/16
-ifconfig $public_nic up
+if [ $usebond -eq 1 ];then
+	ifconfig $internal_nic $internal_ip netmask 255.255.0.0 up
+	ip addr add dev $public_nic $public_ip/16
+	ifconfig $public_nic up
+else
+	ip addr add dev $internal_nic $internal_ip/16
+	thisip=$startip
+	for eth in `ls /sys/class/net|grep eth`
+	do
+		echo 1 >/proc/sys/net/ipv4/conf/$eth/arp_ignore
+		ifconfig $eth $public_subnet.0.$thisip up
+		let thisip++
+	done
+	/domain/sbin/updateip
+fi
 
 #should we server the other nodes?
 if [ $is_cdbootup -eq 1 -a $nodeid -eq 0 ];then
 	othercount=`waitinput "
-How many other nodes will be setup for demostration? (The other nodes will be bootup by PXE, range 0-4, default is 1) " 1|sed 's/[^0-9]//g'`
+How many other nodes will be setup for demostration? (The other nodes will be bootup by PXE, range 0-4, default is 0) " 0|sed 's/[^0-9]//g'`
 	nodecount=$((1+othercount))
 
 	if [ "$othercount" -ge 1 ];then
@@ -342,6 +374,7 @@ fi
 
 #now setup config files
 cat >/tmp/.demo.setup <<EOF
+usebond=$usebond
 nodecount=$nodecount
 nodeid=$nodeid
 nodename=$nodename
@@ -352,6 +385,8 @@ internal_nic=$internal_nic
 internal_ip=$internal_ip
 internal_subnet=$internal_subnet
 shared_vol=$shared_vol
+startip=$startip
+nics=$nics
 EOF
 
 for ni in `seq 1 $nodecount`
@@ -479,13 +514,29 @@ done
 #format new bricks
 >/tmp/.demo.bricks-to-add
 newbcount=0
+agcount=4
+sunit=256
+sunum=7
+>/tmp/.formatcmds
 echo 
 for sdev in `cat /tmp/.demo.newbricks`
 do
 	cfm=`waitinput "Disk $sdev will be formatted, ALL DATA ON $sdev WILL BE LOSE! would you like to do this?[yes/NO] " no`
 	[ "$cfm" != "yes" ] && continue;
+	agcount=`waitinput "D-Factor?(default is $agcount) " $agcount|sed 's/[^0-9]//g'`
+	[ -z "$agcount" ] && agcount=4
+	sunit=`waitinput "$sdev underlying RAID strip size?($((sunit/2))KB) " $((sunit/2))|sed 's/[^0-9]//g'`
+	[ -z "$sunit" ] && sunit=256 || sunit=$((sunit*2))
+	sunum=`waitinput "$sdev underlying RAID disk number(Exclude parity disk, $sunum) " $sunum|sed 's/[^0-9]//g'`
+	[ -z "$sunum" ] && sunum=7 
 	echo "Format disk $sdev ..."
-	mkfs.xfs -f /dev/$sdev 2>/dev/null >/dev/null
+	if [ $sunit -eq 0 -o $sunum -eq 0 ];then
+		echo "mkfs.xfs -f -d agcount=$agcount /dev/$sdev 2>/dev/null >/dev/null" >>/tmp/.formatcmds
+		mkfs.xfs -f -d agcount=$agcount /dev/$sdev 2>>/tmp/.formatcmds >/dev/null
+	else
+		echo "mkfs.xfs -f -d agcount=$agcount,sunit=$sunit,swidth=$((sunit*sunum)) /dev/$sdev 2>/dev/null >/dev/null" >>/tmp/.formatcmds
+		mkfs.xfs -f -d agcount=$agcount,sunit=$sunit,swidth=$((sunit*sunum)) /dev/$sdev 2>>/tmp/.formatcmds >/dev/null
+	fi
 	[ $? -ne 0 ] && read -p "Fail to format $sdev, skip to add to pool." && continue
 	mkdir /bricks/$sdev -p
 	mount -t xfs -o rw,quota,noatime /dev/$sdev /bricks/$sdev 2>/dev/null >/dev/null	

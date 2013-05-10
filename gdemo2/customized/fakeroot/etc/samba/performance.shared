@@ -8,7 +8,6 @@
 #	strick locking = no
 	use sendfile = yes
 #	allocation roundup size = 1048576
-#	min receivefile size = 65536
 	min receivefile size = 16384
 	max xmit = 65536
 #	vfs objects = readahead

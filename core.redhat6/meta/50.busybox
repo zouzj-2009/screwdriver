@@ -254,7 +254,6 @@ slink /fakeroot/sbin/mkswap ../bin/busybox 0755 0 0
 slink /fakeroot/sbin/modprobe ../bin/busybox 0755 0 0
 slink /fakeroot/sbin/watchdog ../bin/busybox 0755 0 0
 slink /fakeroot/sbin/ifenslave ../bin/busybox 0755 0 0
-slink /fakeroot/sbin/sysctl ../bin/busybox 0755 0 0
 slink /fakeroot/sbin/syslogd ../bin/busybox 0755 0 0
 slink /fakeroot/sbin/mke2fs ../bin/busybox 0755 0 0
 slink /fakeroot/sbin/freeramdisk ../bin/busybox 0755 0 0

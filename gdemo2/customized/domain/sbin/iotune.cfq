@@ -1,0 +1,23 @@
+#!/bin/bash
+[ -z "$1" ] && echo "iotune.cfq SDX" && exit 1
+dev=$1
+dir=/sys/block/$dev/queue/iosched/
+if [ -z "$2" ];then
+	echo 0 	>$dir/slice_idle		#default 8
+	echo 40 >$dir/fifo_expire_async		#default 250
+	echo 40 >$dir/fifo_expire_sync		#default 125
+	echo 32 >$dir/quantum			#default 8
+	echo 8	>$dir/slice_async_rq		#default 2 
+	echo 10	>$dir/slice_async		#default 40
+	echo 20	>$dir/slice_sync		#default 100
+else
+	#restore default
+	echo 8 	>$dir/slice_idle		#default 8
+	echo 250 >$dir/fifo_expire_async	#default 250
+	echo 125 >$dir/fifo_expire_sync		#default 125
+	echo 8 >$dir/quantum			#default 8
+	echo 2	>$dir/slice_async_rq		#default 2 
+	echo 40	>$dir/slice_async		#default 40
+	echo 100 >$dir/slice_sync		#default 100
+fi
+

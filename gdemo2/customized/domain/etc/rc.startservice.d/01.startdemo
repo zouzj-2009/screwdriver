@@ -3,6 +3,9 @@
 #shared_brick=/bricks/_shared
 #shared_vol=_shared
 
+
+
+
 [ ! -f /tmp/.demo.savebrick ] && echo "need disks to demo ..." && exit
 create_uuid(){
 
@@ -11,11 +14,72 @@ create_uuid(){
 	echo UUID=`uuidgen` >$uuidfile
 }
 
+. /tmp/.demo.setup
+if [ $nodecount -gt 1 ];then
+	shared=`waitinput "Use shared mode ?[YES/no] " yes`
+else
+	shared=`waitinput "Use shared mode ?[yes/NO] " no`
+fi
+
+if [ "$shared" != "yes" ];then
+	#local fs shared only!
+	>/tmp/.sharelinks
+	sched=`waitinput "Choose elevator?[Enter for default, or input yours] " cfq`
+	readahd=`waitinput "Buffer SIZE?[4096] " 4096|sed 's/[^0-9]//g'`
+	[ -z "$readahd" ] && readahd=4096
+
+cat >/etc/samba/smb.conf <<EOF
+[global]
+	host msdfs = yes
+	include = /etc/samba/performance
+	max protocol = smb2
+EOF
+	for dir in `ls /bricks/`
+	do
+		[ ! -d /bricks/$dir/.demo.added ] && continue
+		blockdev --setra $readahd /dev/$dir
+		echo "$sched" >/sys/block/$dir/queue/scheduler
+		[ -x /domain/sbin/iotune.$sched ] && /domain/sbin/iotune.$sched $dir
+		mkdir -p /bricks/$dir/test 
+		chmod 777 /bricks/$dir/test
+		echo "$public_subnet.0.$startip\\${dir}_0~$((nics-1))" >>/tmp/.sharelinks
+cat >>/etc/samba/smb.conf <<EOF
+[$dir]
+	path = /bricks/$dir/test
+	public = yes
+	writeable = yes
+
+EOF
+		[ $usebond -eq 1 ] && continue
+		#create proxys
+		thisip=$startip
+		count=0
+		for eth in `ls /sys/class/net|grep ^eth`
+		do
+			cat >>/etc/samba/smb.conf <<EOF
+[${dir}_${count}]
+	msdfs proxy = $public_subnet.0.${thisip}\\$dir
+	msdfs root = yes
+
+EOF
+			let thisip++
+			let count++
+		done
+	done
+	/etc/init.d/smb start
+	sleep 1
+smbpasswd -a nobody -s <<EOF
+demo
+demo
+EOF
+	exit 0
+
+fi
+
 create_uuid
 mkdir /var/log/glusterd -p
 /etc/init.d/glusterd start
 
-. /tmp/.demo.setup
 
 shared_brick=/bricks/`cat /tmp/.demo.savebrick`/$shared_vol
 
@@ -323,6 +387,7 @@ CTDB_DEBUGLEVEL=ERR
 
 EOF
 
+[ "$shared" = "yes" ] && perf=performance.shared || perf=performance
 cat >/etc/samba/smb.conf <<EOF
 [global]
 	clustering = yes
@@ -332,7 +397,7 @@ cat >/etc/samba/smb.conf <<EOF
 	use mmap = no
 	nt acal support = yes
 	ea support = yes
-	include = /etc/samba/performance
+	include = /etc/samba/$perf
 EOF
 cat /tmp/.demo.smbshare >>/etc/samba/smb.conf
 #start samba
