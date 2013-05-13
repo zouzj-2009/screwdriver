@@ -12,3 +12,4 @@
 	max xmit = 65536
 #	vfs objects = readahead
 #	readahead:size = 131072
+	max protocol = smb2

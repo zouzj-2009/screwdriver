@@ -32,7 +32,6 @@ cat >/etc/samba/smb.conf <<EOF
 [global]
 	host msdfs = yes
 	include = /etc/samba/performance
-	max protocol = smb2
 EOF
 	for dir in `ls /bricks/`
 	do
