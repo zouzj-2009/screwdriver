@@ -1,0 +1,4 @@
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/cifs/cifs.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/crypto/des_generic.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/crypto/ecb.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/ecb.ko 0744 0 0
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/crypto/md4.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/md4.ko 0744 0 0

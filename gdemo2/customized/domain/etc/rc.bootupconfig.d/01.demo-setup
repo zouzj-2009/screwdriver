@@ -1,5 +1,10 @@
 #!/bin/bash
 debugconsole /dev/tty9 >/dev/null 2>/dev/null &
+#tune nics
+rmmod e1000e
+modprobe e1000e TxAbsIntDelay=10 TxIntDelay=4
+
+
 modprobe megaraid_sas
 modprobe mptsas
 modprobe mpt2sas
