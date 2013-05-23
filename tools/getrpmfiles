@@ -12,7 +12,7 @@ getfileloc()
 		echo $prefix$file
 	fi
 }
-rpm -q ${1} >&2
+echo "rpm[ `rpm -q ${1}` ]" >&2
 [ $? -ne 0 ] && exit 1
 echo "#rpm package `rpm -q ${1}`"
 for file in `rpm -ql ${1}| grep -v '^/usr/share/man\|^/usr/share/info\|^/usr/share/awk\|^/usr/share/locale\|^/usr/share/doc\|^/usr/lib/pkgconfig\|^/usr/lib64/pkgconfig'|grep -v '\.h$\|\.a$\|\.static\|/lib[^/]*\.a\.[0-9\.]*'`

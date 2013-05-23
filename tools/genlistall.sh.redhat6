@@ -19,6 +19,23 @@ do
 		fi
 		continue
 	fi
+	#get kernel modules from list 
+	[ ! -z "`echo $file|grep '^[0-9]*\.mod\.'`" ] && (
+		for mod in `cat meta/$file`
+		do
+			[ -z "$mod" ] && continue
+			echo mod[ $mod ] >&2
+			file=`modinfo $mod|grep ^filename:|awk '{print $2}'`
+			[ -z "$file" ] && echo "module [$mod] not found!" >&2 && exit 1
+			echo "
+#[[ $mod ]]" >>list.modinfo 
+			modinfo $mod>>list.modinfo
+#file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/scsi/megaraid/megaraid_mbox.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/scsi/megaraid/megaraid_mbox.ko 0744 0 0
+			echo "file /fakeroot/$file $file 0744 0 0"
+		done
+	) && continue 
+	
+	#just cat file
 	[ -z "`echo $file|grep '^[0-9]*\.rpm\.'`" ] && cat $meta/$file && continue
 	for rpm in `cat $meta/$file|grep -v ^#`
 	do

@@ -5,6 +5,8 @@ export PATH=/domain/usr/local/sbin:/domain/usr/sbin:/domain/sbin:/domain/usr/loc
 dmesg|grep '^Check rootfs'|awk '{print $NF}' >/etc/rootver
 [ -d /encrypted ] && cp /etc/rootver /encrypted/rootver
 [ -d /domain ] && cp /etc/rootver /domain/rootver
+clear
+cat /etc/product.banner 2>/dev/null
 echo "Bootup `cat /rootpkg`-`cat /etc/rootver` ..."
 
 echo Mounting proc filesystem
@@ -75,10 +77,16 @@ ifconfig lo 127.0.0.1 up
 #modlues && udev stuff
 [ ! -z "`grep BOOTDEBUG /proc/cmdline`" ] && echo "Boot Debug Shell (before udev) ..." && /bin/cttyhack /domain/bin/xsh
 
-[ -f /modules.tgz ] && echo -n "Setup modules ..." && tar zxf /modules.tgz -C / 2>/dev/null >/dev/null && echo " OK!" || echo " Fail!"
-rm /modules.tgz 2>/dev/null
+[ -f /modules.tgz ] && (
+	echo -n "Setup modules ..." && tar zxf /modules.tgz -C / 2>/dev/null >/dev/null && echo " OK!" || echo " Fail!"
+	rm /modules.tgz 2>/dev/null
+)
 
+#disable noise printk
+printk=`cat /proc/sys/kernel/printk`
+[ -z "`grep BOOTDEBUG /proc/cmdline`" ]  && echo 1 >/proc/sys/kernel/printk
 start_udev
+[ -z "`grep BOOTDEBUG /proc/cmdline`" ]  && echo $printk >/proc/sys/kernel/printk
 
 #mount auxfs
 mount shmfs
