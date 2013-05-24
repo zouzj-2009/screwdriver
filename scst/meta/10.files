@@ -1,0 +1,5 @@
+file /fakeroot/usr/local/bin/scst/fileio_tgt /usr/local/bin/scst/fileio_tgt 0755 0 0
+file /fakeroot/usr/local/share/perl5/SCST/SCST.pm /usr/local/share/perl5/SCST/SCST.pm 0444 0 0
+file /fakeroot/usr/local/sbin/scstadmin /usr/local/sbin/scstadmin 0755 0 0
+file /fakeroot/usr/local/sbin/iscsi-scst-adm /usr/local/sbin/iscsi-scst-adm 0755 0 0
+file /fakeroot/usr/local/sbin/iscsi-scstd /usr/local/sbin/iscsi-scstd 0755 0 0

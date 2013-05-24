@@ -1,0 +1,4 @@
+#!/bin/bash
+[ -z "$1" ] && echo "man ENTRY" && exit 0
+[ ! -f /docs/man/$1.txt ] && echo "man Entry for $1 not found." && exit 1
+more /docs/man/$1.txt
