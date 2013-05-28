@@ -1162,13 +1162,11 @@ firmware:       ql2322_fw.bin
 firmware:       ql2300_fw.bin
 firmware:       ql2200_fw.bin
 firmware:       ql2100_fw.bin
-version:        8.03.07.05.06.2-k
+version:        8.02.01-k4-tgt
 license:        GPL
-description:    QLogic Fibre Channel HBA Driver
-author:         QLogic Corporation
-srcversion:     0FDACC4F68BA90594F231DF
-alias:          pci:v00001077d00008021sv*sd*bc*sc*i*
-alias:          pci:v00001077d00008001sv*sd*bc*sc*i*
+description:    QLogic Fibre Channel HBA Driver (Target Mode Support, including 24xx+ ISP)
+author:         QLogic Corporation & SCST team
+srcversion:     A8BDD81094E7CAB5020D0DD
 alias:          pci:v00001077d00002532sv*sd*bc*sc*i*
 alias:          pci:v00001077d00005432sv*sd*bc*sc*i*
 alias:          pci:v00001077d00005422sv*sd*bc*sc*i*
@@ -1184,41 +1182,17 @@ alias:          pci:v00001077d00002200sv*sd*bc*sc*i*
 alias:          pci:v00001077d00002100sv*sd*bc*sc*i*
 depends:        scsi_transport_fc
 vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+parm:           qlini_mode:Determines when initiator mode will be enabled. Possible values: "exclusive" (default) - initiator mode will be enabled on load, disabled on enabling target mode and then on disabling target mode enabled back; "disabled" - initiator mode will never be enabled; "enabled" - initiator mode will always stay enabled. (charp)
 parm:           ql2xlogintimeout:Login timeout value in seconds. (int)
 parm:           qlport_down_retry:Maximum number of command retries to a port that returns a PORT-DOWN status. (int)
 parm:           ql2xplogiabsentdevice:Option to enable PLOGI to devices that are not present after a Fabric scan.  This is needed for several broken switches. Default is 0 - no PLOGI. 1 - perfom PLOGI. (int)
 parm:           ql2xloginretrycount:Specify an alternate value for the NVRAM login retry count. (int)
-parm:           ql2xallocfwdump:Option to enable allocation of memory for a firmware dump during HBA initialization.  Memory allocation requirements vary by ISP type.  Default is 1 - allocate memory. (int)
+parm:           ql2xenableclass2:Specify if Class 2 operations are supported from the very beginning. (int)
+parm:           ql2xallocfwdump:Option to enable allocation of memory for a firmware dump during HBA initialization.  Memory allocation requirements vary by ISP type.  Default is 0 - don't allocate memory. (int)
 parm:           ql2xextended_error_logging:Option to enable extended error logging, Default is 0 - no logging. 1 - log errors. (int)
-parm:           ql2xshiftctondsd:Set to control shifting of command type processing based on total number of SG elements. (int)
 parm:           ql2xfdmienable:Enables FDMI registratons Default is 0 - no FDMI. 1 - perfom FDMI. (int)
 parm:           ql2xmaxqdepth:Maximum queue depth to report for target devices. (int)
-parm:           ql2xenabledif: Enable T10-CRC-DIF  Default is 0 - No DIF Support. 1 - Enable it (int)
-parm:           ql2xenablehba_err_chk: Enable T10-CRC-DIF Error isolation by HBA Default is 0 - Error isolation disabled, 1 - Enable it (int)
-parm:           ql2xqfulltracking:Controls whether the driver tracks queue full status returns and dynamically adjusts a scsi device's queue depth.  Default is 1, perform tracking.  Set to 0 to disable dynamic tracking and adjustment of queue depth. (int)
 parm:           ql2xqfullrampup:Number of seconds to wait to begin to ramp-up the queue depth for a device after a queue-full condition has been detected.  Default is 120 seconds. (int)
-parm:           ql2xiidmaenable:Enables iIDMA settings Default is 1 - perform iIDMA. 0 - no iIDMA. (int)
-parm:           ql2xmaxqueues:Enables MQ settings Default is 1 for single queue. Set it to number 			of queues in MQ mode. (int)
-parm:           ql2xmultique_tag:Enables CPU affinity settings for the driver Default is 0 for no affinity of request and response IO. Set it to 1 to turn on the cpu affinity. (int)
-parm:           ql2xfwloadbin:Option to specify location from which to load ISP firmware:
- 2 -- load firmware via the request_firmware() (hotplug)
-      interface.
- 1 -- load firmware from flash.
- 0 -- use default semantics.
- (int)
-parm:           ql2xetsenable:Enables firmware ETS burst.Default is 0 - skip ETS enablement. (int)
-parm:           ql2xdbwr:Option to specify scheme for request queue posting
- 0 -- Regular doorbell.
- 1 -- CAMRAM doorbell (faster).
- (int)
-parm:           ql2xdontresethba:Option to specify reset behaviour
- 0 (Default) -- Reset on failure.
- 1 -- Do not reset on failure.
- (int)
-parm:           ql2xmaxlun:Defines the maximum LU number to register with the SCSI midlayer. Default is 65535. (uint)
-parm:           ql2xasynctmfenable:Enables issue of TM IOCBs asynchronously via IOCB mechanismDefault is 0 - Issue TM IOCBs via mailbox mechanism. (int)
-parm:           ql2xtargetreset:Enable target reset.Default is 1 - use hw defaults. (int)
-parm:           ql2xgffidenable:Enables GFF_ID checks of port type. Default is 0 - Do not use GFF_ID information. (int)
 
 #[[ raid0 ]]
 filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/md/raid0.ko
@@ -1336,20 +1310,6 @@ author:         Martin Hicks
 srcversion:     021280EABF626236FB34FCF
 depends:        
 vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-
-#[[ sg ]]
-filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/scsi/sg.ko
-alias:          char-major-21-*
-version:        3.5.34
-license:        GPL
-description:    SCSI generic (sg) driver
-author:         Douglas Gilbert
-srcversion:     BD5E4FC33B6E0ABE20D3FB4
-depends:        
-vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-parm:           scatter_elem_sz:scatter gather element size (default: max(SG_SCATTER_SZ, PAGE_SIZE)) (int)
-parm:           def_reserved_size:size of buffer reserved for each fd (int)
-parm:           allow_dio:allow direct I/O (default: 0 (disallow)) (int)
 
 #[[ sr_mod ]]
 filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/scsi/sr_mod.ko

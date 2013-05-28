@@ -1,8 +1,0 @@
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/exportfs 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/exportfs/exportfs.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/exportfs/exportfs.ko 0744 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/fuse 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/fuse/cuse.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/cuse.ko 0744 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/fuse/fuse.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/fuse.ko 0744 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/nfs 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/nfs/nfs_layout_nfsv41_files.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs_layout_nfsv41_files.ko 0744 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/fs/nfs/nfs.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs.ko 0744 0 0

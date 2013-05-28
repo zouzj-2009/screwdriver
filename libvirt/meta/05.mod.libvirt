@@ -1,0 +1,7 @@
+kvm-amd
+kvm
+kvm-intel
+virtio
+virtio_ring
+virtio_pci
+virtio_balloon
