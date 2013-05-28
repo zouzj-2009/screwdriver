@@ -183,13 +183,13 @@ timeout=5
 hiddenmenu
 title Go!
 	root ($hd,0)
-	kernel /vmlinuz $isusb
+	kernel /vmlinuz $isusb quiet
 title Go(debug)
 	root ($hd,0)
 	kernel /vmlinuz $isusb vga=6
 title Liev Demo #WARN! May Destroy your data!
 	root ($hd,0)
-	kernel /vmlinuz $isusb LIVEDEMO
+	kernel /vmlinuz $isusb LIVEDEMO quiet
 EOF
 	#copy files via CD or PXE
 	mkdir /media -p

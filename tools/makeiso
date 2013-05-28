@@ -30,3 +30,19 @@ mv $name.iso /mnt/hgfs/vmshare/recovery-cd/$name.iso
 tftproot=/tftproot
 umount $tftproot/boot
 mount -o loop /mnt/hgfs/vmshare/recovery-cd/$name.iso $tftproot/boot
+
+echo "#
+#  Meta Version $ver
+#
+
+#  Package $pkg, core meta
+
+" >meta.all
+cat list.all >>meta.all
+
+echo "
+#
+# Packages Meta Version $pkg-$ver
+#
+" >>meta.all
+cat list.meta.pkgs >>meta.all

@@ -30,7 +30,9 @@ do
 	elif [ -S $file ];then
 		echo sock `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
 	elif [ -f $file ];then
+		#echo file `getfileloc $file` $file" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
 		echo file `getfileloc $file` $file" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+		echo "#md5-$(md5sum $file)"	
 	fi
 done
 exit 0

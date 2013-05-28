@@ -22,7 +22,7 @@ do
 	if [ -L $file ];then
 		target=`ls -ld $file|awk '{print $11}'`
 		target=`getfileloc $target slink`
-		echo slink `getfileloc $file`" "$target" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+		echo slink `getfileloc $file`" "$target" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'` 
 	elif [ -d $file ];then
 		echo dir `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
 	elif [ -c $file ];then
@@ -35,6 +35,7 @@ do
 		echo sock `getfileloc $file`" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
 	elif [ -f $file ];then
 		echo file `getfileloc $file` $file" "`./tools/fmode $file|awk '{print $1" "$2" "$3}'`	
+		echo "#md5-$(md5sum $file)"	
 	fi
 done
 exit 0

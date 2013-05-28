@@ -27,11 +27,11 @@ do
 			echo mod[ $mod ] >&2
 			file=`modinfo $mod|grep ^filename:|awk '{print $2}'`
 			[ -z "$file" ] && echo "module [$mod] not found!" >&2 && exit 1
-			echo "
-#[[ $mod ]]" >>list.modinfo 
-			modinfo $mod>>list.modinfo
 #file /fakeroot/lib/modules/2.6.32-220.el6.x86_64//kernel/drivers/scsi/megaraid/megaraid_mbox.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/scsi/megaraid/megaraid_mbox.ko 0744 0 0
-			echo "file /fakeroot/$file $file 0744 0 0"
+			echo "file /fakeroot/$file $file 0744 0 0 
+#md5-$(md5sum $file)"
+			echo "#modinfo [ $mod ]" 
+			modinfo $mod|sed 's/^/#modinfo /g'
 		done
 	) && continue 
 	
