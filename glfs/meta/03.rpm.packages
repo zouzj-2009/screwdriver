@@ -3,3 +3,5 @@ glusterfs-server
 glusterfs-geo-replication
 glusterfs-fuse
 glusterfs-rdma
+#3.4
+#glusterfs-api

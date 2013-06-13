@@ -13,3 +13,13 @@
 #	vfs objects = readahead
 #	readahead:size = 131072
 	max protocol = smb2
+
+[gdemo]
+	public = yes
+	writeable = yes
+	path = /
+	vfs objects = glusterfs
+	glusterfs:volfile_server = 127.0.0.1
+	glusterfs:logfile = /tmp/.glfs.log
+	glusterfs:loglevel = 1
+	glusterfs:volume = demovol

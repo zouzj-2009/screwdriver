@@ -1,2 +1,9 @@
 lvm2
+lvm2-libs
 mdadm
+device-mapper
+device-mapper-event
+device-mapper-libs
+device-mapper-event-libs
+device-mapper-event-devel
+device-mapper-persistent-data

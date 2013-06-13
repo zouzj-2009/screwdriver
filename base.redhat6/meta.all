@@ -1,5 +1,5 @@
 #
-#  Meta Version 47f0233c53c88a25080084b38c9d5b49
+#  Meta Version 4ed1ebd49b4b88fb919da25981db2964
 #
 
 #  Package base, core meta
@@ -344,7 +344,7 @@ file /fakeroot/etc/NetworkManager/dispatcher.d/05-netfs /etc/NetworkManager/disp
 file /fakeroot/etc/X11/prefdm /etc/X11/prefdm 0755 0 0
 #md5-eeca15150f763311012d9092e67bcf41  /etc/X11/prefdm
 file /fakeroot/etc/adjtime /etc/adjtime 0644 0 0
-#md5-dc2fec530cf69b530b9c9b5bdd766494  /etc/adjtime
+#md5-96ddd3ab4482eec12b6002e60f3a8dc5  /etc/adjtime
 file /fakeroot/etc/init/control-alt-delete.conf /etc/init/control-alt-delete.conf 0644 0 0
 #md5-b9e5968d70426be30342405e78b10e43  /etc/init/control-alt-delete.conf
 file /fakeroot/etc/init/kexec-disable.conf /etc/init/kexec-disable.conf 0644 0 0
@@ -564,12 +564,12 @@ dir /fakeroot/var/lib/stateless 0755 0 0
 dir /fakeroot/var/lib/stateless/state 0755 0 0
 dir /fakeroot/var/lib/stateless/writable 0755 0 0
 file /fakeroot/var/log/btmp /var/log/btmp 0600 0 22
-#md5-ba71c4817f7fb36dd33d9ba5ed035f05  /var/log/btmp
+#md5-e662e472ffb06cd500782de85c8884cf  /var/log/btmp
 file /fakeroot/var/log/wtmp /var/log/wtmp 0664 0 22
-#md5-218f381b3934ace5bb108aa65ae6d096  /var/log/wtmp
+#md5-6716fa09dea9acc671096692cd11e82f  /var/log/wtmp
 dir /fakeroot/var/run/netreport 0775 0 0
 file /fakeroot/var/run/utmp /var/run/utmp 0664 0 22
-#md5-e182802aee4e98dd67021b52e26e3087  /var/run/utmp
+#md5-e5cb88e240e39ef6331d5f3ad22f9855  /var/run/utmp
 #rpm package procps-3.2.8-21.el6.x86_64
 file /fakeroot/bin/ps /bin/ps 0755 0 0
 #md5-9b0fbecfc016a6e7782194a7e3a7b951  /bin/ps
@@ -654,7 +654,7 @@ file /fakeroot/etc/inputrc /etc/inputrc 0644 0 0
 file /fakeroot/etc/motd /etc/motd 0644 0 0
 #md5-d41d8cd98f00b204e9800998ecf8427e  /etc/motd
 file /fakeroot/etc/mtab /etc/mtab 0644 0 0
-#md5-242c7d8d7a8d05ca23de6d5354e38c80  /etc/mtab
+#md5-e1e911d9ff0acc0b497a5dbec7dc299f  /etc/mtab
 file /fakeroot/etc/passwd /etc/passwd 0644 0 0
 #md5-a3783a78ae98d55e3113dd6756e0d722  /etc/passwd
 file /fakeroot/etc/printcap /etc/printcap 0644 0 0
@@ -673,7 +673,7 @@ file /fakeroot/etc/shadow /etc/shadow 0000 0 0
 file /fakeroot/etc/shells /etc/shells 0644 0 0
 #md5-05a719b7240b01e9253995cbc268992c  /etc/shells
 file /fakeroot/var/log/lastlog /var/log/lastlog 0644 0 0
-#md5-c7d95735a692f6ac8b6af09462f827db  /var/log/lastlog
+#md5-6226ebe56ebe769da0154e074a16259c  /var/log/lastlog
 ## Defined by base.08.rpm.device ##
 #rpm package pciutils-3.1.4-11.el6.x86_64
 file /fakeroot/sbin/lspci /sbin/lspci 0755 0 0
@@ -2041,6 +2041,16 @@ file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/ext3/ext3.ko /lib/mod
 #modinfo author:         Remy Card, Stephen Tweedie, Andrew Morton, Andreas Dilger, Theodore Ts'o and others
 #modinfo srcversion:     AE9E17EF1F329D4ED6365D6
 #modinfo depends:        mbcache,jbd
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/ext4/ext4.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/ext4/ext4.ko 0744 0 0 
+#md5-5db33ee6cf4abe137472d8403f38c775  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/ext4/ext4.ko
+#modinfo [ ext4 ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/ext4/ext4.ko
+#modinfo license:        GPL
+#modinfo description:    Fourth Extended Filesystem
+#modinfo author:         Remy Card, Stephen Tweedie, Andrew Morton, Andreas Dilger, Theodore Ts'o and others
+#modinfo srcversion:     A80608676B83D55514B450E
+#modinfo depends:        mbcache,jbd2
 #modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
 file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fat/fat.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fat/fat.ko 0744 0 0 
 #md5-1b72e8345f26c18175f2ad061800d724  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fat/fat.ko
@@ -3552,32 +3562,42 @@ file /fakeroot/usr/bin/acpi_listen /usr/bin/acpi_listen 0755 0 0
 file /fakeroot/usr/sbin/acpid /usr/sbin/acpid 0750 0 0
 #md5-5a749e3eeadf0adfee9d93c81780c89b  /usr/sbin/acpid
 ## Defined by base.08.rpm.storage ##
-#rpm package lvm2-2.02.87-6.el6.x86_64
+#rpm package lvm2-2.02.98-9.el6.x86_64
 dir /fakeroot/etc/lvm 0755 0 0
 dir /fakeroot/etc/lvm/archive 0700 0 0
 dir /fakeroot/etc/lvm/backup 0700 0 0
 dir /fakeroot/etc/lvm/cache 0700 0 0
 file /fakeroot/etc/lvm/lvm.conf /etc/lvm/lvm.conf 0644 0 0
-#md5-a64440c32be15557698560daa948fb1f  /etc/lvm/lvm.conf
+#md5-075bd77ab0653b40c1db27d2dab1ea4b  /etc/lvm/lvm.conf
+file /fakeroot/etc/rc.d/init.d/blk-availability /etc/rc.d/init.d/blk-availability 0555 0 0
+#md5-ee1de1fc307fec95f11b1d89c0c97815  /etc/rc.d/init.d/blk-availability
+file /fakeroot/etc/rc.d/init.d/lvm2-lvmetad /etc/rc.d/init.d/lvm2-lvmetad 0555 0 0
+#md5-aef5463b2a39a20131ee810171b91bd1  /etc/rc.d/init.d/lvm2-lvmetad
 file /fakeroot/etc/rc.d/init.d/lvm2-monitor /etc/rc.d/init.d/lvm2-monitor 0555 0 0
-#md5-dbc2af337c3cb71f6d1071f17ce8cb52  /etc/rc.d/init.d/lvm2-monitor
+#md5-d06450ba9b3018fa7a0f2cf8ee383f7a  /etc/rc.d/init.d/lvm2-monitor
 file /fakeroot/lib/udev/rules.d/11-dm-lvm.rules /lib/udev/rules.d/11-dm-lvm.rules 0444 0 0
 #md5-2f1e4ebea4b3e5ad084a3653f2b4f35c  /lib/udev/rules.d/11-dm-lvm.rules
+file /fakeroot/lib/udev/rules.d/69-dm-lvm-metad.rules /lib/udev/rules.d/69-dm-lvm-metad.rules 0444 0 0
+#md5-4037701727b50989c095013f7661ad4c  /lib/udev/rules.d/69-dm-lvm-metad.rules
+file /fakeroot/sbin/blkdeactivate /sbin/blkdeactivate 0555 0 0
+#md5-a8ba84095dedd244181b7395b3c40cf3  /sbin/blkdeactivate
 file /fakeroot/sbin/fsadm /sbin/fsadm 0555 0 0
-#md5-5d6b2afb4d29aa735cc72748202abf9d  /sbin/fsadm
+#md5-62d4603870fbb3df2e19ad7d6523428f  /sbin/fsadm
 slink /fakeroot/sbin/lvchange lvm 0555 0 0
 slink /fakeroot/sbin/lvconvert lvm 0555 0 0
 slink /fakeroot/sbin/lvcreate lvm 0555 0 0
 slink /fakeroot/sbin/lvdisplay lvm 0555 0 0
 slink /fakeroot/sbin/lvextend lvm 0555 0 0
 file /fakeroot/sbin/lvm /sbin/lvm 0555 0 0
-#md5-ba572ba8e00e7038ff09c9e9e23fecf0  /sbin/lvm
+#md5-17857bdaea64eb19d09d7b1cc2efcd0d  /sbin/lvm
 slink /fakeroot/sbin/lvmchange lvm 0555 0 0
 file /fakeroot/sbin/lvmconf /sbin/lvmconf 0555 0 0
 #md5-1ad260bb9cffaec1f88376cea9500f6f  /sbin/lvmconf
 slink /fakeroot/sbin/lvmdiskscan lvm 0555 0 0
 file /fakeroot/sbin/lvmdump /sbin/lvmdump 0555 0 0
-#md5-29a520432ff36f63556e4bef3997b90c  /sbin/lvmdump
+#md5-7ff4690935fac6ccd1764b0eb3f9c554  /sbin/lvmdump
+file /fakeroot/sbin/lvmetad /sbin/lvmetad 0555 0 0
+#md5-15d55eccf9809b0da52f65035f19dab3  /sbin/lvmetad
 slink /fakeroot/sbin/lvmsadc lvm 0555 0 0
 slink /fakeroot/sbin/lvmsar lvm 0555 0 0
 slink /fakeroot/sbin/lvreduce lvm 0555 0 0
@@ -3606,7 +3626,7 @@ slink /fakeroot/sbin/vgexport lvm 0555 0 0
 slink /fakeroot/sbin/vgextend lvm 0555 0 0
 slink /fakeroot/sbin/vgimport lvm 0555 0 0
 file /fakeroot/sbin/vgimportclone /sbin/vgimportclone 0555 0 0
-#md5-3903d5d841cf79cd3279e1ba98512510  /sbin/vgimportclone
+#md5-bf1ea492243c360fb5d7f759fc62fb19  /sbin/vgimportclone
 slink /fakeroot/sbin/vgmerge lvm 0555 0 0
 slink /fakeroot/sbin/vgmknodes lvm 0555 0 0
 slink /fakeroot/sbin/vgreduce lvm 0555 0 0
@@ -3617,6 +3637,26 @@ slink /fakeroot/sbin/vgscan lvm 0555 0 0
 slink /fakeroot/sbin/vgsplit lvm 0555 0 0
 dir /fakeroot/var/lock/lvm 0700 0 0
 dir /fakeroot/var/run/lvm 0700 0 0
+#rpm package lvm2-libs-2.02.98-9.el6.x86_64
+dir /fakeroot/lib64/device-mapper 0755 0 0
+file /fakeroot/lib64/device-mapper/libdevmapper-event-lvm2mirror.so /lib64/device-mapper/libdevmapper-event-lvm2mirror.so 0555 0 0
+#md5-ecbbc8ccdbafefdea879a8f0e5477d0b  /lib64/device-mapper/libdevmapper-event-lvm2mirror.so
+file /fakeroot/lib64/device-mapper/libdevmapper-event-lvm2raid.so /lib64/device-mapper/libdevmapper-event-lvm2raid.so 0555 0 0
+#md5-cb6f574143d67b873a89b3b8ee348daf  /lib64/device-mapper/libdevmapper-event-lvm2raid.so
+file /fakeroot/lib64/device-mapper/libdevmapper-event-lvm2snapshot.so /lib64/device-mapper/libdevmapper-event-lvm2snapshot.so 0555 0 0
+#md5-6ae04310ea7fb2b58021f2be0cb7fc24  /lib64/device-mapper/libdevmapper-event-lvm2snapshot.so
+file /fakeroot/lib64/device-mapper/libdevmapper-event-lvm2thin.so /lib64/device-mapper/libdevmapper-event-lvm2thin.so 0555 0 0
+#md5-c10c08e46210f0779b1be73c8946f125  /lib64/device-mapper/libdevmapper-event-lvm2thin.so
+file /fakeroot/lib64/libdevmapper-event-lvm2.so.2.02 /lib64/libdevmapper-event-lvm2.so.2.02 0755 0 0
+#md5-6443f83fb58931eaa9df759e01ae3472  /lib64/libdevmapper-event-lvm2.so.2.02
+slink /fakeroot/lib64/libdevmapper-event-lvm2mirror.so device-mapper/libdevmapper-event-lvm2mirror.so 0555 0 0
+slink /fakeroot/lib64/libdevmapper-event-lvm2raid.so device-mapper/libdevmapper-event-lvm2raid.so 0555 0 0
+slink /fakeroot/lib64/libdevmapper-event-lvm2snapshot.so device-mapper/libdevmapper-event-lvm2snapshot.so 0555 0 0
+slink /fakeroot/lib64/libdevmapper-event-lvm2thin.so device-mapper/libdevmapper-event-lvm2thin.so 0555 0 0
+file /fakeroot/lib64/liblvm2app.so.2.2 /lib64/liblvm2app.so.2.2 0755 0 0
+#md5-10a2e43320df6d2decae39446a9625a8  /lib64/liblvm2app.so.2.2
+file /fakeroot/lib64/liblvm2cmd.so.2.02 /lib64/liblvm2cmd.so.2.02 0755 0 0
+#md5-80b326a94d3b37a0360ad22b102fbf62  /lib64/liblvm2cmd.so.2.02
 #rpm package mdadm-3.2.2-9.el6.x86_64
 file /fakeroot/etc/cron.d/raid-check /etc/cron.d/raid-check 0644 0 0
 #md5-367636170f3ac44df6a117e3cbf7e4ba  /etc/cron.d/raid-check
@@ -3633,6 +3673,49 @@ file /fakeroot/sbin/mdmon /sbin/mdmon 0755 0 0
 file /fakeroot/usr/sbin/raid-check /usr/sbin/raid-check 0755 0 0
 #md5-c6731e9ef5319a07a8aff35809b0830b  /usr/sbin/raid-check
 dir /fakeroot/var/run/mdadm 0700 0 0
+#rpm package device-mapper-1.02.66-6.el6.x86_64
+device-mapper-1.02.77-9.el6.x86_64
+dir /fakeroot/lib/udev 0755 0 0
+dir /fakeroot/lib/udev/rules.d 0755 0 0
+file /fakeroot/lib/udev/rules.d/10-dm.rules /lib/udev/rules.d/10-dm.rules 0444 0 0
+#md5-9a0ce85d64d7bf9a3e838ab1b4552705  /lib/udev/rules.d/10-dm.rules
+file /fakeroot/lib/udev/rules.d/13-dm-disk.rules /lib/udev/rules.d/13-dm-disk.rules 0444 0 0
+#md5-7b8b290eb0ff4b7fd21302861704cc7b  /lib/udev/rules.d/13-dm-disk.rules
+file /fakeroot/lib/udev/rules.d/95-dm-notify.rules /lib/udev/rules.d/95-dm-notify.rules 0444 0 0
+#md5-2411f144d9d15ccb8049416559fb6347  /lib/udev/rules.d/95-dm-notify.rules
+file /fakeroot/sbin/dmsetup /sbin/dmsetup 0755 0 0
+#md5-ac731d87bbf499f88e94071e783a7e23  /sbin/dmsetup
+dir /fakeroot/lib/udev 0755 0 0
+dir /fakeroot/lib/udev/rules.d 0755 0 0
+file /fakeroot/lib/udev/rules.d/10-dm.rules /lib/udev/rules.d/10-dm.rules 0444 0 0
+#md5-9a0ce85d64d7bf9a3e838ab1b4552705  /lib/udev/rules.d/10-dm.rules
+file /fakeroot/lib/udev/rules.d/13-dm-disk.rules /lib/udev/rules.d/13-dm-disk.rules 0444 0 0
+#md5-7b8b290eb0ff4b7fd21302861704cc7b  /lib/udev/rules.d/13-dm-disk.rules
+file /fakeroot/lib/udev/rules.d/95-dm-notify.rules /lib/udev/rules.d/95-dm-notify.rules 0444 0 0
+#md5-2411f144d9d15ccb8049416559fb6347  /lib/udev/rules.d/95-dm-notify.rules
+file /fakeroot/sbin/dmsetup /sbin/dmsetup 0755 0 0
+#md5-ac731d87bbf499f88e94071e783a7e23  /sbin/dmsetup
+#rpm package device-mapper-event-1.02.77-9.el6.x86_64
+file /fakeroot/sbin/dmeventd /sbin/dmeventd 0555 0 0
+#md5-b281dc5750f1ebb3af818e0ab718d326  /sbin/dmeventd
+#rpm package device-mapper-libs-1.02.66-6.el6.x86_64
+device-mapper-libs-1.02.77-9.el6.x86_64
+file /fakeroot/lib64/libdevmapper.so.1.02 /lib64/libdevmapper.so.1.02 0755 0 0
+#md5-12eff4ffe345948fc873b57c61d18a93  /lib64/libdevmapper.so.1.02
+file /fakeroot/lib64/libdevmapper.so.1.02 /lib64/libdevmapper.so.1.02 0755 0 0
+#md5-12eff4ffe345948fc873b57c61d18a93  /lib64/libdevmapper.so.1.02
+#rpm package device-mapper-event-libs-1.02.77-9.el6.x86_64
+file /fakeroot/lib64/libdevmapper-event.so.1.02 /lib64/libdevmapper-event.so.1.02 0755 0 0
+#md5-9be8a3440ae7bbad77dec6851763abde  /lib64/libdevmapper-event.so.1.02
+#rpm package device-mapper-event-devel-1.02.77-9.el6.x86_64
+slink /fakeroot/usr/lib64/libdevmapper-event.so ../../lib64/libdevmapper-event.so.1.02 0755 0 0
+#rpm package device-mapper-persistent-data-0.1.4-1.el6.x86_64
+file /fakeroot/usr/sbin/thin_check /usr/sbin/thin_check 0755 0 0
+#md5-72ff7d349aca14fe2a7b9a4835a09b7e  /usr/sbin/thin_check
+file /fakeroot/usr/sbin/thin_dump /usr/sbin/thin_dump 0755 0 0
+#md5-be839ff011ce1ca1f599b09808270264  /usr/sbin/thin_dump
+file /fakeroot/usr/sbin/thin_restore /usr/sbin/thin_restore 0755 0 0
+#md5-611df3ac6f2bb378281d2284344760b9  /usr/sbin/thin_restore
 ## Defined by base.10.rpm.dev-and-msg ##
 #rpm package ethtool-2.6.33-0.3.el6.x86_64
 file /fakeroot/sbin/ethtool /sbin/ethtool 0755 0 0
@@ -4773,7 +4856,7 @@ file /fakeroot/usr/sbin/rtcwake /usr/sbin/rtcwake 0755 0 0
 file /fakeroot/usr/sbin/tunelp /usr/sbin/tunelp 0755 0 0
 #md5-5e3d40fc17e03eb5a8226604a1a851d1  /usr/sbin/tunelp
 file /fakeroot/var/log/lastlog /var/log/lastlog 0644 0 0
-#md5-c7d95735a692f6ac8b6af09462f827db  /var/log/lastlog
+#md5-6226ebe56ebe769da0154e074a16259c  /var/log/lastlog
 ## base.Customized ##
 dir /domain 0755 0 0
 dir /domain/sbin 0755 0 0
@@ -4936,12 +5019,10 @@ file /lib64/librt.so.1 /root/sys-builder/base/deplibs/lib64/librt.so.1 0755 0 0
 #md5-99535312e462e38976037f15b2c76ea1  /root/sys-builder/base/deplibs/lib64/librt.so.1
 file /lib64/libm.so.6 /root/sys-builder/base/deplibs/lib64/libm.so.6 0755 0 0
 #md5-1ace38bd1959ab2d4d4eeb6cd45cde86  /root/sys-builder/base/deplibs/lib64/libm.so.6
-file /lib64/libdevmapper.so.1.02 /root/sys-builder/base/deplibs/lib64/libdevmapper.so.1.02 0755 0 0
-#md5-a155308b02426d79cb3cef027330958d  /root/sys-builder/base/deplibs/lib64/libdevmapper.so.1.02
 file /lib64/libcap.so.2 /root/sys-builder/base/deplibs/lib64/libcap.so.2 0755 0 0
 #md5-1bb43f8c409be493301aff6df8ba110c  /root/sys-builder/base/deplibs/lib64/libcap.so.2
-file /lib64/libdevmapper-event.so.1.02 /root/sys-builder/base/deplibs/lib64/libdevmapper-event.so.1.02 0755 0 0
-#md5-1f0b16dc38a050378b0886c82efc7a0b  /root/sys-builder/base/deplibs/lib64/libdevmapper-event.so.1.02
+file /lib64/libgcc_s.so.1 /root/sys-builder/base/deplibs/lib64/libgcc_s.so.1 0755 0 0
+#md5-4276dd408dad97a15046753195f4cd06  /root/sys-builder/base/deplibs/lib64/libgcc_s.so.1
 file /lib64/libattr.so.1 /root/sys-builder/base/deplibs/lib64/libattr.so.1 0755 0 0
 #md5-bb3664b64c2bb313d87ee4e493c41a92  /root/sys-builder/base/deplibs/lib64/libattr.so.1
 file /lib64/libc.so.6 /root/sys-builder/base/deplibs/lib64/libc.so.6 0755 0 0
@@ -4984,6 +5065,8 @@ file /usr/lib64/libhal.so.1 /root/sys-builder/base/deplibs/usr/lib64/libhal.so.1
 #md5-d0ad9a85f84136f1c25c15b4495abd36  /root/sys-builder/base/deplibs/usr/lib64/libhal.so.1
 file /usr/lib64/libdbus-glib-1.so.2 /root/sys-builder/base/deplibs/usr/lib64/libdbus-glib-1.so.2 0755 0 0
 #md5-eb74d92b6625b5ed3a6119204887e73d  /root/sys-builder/base/deplibs/usr/lib64/libdbus-glib-1.so.2
+file /usr/lib64/libstdc++.so.6 /root/sys-builder/base/deplibs/usr/lib64/libstdc++.so.6 0755 0 0
+#md5-19c7b46cc98e265df4ec2c2e01c1a299  /root/sys-builder/base/deplibs/usr/lib64/libstdc++.so.6
 file /usr/lib64/libssl.so.10 /root/sys-builder/base/deplibs/usr/lib64/libssl.so.10 0755 0 0
 #md5-257f25cc989353d8134280f7c1ad7072  /root/sys-builder/base/deplibs/usr/lib64/libssl.so.10
 file /usr/lib64/libedit.so.0 /root/sys-builder/base/deplibs/usr/lib64/libedit.so.0 0755 0 0
@@ -5018,7 +5101,7 @@ file /usr/lib64/libnssutil3.so /root/sys-builder/base/deplibs/usr/lib64/libnssut
 #md5-49c8bc011632d44e5cff551824ebc8e2  /root/sys-builder/base/deplibs/usr/lib64/libnssutil3.so
 
 #
-# Packages Meta Version base-47f0233c53c88a25080084b38c9d5b49
+# Packages Meta Version base-4ed1ebd49b4b88fb919da25981db2964
 #
 
 #
@@ -7841,7 +7924,7 @@ file /domain/etc/init/container /root/sys-builder/modularize/customized/domain/e
 #md5-93469ab5c0e25e52d53d9e3e687e2324  /root/sys-builder/modularize/customized/domain/etc/init/container
 dir /domain/etc/rc.startmodules.d 0755 0 0
 file /domain/etc/rc.startmodules.d/01.start-modules /root/sys-builder/modularize/customized/domain/etc/rc.startmodules.d/01.start-modules 0755 0 0
-#md5-8776c513dba44873a3b09b82db55c2ec  /root/sys-builder/modularize/customized/domain/etc/rc.startmodules.d/01.start-modules
+#md5-973507b9b52a730c1f36ba974ef649df  /root/sys-builder/modularize/customized/domain/etc/rc.startmodules.d/01.start-modules
 file /domain/etc/rc.startmodules /root/sys-builder/modularize/customized/domain/etc/rc.startmodules 0755 0 0
 #md5-a4b60c81390211f316a917c017038f2e  /root/sys-builder/modularize/customized/domain/etc/rc.startmodules
 dir /domain/etc/container 0755 0 0
@@ -7858,6 +7941,30 @@ dir /fakeroot/usr/bin 0755 0 0
 file /fakeroot/usr/bin/macgen /root/sys-builder/modularize/customized/fakeroot/usr/bin/macgen 0755 0 0
 #md5-60f530a000c30f0dea3bb10c28c042de  /root/sys-builder/modularize/customized/fakeroot/usr/bin/macgen
 slink /mroots domain/rootfs/ 0755 0 0
+
+#
+#@@ Meta of package [ mod-shell ] @@
+#
+## mod-shell.Customized ##
+dir /croots 0755 0 0
+dir /croots/shell 0755 0 0
+dir /croots/shell/etc 0755 0 0
+file /croots/shell/etc/inittab /root/sys-builder/mod-shell/customized/croots/shell/etc/inittab 0644 0 0
+#md5-a679295a094e928fd60c1890241ab50e  /root/sys-builder/mod-shell/customized/croots/shell/etc/inittab
+file /croots/shell/etc/rc.local /root/sys-builder/mod-shell/customized/croots/shell/etc/rc.local 0755 0 0
+#md5-62813ceac5a2ad1e6baa30895a9017c7  /root/sys-builder/mod-shell/customized/croots/shell/etc/rc.local
+dir /domain 0755 0 0
+dir /domain/etc 0755 0 0
+dir /domain/etc/init 0755 0 0
+dir /domain/etc/init/startups 0755 0 0
+slink /domain/etc/init/startups/01.shell ../container 0755 1 0
+dir /domain/etc/container 0755 0 0
+dir /domain/etc/container/config 0755 0 0
+dir /domain/etc/container/config/shell 0755 0 0
+file /domain/etc/container/config/shell/fstab /root/sys-builder/mod-shell/customized/domain/etc/container/config/shell/fstab 0644 0 0
+#md5-d41d8cd98f00b204e9800998ecf8427e  /root/sys-builder/mod-shell/customized/domain/etc/container/config/shell/fstab
+file /domain/etc/container/config/shell/config.setting /root/sys-builder/mod-shell/customized/domain/etc/container/config/shell/config.setting 0644 0 0
+#md5-dd0b0c92d091a451e5e558de3dcf3b2f  /root/sys-builder/mod-shell/customized/domain/etc/container/config/shell/config.setting
 
 #
 #@@ Meta of package [ samba ] @@
@@ -12251,477 +12358,6 @@ file /usr/lib64/libgdbm.so.2 /root/sys-builder/python/deplibs/usr/lib64/libgdbm.
 #md5-71a290f6bd548b1f18e0d4b23d7936bc  /root/sys-builder/python/deplibs/usr/lib64/libgdbm.so.2
 
 #
-#@@ Meta of package [ glfs ] @@
-#
-## Defined by glfs.01.inc.python ##
-## Include package python(base base) included, ignore this ##
-## Defined by glfs.01.layout ##
-## Defined by glfs.02.rpm.need ##
-## Defined by glfs.03.files ##
-file /fakeroot/usr/bin/netperf /usr/bin/netperf 0755 0 0
-file /fakeroot/usr/bin/netserver /usr/bin/netserver 0755 0 0
-## Defined by glfs.03.rpm.packages ##
-#rpm package glusterfs-3.3.1-1.el6.x86_64
-file /fakeroot/etc/logrotate.d/glusterd /etc/logrotate.d/glusterd 0644 0 0
-#md5-930a5538d47414eae9ac64e5d5169a8d  /etc/logrotate.d/glusterd
-file /fakeroot/etc/sysconfig/glusterd /etc/sysconfig/glusterd 0644 0 0
-#md5-68959be71f7d9942e6bcb0c6f0b17ccd  /etc/sysconfig/glusterd
-dir /fakeroot/usr/lib64/glusterfs 0755 0 0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1 0755 0 0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/auth 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/auth/addr.so addr.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/auth/addr.so.0 addr.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/auth/addr.so.0.0.0 /usr/lib64/glusterfs/3.3.1/auth/addr.so.0.0.0 0755 0 0
-#md5-089692e51196c94d3511068b8a52c093  /usr/lib64/glusterfs/3.3.1/auth/addr.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/auth/login.so login.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/auth/login.so.0 login.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/auth/login.so.0.0.0 /usr/lib64/glusterfs/3.3.1/auth/login.so.0.0.0 0755 0 0
-#md5-87f8ede793b5138c9c014a30cbb2cf92  /usr/lib64/glusterfs/3.3.1/auth/login.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/rpc-transport 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/rpc-transport/socket.so socket.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/rpc-transport/socket.so.0 socket.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/rpc-transport/socket.so.0.0.0 /usr/lib64/glusterfs/3.3.1/rpc-transport/socket.so.0.0.0 0755 0 0
-#md5-e411df87b001f29b88daf0dc2116ee72  /usr/lib64/glusterfs/3.3.1/rpc-transport/socket.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator 0755 0 0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/afr.so afr.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/afr.so.0 afr.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/afr.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/cluster/afr.so.0.0.0 0755 0 0
-#md5-bbce37b255a88647bc60d57913abea6f  /usr/lib64/glusterfs/3.3.1/xlator/cluster/afr.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/dht.so dht.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/dht.so.0 dht.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/dht.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/cluster/dht.so.0.0.0 0755 0 0
-#md5-ca6a9ea70a2f8fdd14421669fdc98f29  /usr/lib64/glusterfs/3.3.1/xlator/cluster/dht.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/distribute.so dht.so 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/nufa.so nufa.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/nufa.so.0 nufa.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/nufa.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/cluster/nufa.so.0.0.0 0755 0 0
-#md5-8c730371137d250876704d9fd7d9f859  /usr/lib64/glusterfs/3.3.1/xlator/cluster/nufa.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/pump.so pump.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/pump.so.0 pump.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/pump.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/cluster/pump.so.0.0.0 0755 0 0
-#md5-e6ec916ef738fd8ab799c2452c67ee86  /usr/lib64/glusterfs/3.3.1/xlator/cluster/pump.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/replicate.so afr.so 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/stripe.so stripe.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/stripe.so.0 stripe.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/stripe.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/cluster/stripe.so.0.0.0 0755 0 0
-#md5-3c8089caddd9753edd1c451fb1e10551  /usr/lib64/glusterfs/3.3.1/xlator/cluster/stripe.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/switch.so switch.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/switch.so.0 switch.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/cluster/switch.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/cluster/switch.so.0.0.0 0755 0 0
-#md5-d31458d1ef1eb39ea8a788ff560f108e  /usr/lib64/glusterfs/3.3.1/xlator/cluster/switch.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/error-gen.so error-gen.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/error-gen.so.0 error-gen.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/error-gen.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/debug/error-gen.so.0.0.0 0755 0 0
-#md5-9097ec76ccd6afafd21e1c248ca84d07  /usr/lib64/glusterfs/3.3.1/xlator/debug/error-gen.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/io-stats.so io-stats.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/io-stats.so.0 io-stats.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/io-stats.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/debug/io-stats.so.0.0.0 0755 0 0
-#md5-02c4415e0c0e84797f4cb62b59cb1fb1  /usr/lib64/glusterfs/3.3.1/xlator/debug/io-stats.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/trace.so trace.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/trace.so.0 trace.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/debug/trace.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/debug/trace.so.0.0.0 0755 0 0
-#md5-85080c4cf6ba91b65d06c0d5f83c1076  /usr/lib64/glusterfs/3.3.1/xlator/debug/trace.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/encryption 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/encryption/rot-13.so rot-13.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/encryption/rot-13.so.0 rot-13.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/encryption/rot-13.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/encryption/rot-13.so.0.0.0 0755 0 0
-#md5-979c29c974ab7c23e7d3d04e5a0c048a  /usr/lib64/glusterfs/3.3.1/xlator/encryption/rot-13.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/access-control.so ../system/posix-acl.so 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/index.so index.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/index.so.0 index.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/index.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/index.so.0.0.0 0755 0 0
-#md5-a54e5b488c8131ecc29147ed4036ea2e  /usr/lib64/glusterfs/3.3.1/xlator/features/index.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/locks.so locks.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/locks.so.0 locks.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/locks.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/locks.so.0.0.0 0755 0 0
-#md5-9ea033b9ebb3b7722f4101b986e24253  /usr/lib64/glusterfs/3.3.1/xlator/features/locks.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/mac-compat.so mac-compat.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/mac-compat.so.0 mac-compat.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/mac-compat.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/mac-compat.so.0.0.0 0755 0 0
-#md5-30cbbca3dbdcffb6e970c7906665b5de  /usr/lib64/glusterfs/3.3.1/xlator/features/mac-compat.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/marker.so marker.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/marker.so.0 marker.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/marker.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/marker.so.0.0.0 0755 0 0
-#md5-ea92c34851419d96f805a8657ed03097  /usr/lib64/glusterfs/3.3.1/xlator/features/marker.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/quiesce.so quiesce.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/quiesce.so.0 quiesce.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/quiesce.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/quiesce.so.0.0.0 0755 0 0
-#md5-74fabdda83ef9fa5bc38d7d40dd670b9  /usr/lib64/glusterfs/3.3.1/xlator/features/quiesce.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/quota.so quota.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/quota.so.0 quota.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/quota.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/quota.so.0.0.0 0755 0 0
-#md5-e8a477416e759d856806a3045df1618f  /usr/lib64/glusterfs/3.3.1/xlator/features/quota.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/read-only.so read-only.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/read-only.so.0 read-only.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/read-only.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/read-only.so.0.0.0 0755 0 0
-#md5-001901bd241760ae880beb970b25594e  /usr/lib64/glusterfs/3.3.1/xlator/features/read-only.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/worm.so worm.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/worm.so.0 worm.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/worm.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/features/worm.so.0.0.0 0755 0 0
-#md5-879bc74a55c7223bb1f2e16478338d5f  /usr/lib64/glusterfs/3.3.1/xlator/features/worm.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mount 0755 0 0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/io-cache.so io-cache.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/io-cache.so.0 io-cache.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/io-cache.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/performance/io-cache.so.0.0.0 0755 0 0
-#md5-a9226c99269b1f657b09bb58a0415907  /usr/lib64/glusterfs/3.3.1/xlator/performance/io-cache.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/io-threads.so io-threads.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/io-threads.so.0 io-threads.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/io-threads.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/performance/io-threads.so.0.0.0 0755 0 0
-#md5-b1d8fb9044055eca934a6ae0d8dd7f54  /usr/lib64/glusterfs/3.3.1/xlator/performance/io-threads.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/md-cache.so md-cache.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/md-cache.so.0 md-cache.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/md-cache.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/performance/md-cache.so.0.0.0 0755 0 0
-#md5-1d56a81ca9bf1da5fdff633d0cede29d  /usr/lib64/glusterfs/3.3.1/xlator/performance/md-cache.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/quick-read.so quick-read.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/quick-read.so.0 quick-read.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/quick-read.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/performance/quick-read.so.0.0.0 0755 0 0
-#md5-9b2a948c9b5dca9507fc81136332e20c  /usr/lib64/glusterfs/3.3.1/xlator/performance/quick-read.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/read-ahead.so read-ahead.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/read-ahead.so.0 read-ahead.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/read-ahead.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/performance/read-ahead.so.0.0.0 0755 0 0
-#md5-41a4568b00fbf644f18bd75a12ff7405  /usr/lib64/glusterfs/3.3.1/xlator/performance/read-ahead.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/stat-prefetch.so ./md-cache.so 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/write-behind.so write-behind.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/write-behind.so.0 write-behind.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/performance/write-behind.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/performance/write-behind.so.0.0.0 0755 0 0
-#md5-aebcd7ea990a438348948f2740f0f996  /usr/lib64/glusterfs/3.3.1/xlator/performance/write-behind.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/protocol 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/protocol/client.so client.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/protocol/client.so.0 client.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/protocol/client.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/protocol/client.so.0.0.0 0755 0 0
-#md5-a12b845319cff82213fc1f70636d7f88  /usr/lib64/glusterfs/3.3.1/xlator/protocol/client.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/system 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/system/posix-acl.so posix-acl.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/system/posix-acl.so.0 posix-acl.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/system/posix-acl.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/system/posix-acl.so.0.0.0 0755 0 0
-#md5-d50cc661d6d604e726a3a626f1f21739  /usr/lib64/glusterfs/3.3.1/xlator/system/posix-acl.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/testing 0755 0 0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/testing/performance 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/testing/performance/symlink-cache.so symlink-cache.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/testing/performance/symlink-cache.so.0 symlink-cache.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/testing/performance/symlink-cache.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/testing/performance/symlink-cache.so.0.0.0 0755 0 0
-#md5-04f0802b0adc116cee2528f362f3f072  /usr/lib64/glusterfs/3.3.1/xlator/testing/performance/symlink-cache.so.0.0.0
-slink /fakeroot/usr/lib64/libgfrpc.so.0 libgfrpc.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/libgfrpc.so.0.0.0 /usr/lib64/libgfrpc.so.0.0.0 0755 0 0
-#md5-749b3b98c27126e37c719ee8d184649b  /usr/lib64/libgfrpc.so.0.0.0
-slink /fakeroot/usr/lib64/libgfxdr.so.0 libgfxdr.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/libgfxdr.so.0.0.0 /usr/lib64/libgfxdr.so.0.0.0 0755 0 0
-#md5-ba3f659affcafe1034be0114bd98300a  /usr/lib64/libgfxdr.so.0.0.0
-slink /fakeroot/usr/lib64/libglusterfs.so.0 libglusterfs.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/libglusterfs.so.0.0.0 /usr/lib64/libglusterfs.so.0.0.0 0755 0 0
-#md5-82dd26c6fbbdd8bede6544c19a315322  /usr/lib64/libglusterfs.so.0.0.0
-dir /fakeroot/usr/libexec/glusterfs 0755 0 0
-file /fakeroot/usr/libexec/glusterfs/gsyncd /usr/libexec/glusterfs/gsyncd 0755 0 0
-#md5-1e71ba31cf3c907bc5cefee008d8f95a  /usr/libexec/glusterfs/gsyncd
-dir /fakeroot/usr/libexec/glusterfs/python 0755 0 0
-dir /fakeroot/usr/libexec/glusterfs/python/syncdaemon 0755 0 0
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/README.md /usr/libexec/glusterfs/python/syncdaemon/README.md 0644 0 0
-#md5-411955734b0d4176ab6f68f3c03e76f8  /usr/libexec/glusterfs/python/syncdaemon/README.md
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/__init__.py /usr/libexec/glusterfs/python/syncdaemon/__init__.py 0644 0 0
-#md5-d41d8cd98f00b204e9800998ecf8427e  /usr/libexec/glusterfs/python/syncdaemon/__init__.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/__init__.pyc /usr/libexec/glusterfs/python/syncdaemon/__init__.pyc 0644 0 0
-#md5-ea3ea3e8f43f2c7ff9a0284c0f0f27fe  /usr/libexec/glusterfs/python/syncdaemon/__init__.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/__init__.pyo /usr/libexec/glusterfs/python/syncdaemon/__init__.pyo 0644 0 0
-#md5-ea3ea3e8f43f2c7ff9a0284c0f0f27fe  /usr/libexec/glusterfs/python/syncdaemon/__init__.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/configinterface.py /usr/libexec/glusterfs/python/syncdaemon/configinterface.py 0644 0 0
-#md5-2106f0469229384f73d4cb1884fbbb58  /usr/libexec/glusterfs/python/syncdaemon/configinterface.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/configinterface.pyc /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyc 0644 0 0
-#md5-7daef01adfcce15cf80fa079e04aca59  /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/configinterface.pyo /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyo 0644 0 0
-#md5-7daef01adfcce15cf80fa079e04aca59  /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gconf.py /usr/libexec/glusterfs/python/syncdaemon/gconf.py 0644 0 0
-#md5-d9bf3915b1e4d408becfd108b1fab567  /usr/libexec/glusterfs/python/syncdaemon/gconf.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gconf.pyc /usr/libexec/glusterfs/python/syncdaemon/gconf.pyc 0644 0 0
-#md5-9e0b902b57d880b8173c259eb547bd78  /usr/libexec/glusterfs/python/syncdaemon/gconf.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gconf.pyo /usr/libexec/glusterfs/python/syncdaemon/gconf.pyo 0644 0 0
-#md5-9e0b902b57d880b8173c259eb547bd78  /usr/libexec/glusterfs/python/syncdaemon/gconf.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gsyncd.py /usr/libexec/glusterfs/python/syncdaemon/gsyncd.py 0644 0 0
-#md5-50d62df60aafbd3776881731de74ef64  /usr/libexec/glusterfs/python/syncdaemon/gsyncd.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyc /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyc 0644 0 0
-#md5-a71e2767f0956ed769c59093d6fdebca  /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyo /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyo 0644 0 0
-#md5-a71e2767f0956ed769c59093d6fdebca  /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/ipaddr.py /usr/libexec/glusterfs/python/syncdaemon/ipaddr.py 0644 0 0
-#md5-f70f325a5d29eaeb017dfd4d5b15daf1  /usr/libexec/glusterfs/python/syncdaemon/ipaddr.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyc /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyc 0644 0 0
-#md5-591ffea4bb11f8849ea4b903ffa0afb1  /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyo /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyo 0644 0 0
-#md5-90e02cf7b05d2cde17e163b013e90b23  /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/libcxattr.py /usr/libexec/glusterfs/python/syncdaemon/libcxattr.py 0644 0 0
-#md5-bec33b1db67f72d354845bf1538b2c51  /usr/libexec/glusterfs/python/syncdaemon/libcxattr.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyc /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyc 0644 0 0
-#md5-85b3796a58a7852af61c9b5d98141624  /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyo /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyo 0644 0 0
-#md5-85b3796a58a7852af61c9b5d98141624  /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/master.py /usr/libexec/glusterfs/python/syncdaemon/master.py 0644 0 0
-#md5-bb9672015b56e272ed66554aba374f56  /usr/libexec/glusterfs/python/syncdaemon/master.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/master.pyc /usr/libexec/glusterfs/python/syncdaemon/master.pyc 0644 0 0
-#md5-dfc616248e88d73ab7b370405a973f95  /usr/libexec/glusterfs/python/syncdaemon/master.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/master.pyo /usr/libexec/glusterfs/python/syncdaemon/master.pyo 0644 0 0
-#md5-dfc616248e88d73ab7b370405a973f95  /usr/libexec/glusterfs/python/syncdaemon/master.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/monitor.py /usr/libexec/glusterfs/python/syncdaemon/monitor.py 0644 0 0
-#md5-34e9c6f889c8b5a077870787b2b6426e  /usr/libexec/glusterfs/python/syncdaemon/monitor.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/monitor.pyc /usr/libexec/glusterfs/python/syncdaemon/monitor.pyc 0644 0 0
-#md5-ac7b720e37735ed3eb3c5453852182c8  /usr/libexec/glusterfs/python/syncdaemon/monitor.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/monitor.pyo /usr/libexec/glusterfs/python/syncdaemon/monitor.pyo 0644 0 0
-#md5-ac7b720e37735ed3eb3c5453852182c8  /usr/libexec/glusterfs/python/syncdaemon/monitor.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/repce.py /usr/libexec/glusterfs/python/syncdaemon/repce.py 0644 0 0
-#md5-b5ce10dd37ccadf45144b0115a38d5d9  /usr/libexec/glusterfs/python/syncdaemon/repce.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/repce.pyc /usr/libexec/glusterfs/python/syncdaemon/repce.pyc 0644 0 0
-#md5-9774149127aef503abe7fd1ade35b923  /usr/libexec/glusterfs/python/syncdaemon/repce.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/repce.pyo /usr/libexec/glusterfs/python/syncdaemon/repce.pyo 0644 0 0
-#md5-9774149127aef503abe7fd1ade35b923  /usr/libexec/glusterfs/python/syncdaemon/repce.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/resource.py /usr/libexec/glusterfs/python/syncdaemon/resource.py 0644 0 0
-#md5-a29f608c2f844d7fd31c81ff156271de  /usr/libexec/glusterfs/python/syncdaemon/resource.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/resource.pyc /usr/libexec/glusterfs/python/syncdaemon/resource.pyc 0644 0 0
-#md5-0d807b6f74912738e8502850816f65ca  /usr/libexec/glusterfs/python/syncdaemon/resource.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/resource.pyo /usr/libexec/glusterfs/python/syncdaemon/resource.pyo 0644 0 0
-#md5-2aaca0e4075e0ff13ee16dfda621aab5  /usr/libexec/glusterfs/python/syncdaemon/resource.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/syncdutils.py /usr/libexec/glusterfs/python/syncdaemon/syncdutils.py 0644 0 0
-#md5-c8040c554e2bd7dbc847f6a5f472a7dc  /usr/libexec/glusterfs/python/syncdaemon/syncdutils.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyc /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyc 0644 0 0
-#md5-5833c1c43bd857b32a526a73fb359602  /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyo /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyo 0644 0 0
-#md5-5833c1c43bd857b32a526a73fb359602  /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyo
-slink /fakeroot/usr/sbin/glusterfs glusterfsd 0755 0 0
-file /fakeroot/usr/sbin/glusterfsd /usr/sbin/glusterfsd 0755 0 0
-#md5-83caa00a1e1e7ec12f54b12d7c453a8c  /usr/sbin/glusterfsd
-dir /fakeroot/var/log/glusterfs 0755 0 0
-#rpm package glusterfs-server-3.3.1-1.el6.x86_64
-dir /fakeroot/etc/glusterfs 0755 0 0
-file /fakeroot/etc/glusterfs/glusterd.vol /etc/glusterfs/glusterd.vol 0644 0 0
-#md5-5c68d571377098df8b7be1ed7ceaa2a7  /etc/glusterfs/glusterd.vol
-file /fakeroot/etc/init.d/glusterd /etc/init.d/glusterd 0755 0 0
-#md5-2767584999c48e371673f3af0a2781c1  /etc/init.d/glusterd
-file /fakeroot/etc/init.d/glusterfsd /etc/init.d/glusterfsd 0755 0 0
-#md5-a4a977ad9cae21e44c2bf629118c2707  /etc/init.d/glusterfsd
-file /fakeroot/etc/logrotate.d/glusterd /etc/logrotate.d/glusterd 0644 0 0
-#md5-930a5538d47414eae9ac64e5d5169a8d  /etc/logrotate.d/glusterd
-file /fakeroot/etc/logrotate.d/glusterfsd /etc/logrotate.d/glusterfsd 0644 0 0
-#md5-2b040ae2c57bd232cdef3c57008bfaa9  /etc/logrotate.d/glusterfsd
-file /fakeroot/etc/sysconfig/glusterd /etc/sysconfig/glusterd 0644 0 0
-#md5-68959be71f7d9942e6bcb0c6f0b17ccd  /etc/sysconfig/glusterd
-file /fakeroot/etc/sysconfig/glusterfsd /etc/sysconfig/glusterfsd 0644 0 0
-#md5-71a26a3d0c424c5876cf463457861a80  /etc/sysconfig/glusterfsd
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/features/posix-locks.so locks.so 0755 0 0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mgmt 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mgmt/glusterd.so glusterd.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mgmt/glusterd.so.0 glusterd.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mgmt/glusterd.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/mgmt/glusterd.so.0.0.0 0755 0 0
-#md5-dcec193fd67c718b715b02bff9faeeda  /usr/lib64/glusterfs/3.3.1/xlator/mgmt/glusterd.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/nfs 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/nfs/server.so server.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/nfs/server.so.0 server.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/nfs/server.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/nfs/server.so.0.0.0 0755 0 0
-#md5-11d5a46265256bd73d2bce3e6634c72b  /usr/lib64/glusterfs/3.3.1/xlator/nfs/server.so.0.0.0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/protocol/server.so server.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/protocol/server.so.0 server.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/protocol/server.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/protocol/server.so.0.0.0 0755 0 0
-#md5-5c296087629c6c0154d70052b948b626  /usr/lib64/glusterfs/3.3.1/xlator/protocol/server.so.0.0.0
-dir /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/storage 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/storage/posix.so posix.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/storage/posix.so.0 posix.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/storage/posix.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/storage/posix.so.0.0.0 0755 0 0
-#md5-552319935a8f0009e9038d0d8bc03c87  /usr/lib64/glusterfs/3.3.1/xlator/storage/posix.so.0.0.0
-file /fakeroot/usr/sbin/gluster /usr/sbin/gluster 0755 0 0
-#md5-0cd720e8914554eb8e6165abbf88bd6e  /usr/sbin/gluster
-slink /fakeroot/usr/sbin/glusterd glusterfsd 0755 0 0
-dir /fakeroot/var/lib/glusterd/glustershd 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/add-brick 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/add-brick/post 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/add-brick/pre 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/create 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/create/post 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/create/pre 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/delete 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/delete/post 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/delete/pre 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/remove-brick 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/remove-brick/post 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/remove-brick/pre 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/set 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/set/post 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/set/pre 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/start 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/start/post 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/start/pre 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/stop 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/stop/post 0755 0 0
-dir /fakeroot/var/lib/glusterd/hooks/1/stop/pre 0755 0 0
-dir /fakeroot/var/lib/glusterd/nfs 0755 0 0
-dir /fakeroot/var/lib/glusterd/peers 0755 0 0
-dir /fakeroot/var/lib/glusterd/vols 0755 0 0
-#rpm package glusterfs-geo-replication-3.3.1-1.el6.x86_64
-file /fakeroot/usr/libexec/glusterfs/gsyncd /usr/libexec/glusterfs/gsyncd 0755 0 0
-#md5-1e71ba31cf3c907bc5cefee008d8f95a  /usr/libexec/glusterfs/gsyncd
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/README.md /usr/libexec/glusterfs/python/syncdaemon/README.md 0644 0 0
-#md5-411955734b0d4176ab6f68f3c03e76f8  /usr/libexec/glusterfs/python/syncdaemon/README.md
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/__init__.py /usr/libexec/glusterfs/python/syncdaemon/__init__.py 0644 0 0
-#md5-d41d8cd98f00b204e9800998ecf8427e  /usr/libexec/glusterfs/python/syncdaemon/__init__.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/__init__.pyc /usr/libexec/glusterfs/python/syncdaemon/__init__.pyc 0644 0 0
-#md5-ea3ea3e8f43f2c7ff9a0284c0f0f27fe  /usr/libexec/glusterfs/python/syncdaemon/__init__.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/__init__.pyo /usr/libexec/glusterfs/python/syncdaemon/__init__.pyo 0644 0 0
-#md5-ea3ea3e8f43f2c7ff9a0284c0f0f27fe  /usr/libexec/glusterfs/python/syncdaemon/__init__.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/configinterface.py /usr/libexec/glusterfs/python/syncdaemon/configinterface.py 0644 0 0
-#md5-2106f0469229384f73d4cb1884fbbb58  /usr/libexec/glusterfs/python/syncdaemon/configinterface.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/configinterface.pyc /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyc 0644 0 0
-#md5-7daef01adfcce15cf80fa079e04aca59  /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/configinterface.pyo /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyo 0644 0 0
-#md5-7daef01adfcce15cf80fa079e04aca59  /usr/libexec/glusterfs/python/syncdaemon/configinterface.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gconf.py /usr/libexec/glusterfs/python/syncdaemon/gconf.py 0644 0 0
-#md5-d9bf3915b1e4d408becfd108b1fab567  /usr/libexec/glusterfs/python/syncdaemon/gconf.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gconf.pyc /usr/libexec/glusterfs/python/syncdaemon/gconf.pyc 0644 0 0
-#md5-9e0b902b57d880b8173c259eb547bd78  /usr/libexec/glusterfs/python/syncdaemon/gconf.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gconf.pyo /usr/libexec/glusterfs/python/syncdaemon/gconf.pyo 0644 0 0
-#md5-9e0b902b57d880b8173c259eb547bd78  /usr/libexec/glusterfs/python/syncdaemon/gconf.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gsyncd.py /usr/libexec/glusterfs/python/syncdaemon/gsyncd.py 0644 0 0
-#md5-50d62df60aafbd3776881731de74ef64  /usr/libexec/glusterfs/python/syncdaemon/gsyncd.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyc /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyc 0644 0 0
-#md5-a71e2767f0956ed769c59093d6fdebca  /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyo /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyo 0644 0 0
-#md5-a71e2767f0956ed769c59093d6fdebca  /usr/libexec/glusterfs/python/syncdaemon/gsyncd.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/ipaddr.py /usr/libexec/glusterfs/python/syncdaemon/ipaddr.py 0644 0 0
-#md5-f70f325a5d29eaeb017dfd4d5b15daf1  /usr/libexec/glusterfs/python/syncdaemon/ipaddr.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyc /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyc 0644 0 0
-#md5-591ffea4bb11f8849ea4b903ffa0afb1  /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyo /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyo 0644 0 0
-#md5-90e02cf7b05d2cde17e163b013e90b23  /usr/libexec/glusterfs/python/syncdaemon/ipaddr.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/libcxattr.py /usr/libexec/glusterfs/python/syncdaemon/libcxattr.py 0644 0 0
-#md5-bec33b1db67f72d354845bf1538b2c51  /usr/libexec/glusterfs/python/syncdaemon/libcxattr.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyc /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyc 0644 0 0
-#md5-85b3796a58a7852af61c9b5d98141624  /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyo /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyo 0644 0 0
-#md5-85b3796a58a7852af61c9b5d98141624  /usr/libexec/glusterfs/python/syncdaemon/libcxattr.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/master.py /usr/libexec/glusterfs/python/syncdaemon/master.py 0644 0 0
-#md5-bb9672015b56e272ed66554aba374f56  /usr/libexec/glusterfs/python/syncdaemon/master.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/master.pyc /usr/libexec/glusterfs/python/syncdaemon/master.pyc 0644 0 0
-#md5-dfc616248e88d73ab7b370405a973f95  /usr/libexec/glusterfs/python/syncdaemon/master.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/master.pyo /usr/libexec/glusterfs/python/syncdaemon/master.pyo 0644 0 0
-#md5-dfc616248e88d73ab7b370405a973f95  /usr/libexec/glusterfs/python/syncdaemon/master.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/monitor.py /usr/libexec/glusterfs/python/syncdaemon/monitor.py 0644 0 0
-#md5-34e9c6f889c8b5a077870787b2b6426e  /usr/libexec/glusterfs/python/syncdaemon/monitor.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/monitor.pyc /usr/libexec/glusterfs/python/syncdaemon/monitor.pyc 0644 0 0
-#md5-ac7b720e37735ed3eb3c5453852182c8  /usr/libexec/glusterfs/python/syncdaemon/monitor.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/monitor.pyo /usr/libexec/glusterfs/python/syncdaemon/monitor.pyo 0644 0 0
-#md5-ac7b720e37735ed3eb3c5453852182c8  /usr/libexec/glusterfs/python/syncdaemon/monitor.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/repce.py /usr/libexec/glusterfs/python/syncdaemon/repce.py 0644 0 0
-#md5-b5ce10dd37ccadf45144b0115a38d5d9  /usr/libexec/glusterfs/python/syncdaemon/repce.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/repce.pyc /usr/libexec/glusterfs/python/syncdaemon/repce.pyc 0644 0 0
-#md5-9774149127aef503abe7fd1ade35b923  /usr/libexec/glusterfs/python/syncdaemon/repce.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/repce.pyo /usr/libexec/glusterfs/python/syncdaemon/repce.pyo 0644 0 0
-#md5-9774149127aef503abe7fd1ade35b923  /usr/libexec/glusterfs/python/syncdaemon/repce.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/resource.py /usr/libexec/glusterfs/python/syncdaemon/resource.py 0644 0 0
-#md5-a29f608c2f844d7fd31c81ff156271de  /usr/libexec/glusterfs/python/syncdaemon/resource.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/resource.pyc /usr/libexec/glusterfs/python/syncdaemon/resource.pyc 0644 0 0
-#md5-0d807b6f74912738e8502850816f65ca  /usr/libexec/glusterfs/python/syncdaemon/resource.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/resource.pyo /usr/libexec/glusterfs/python/syncdaemon/resource.pyo 0644 0 0
-#md5-2aaca0e4075e0ff13ee16dfda621aab5  /usr/libexec/glusterfs/python/syncdaemon/resource.pyo
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/syncdutils.py /usr/libexec/glusterfs/python/syncdaemon/syncdutils.py 0644 0 0
-#md5-c8040c554e2bd7dbc847f6a5f472a7dc  /usr/libexec/glusterfs/python/syncdaemon/syncdutils.py
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyc /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyc 0644 0 0
-#md5-5833c1c43bd857b32a526a73fb359602  /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyc
-file /fakeroot/usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyo /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyo 0644 0 0
-#md5-5833c1c43bd857b32a526a73fb359602  /usr/libexec/glusterfs/python/syncdaemon/syncdutils.pyo
-dir /fakeroot/var/lib/glusterd/geo-replication 0755 0 0
-file /fakeroot/var/lib/glusterd/geo-replication/gsyncd.conf /var/lib/glusterd/geo-replication/gsyncd.conf 0755 0 0
-#md5-fc4be27e273c74fa3b14e6ae2756c8b9  /var/lib/glusterd/geo-replication/gsyncd.conf
-#rpm package glusterfs-fuse-3.3.1-1.el6.x86_64
-file /fakeroot/etc/logrotate.d/glusterfs-fuse /etc/logrotate.d/glusterfs-fuse 0644 0 0
-#md5-9eca72ce9e929f3adfcb6de958f7000b  /etc/logrotate.d/glusterfs-fuse
-file /fakeroot/sbin/mount.glusterfs /sbin/mount.glusterfs 0755 0 0
-#md5-3fbd3e5420757dd3a4f02e141f213f5d  /sbin/mount.glusterfs
-file /fakeroot/sbin/umount.glusterfs /sbin/umount.glusterfs 0755 0 0
-#md5-cef918557e603a3720ae8d672c7ee67a  /sbin/umount.glusterfs
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mount/fuse.so fuse.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mount/fuse.so.0 fuse.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/xlator/mount/fuse.so.0.0.0 /usr/lib64/glusterfs/3.3.1/xlator/mount/fuse.so.0.0.0 0755 0 0
-#md5-e91ae174e3051e54c8b9964a4a5aeb40  /usr/lib64/glusterfs/3.3.1/xlator/mount/fuse.so.0.0.0
-#rpm package glusterfs-rdma-3.3.1-1.el6.x86_64
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/rpc-transport/rdma.so rdma.so.0.0.0 0755 0 0
-slink /fakeroot/usr/lib64/glusterfs/3.3.1/rpc-transport/rdma.so.0 rdma.so.0.0.0 0755 0 0
-file /fakeroot/usr/lib64/glusterfs/3.3.1/rpc-transport/rdma.so.0.0.0 /usr/lib64/glusterfs/3.3.1/rpc-transport/rdma.so.0.0.0 0755 0 0
-#md5-78958e60c6e70b069dba3ee7e85871d2  /usr/lib64/glusterfs/3.3.1/rpc-transport/rdma.so.0.0.0
-## Defined by glfs.05.mod.glfs ##
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/cuse.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/cuse.ko 0744 0 0 
-#md5-2bbb065f871f68dac5969bde61453fc5  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/cuse.ko
-#modinfo [ cuse ]
-#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/cuse.ko
-#modinfo license:        GPL
-#modinfo description:    Character device in Userspace
-#modinfo author:         Tejun Heo <tj@kernel.org>
-#modinfo srcversion:     F6D6E513E691F859C741BF5
-#modinfo depends:        fuse
-#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/fuse.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/fuse.ko 0744 0 0 
-#md5-d9d78482c6ab04e67fa166949f4312b5  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/fuse.ko
-#modinfo [ fuse ]
-#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/fuse/fuse.ko
-#modinfo alias:          char-major-10-229
-#modinfo license:        GPL
-#modinfo description:    Filesystem in Userspace
-#modinfo author:         Miklos Szeredi <miklos@szeredi.hu>
-#modinfo srcversion:     C0FE7195229FF837E764C29
-#modinfo depends:        
-#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-#modinfo parm:           max_user_bgreq:Global limit for the maximum number of backgrounded requests an unprivileged user can set (uint)
-#modinfo parm:           max_user_congthresh:Global limit for the maximum congestion threshold an unprivileged user can set (uint)
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs.ko 0744 0 0 
-#md5-655abe9c25456509bc60680c092794d8  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs.ko
-#modinfo [ nfs ]
-#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs.ko
-#modinfo license:        GPL
-#modinfo author:         Olaf Kirch <okir@monad.swb.de>
-#modinfo srcversion:     666B7C399EC7E374CAD721B
-#modinfo depends:        sunrpc,fscache,lockd,auth_rpcgss,nfs_acl
-#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-#modinfo parm:           callback_tcpport:portnr
-#modinfo parm:           cache_getent:Path to the client cache upcall program (string)
-#modinfo parm:           cache_getent_timeout:Timeout (in seconds) after which the cache upcall is assumed to have failed (ulong)
-#modinfo parm:           enable_ino64:bool
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs_layout_nfsv41_files.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs_layout_nfsv41_files.ko 0744 0 0 
-#md5-d74b8b55db2e4dcbbe5a81e472d59fa6  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs_layout_nfsv41_files.ko
-#modinfo [ nfs_layout_nfsv41_files ]
-#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/nfs/nfs_layout_nfsv41_files.ko
-#modinfo description:    The NFSv4 file layout driver
-#modinfo author:         Dean Hildebrand <dhildebz@umich.edu>
-#modinfo license:        GPL
-#modinfo srcversion:     274A82A432F154F134853C8
-#modinfo depends:        nfs,sunrpc
-#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-## glfs.Customized ##
-dir /lib64 0755 0 0
-file /lib64/libtinfo.so.5 /root/sys-builder/glfs/deplibs/lib64/libtinfo.so.5 0755 0 0
-#md5-5f1e1f799168acbd9bda62738f224132  /root/sys-builder/glfs/deplibs/lib64/libtinfo.so.5
-file /lib64/libreadline.so.6 /root/sys-builder/glfs/deplibs/lib64/libreadline.so.6 0755 0 0
-#md5-0f044db21306d050e1db294e175b9926  /root/sys-builder/glfs/deplibs/lib64/libreadline.so.6
-file /lib64/libz.so.1 /root/sys-builder/glfs/deplibs/lib64/libz.so.1 0755 0 0
-#md5-ebaefbd732bf6ce0006a108f24a6e621  /root/sys-builder/glfs/deplibs/lib64/libz.so.1
-file /lib64/libdl.so.2 /root/sys-builder/glfs/deplibs/lib64/libdl.so.2 0755 0 0
-#md5-6509f5635cbd38d37f4f9d2d9aab61bf  /root/sys-builder/glfs/deplibs/lib64/libdl.so.2
-file /lib64/libncurses.so.5 /root/sys-builder/glfs/deplibs/lib64/libncurses.so.5 0755 0 0
-#md5-72e2066c3f1a6965bc94aae00ec11d78  /root/sys-builder/glfs/deplibs/lib64/libncurses.so.5
-file /lib64/libpthread.so.0 /root/sys-builder/glfs/deplibs/lib64/libpthread.so.0 0755 0 0
-#md5-fc053d6cd69cf523cdfe404cec7cbb3b  /root/sys-builder/glfs/deplibs/lib64/libpthread.so.0
-file /lib64/libm.so.6 /root/sys-builder/glfs/deplibs/lib64/libm.so.6 0755 0 0
-#md5-1ace38bd1959ab2d4d4eeb6cd45cde86  /root/sys-builder/glfs/deplibs/lib64/libm.so.6
-file /lib64/libc.so.6 /root/sys-builder/glfs/deplibs/lib64/libc.so.6 0755 0 0
-#md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/glfs/deplibs/lib64/libc.so.6
-dir /usr 0755 0 0
-dir /usr/lib64 0755 0 0
-file /usr/lib64/libcrypto.so.10 /root/sys-builder/glfs/deplibs/usr/lib64/libcrypto.so.10 0755 0 0
-#md5-f96a35e6dbb25845fc8ab7b89941d01c  /root/sys-builder/glfs/deplibs/usr/lib64/libcrypto.so.10
-file /usr/lib64/libxml2.so.2 /root/sys-builder/glfs/deplibs/usr/lib64/libxml2.so.2 0755 0 0
-#md5-573fec64b8b1c8b4956daf8d3147ba42  /root/sys-builder/glfs/deplibs/usr/lib64/libxml2.so.2
-file /usr/lib64/libibverbs.so.1 /root/sys-builder/glfs/deplibs/usr/lib64/libibverbs.so.1 0755 0 0
-#md5-eed4927892062699c98706ffab16f2e8  /root/sys-builder/glfs/deplibs/usr/lib64/libibverbs.so.1
-
-#
 #@@ Meta of package [ fss ] @@
 #
 ## Defined by fss.01.layout ##
@@ -12852,139 +12488,6 @@ file /lib64/libattr.so.1 /root/sys-builder/fss/deplibs/lib64/libattr.so.1 0755 0
 #md5-bb3664b64c2bb313d87ee4e493c41a92  /root/sys-builder/fss/deplibs/lib64/libattr.so.1
 file /lib64/libc.so.6 /root/sys-builder/fss/deplibs/lib64/libc.so.6 0755 0 0
 #md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/fss/deplibs/lib64/libc.so.6
-
-#
-#@@ Meta of package [ zfs ] @@
-#
-## Defined by zfs.01.layout ##
-## Defined by zfs.02.rpm.packages ##
-#rpm package spl-0.6.0-rc11.x86_64
-file /fakeroot/usr/sbin/spl /usr/sbin/spl 0755 0 0
-#md5-2c51e875a3007af468766bb4e76a6c75  /usr/sbin/spl
-file /fakeroot/usr/sbin/splat /usr/sbin/splat 0755 0 0
-#md5-16273ff39a1eb0442635e67e8c7bd7e1  /usr/sbin/splat
-#rpm package spl-modules-0.6.0-rc11_2.6.32_220.el6.x86_64
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon 0755 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/spl 0755 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/spl/spl 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/spl/spl/spl.ko /lib/modules/2.6.32-220.el6.x86_64/addon/spl/spl/spl.ko 0644 0 0
-#md5-7987a69bf12eba678f59c0332f77117c  /lib/modules/2.6.32-220.el6.x86_64/addon/spl/spl/spl.ko
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/spl/splat 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/spl/splat/splat.ko /lib/modules/2.6.32-220.el6.x86_64/addon/spl/splat/splat.ko 0644 0 0
-#md5-9649c884ba5d26ee195c3e43f84a4838  /lib/modules/2.6.32-220.el6.x86_64/addon/spl/splat/splat.ko
-#rpm package zfs-0.6.0-rc11.x86_64
-file /fakeroot/bin/zpool_layout /bin/zpool_layout 0755 0 0
-#md5-6c7692c72af2c44fb716242c8c95d7ba  /bin/zpool_layout
-file /fakeroot/etc/init.d/zfs /etc/init.d/zfs 0755 0 0
-#md5-dc8b072d1cbb52db43b35f80fd525708  /etc/init.d/zfs
-file /fakeroot/etc/zfs/vdev_id.conf.multipath.example /etc/zfs/vdev_id.conf.multipath.example 0644 0 0
-#md5-52a130efc2fb368156419045686a696c  /etc/zfs/vdev_id.conf.multipath.example
-file /fakeroot/etc/zfs/vdev_id.conf.sas_direct.example /etc/zfs/vdev_id.conf.sas_direct.example 0644 0 0
-#md5-d401a0f6f58320d935a1f9a381e521b3  /etc/zfs/vdev_id.conf.sas_direct.example
-file /fakeroot/etc/zfs/vdev_id.conf.sas_switch.example /etc/zfs/vdev_id.conf.sas_switch.example 0644 0 0
-#md5-212b46da696e40e79ce426b22b98137b  /etc/zfs/vdev_id.conf.sas_switch.example
-file /fakeroot/etc/zfs/zdev.conf /etc/zfs/zdev.conf 0644 0 0
-#md5-b006284e64b215ca619aeb56d2df9bf5  /etc/zfs/zdev.conf
-file /fakeroot/etc/zfs/zdev.conf.dragon.example /etc/zfs/zdev.conf.dragon.example 0644 0 0
-#md5-2182a5b55733c8ca6aae397d04d64b88  /etc/zfs/zdev.conf.dragon.example
-file /fakeroot/etc/zfs/zdev.conf.supermicro.example /etc/zfs/zdev.conf.supermicro.example 0644 0 0
-#md5-a9239a998b74e61eb327845dc5ec827f  /etc/zfs/zdev.conf.supermicro.example
-file /fakeroot/etc/zfs/zdev.conf.x4550.example /etc/zfs/zdev.conf.x4550.example 0644 0 0
-#md5-3f42aa30e01abf023c059b0ddd471770  /etc/zfs/zdev.conf.x4550.example
-dir /fakeroot/lib/udev/rules.d 0755 0 0
-file /fakeroot/lib/udev/rules.d/60-vdev.rules /lib/udev/rules.d/60-vdev.rules 0644 0 0
-#md5-b0b16f2999ad4a74903308b4c06295e9  /lib/udev/rules.d/60-vdev.rules
-file /fakeroot/lib/udev/rules.d/60-zpool.rules /lib/udev/rules.d/60-zpool.rules 0644 0 0
-#md5-f5e3e0d6262c8fe00a6cb72822db7da9  /lib/udev/rules.d/60-zpool.rules
-file /fakeroot/lib/udev/rules.d/60-zvol.rules /lib/udev/rules.d/60-zvol.rules 0644 0 0
-#md5-0f8e6406112f73681d8370466e3e7332  /lib/udev/rules.d/60-zvol.rules
-file /fakeroot/lib/udev/rules.d/90-zfs.rules /lib/udev/rules.d/90-zfs.rules 0644 0 0
-#md5-f0bcf200343f382b7193e879491a0589  /lib/udev/rules.d/90-zfs.rules
-file /fakeroot/lib/udev/vdev_id /lib/udev/vdev_id 0755 0 0
-#md5-419f933b59eb3f259a2fd172e9074587  /lib/udev/vdev_id
-file /fakeroot/lib/udev/zpool_id /lib/udev/zpool_id 0755 0 0
-#md5-53ac4a865bd42c8c33135c8e83ce1d8f  /lib/udev/zpool_id
-file /fakeroot/lib/udev/zvol_id /lib/udev/zvol_id 0755 0 0
-#md5-c6e192a499e41a9d084614d1632174df  /lib/udev/zvol_id
-file /fakeroot/lib64/libnvpair.la /lib64/libnvpair.la 0755 0 0
-#md5-5690561bea948ab9cbfd5b5e12eec564  /lib64/libnvpair.la
-slink /fakeroot/lib64/libnvpair.so libnvpair.so.1.0.1 0755 0 0
-slink /fakeroot/lib64/libnvpair.so.1 libnvpair.so.1.0.1 0755 0 0
-file /fakeroot/lib64/libnvpair.so.1.0.1 /lib64/libnvpair.so.1.0.1 0755 0 0
-#md5-7151043875e957ae808caf588a2efea8  /lib64/libnvpair.so.1.0.1
-file /fakeroot/lib64/libuutil.la /lib64/libuutil.la 0755 0 0
-#md5-2e4ff17192d4ab6b379020278b869ef2  /lib64/libuutil.la
-slink /fakeroot/lib64/libuutil.so libuutil.so.1.0.1 0755 0 0
-slink /fakeroot/lib64/libuutil.so.1 libuutil.so.1.0.1 0755 0 0
-file /fakeroot/lib64/libuutil.so.1.0.1 /lib64/libuutil.so.1.0.1 0755 0 0
-#md5-eb221b099a7cf4406bbfa3823d22ff76  /lib64/libuutil.so.1.0.1
-file /fakeroot/lib64/libzfs.la /lib64/libzfs.la 0755 0 0
-#md5-fac2a461d9a6d2ce20be20357ff86d5f  /lib64/libzfs.la
-slink /fakeroot/lib64/libzfs.so libzfs.so.1.0.1 0755 0 0
-slink /fakeroot/lib64/libzfs.so.1 libzfs.so.1.0.1 0755 0 0
-file /fakeroot/lib64/libzfs.so.1.0.1 /lib64/libzfs.so.1.0.1 0755 0 0
-#md5-6c1cb5287d6ec47faedda97e0550d53f  /lib64/libzfs.so.1.0.1
-file /fakeroot/lib64/libzpool.la /lib64/libzpool.la 0755 0 0
-#md5-f735d9621de88cbda023d52052e117a8  /lib64/libzpool.la
-slink /fakeroot/lib64/libzpool.so libzpool.so.1.0.1 0755 0 0
-slink /fakeroot/lib64/libzpool.so.1 libzpool.so.1.0.1 0755 0 0
-file /fakeroot/lib64/libzpool.so.1.0.1 /lib64/libzpool.so.1.0.1 0755 0 0
-#md5-8f443c4ef64c3476a3de7f3ebf955a3d  /lib64/libzpool.so.1.0.1
-file /fakeroot/sbin/mount.zfs /sbin/mount.zfs 0755 0 0
-#md5-acc1a42c1d2d92f5681e95858effa9ab  /sbin/mount.zfs
-file /fakeroot/sbin/zdb /sbin/zdb 0755 0 0
-#md5-e593f462276d67f77ab579abc5e4df20  /sbin/zdb
-file /fakeroot/sbin/zfs /sbin/zfs 0755 0 0
-#md5-a76fc8307572b5ef58d99f74b7fb7f30  /sbin/zfs
-file /fakeroot/sbin/zinject /sbin/zinject 0755 0 0
-#md5-325416a7a04b428096f42c39ebd18a5a  /sbin/zinject
-file /fakeroot/sbin/zpios /sbin/zpios 0755 0 0
-#md5-d8cce63a0f936dce1857da2ab8cae423  /sbin/zpios
-file /fakeroot/sbin/zpool /sbin/zpool 0755 0 0
-#md5-da80c9a88d72d89ebbaa2c1440d7af8e  /sbin/zpool
-file /fakeroot/sbin/zstreamdump /sbin/zstreamdump 0755 0 0
-#md5-78a8bde515ca5ab8e13fe8801a3443d9  /sbin/zstreamdump
-file /fakeroot/sbin/ztest /sbin/ztest 0755 0 0
-#md5-5977f705305b1c89ce754d948c950479  /sbin/ztest
-#rpm package zfs-modules-0.6.0-rc11_2.6.32_220.el6.x86_64
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon 0755 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs 0755 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/avl 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/avl/zavl.ko /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/avl/zavl.ko 0644 0 0
-#md5-eb8ae4c7690f6a63f433fa09a131684e  /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/avl/zavl.ko
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/nvpair 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/nvpair/znvpair.ko /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/nvpair/znvpair.ko 0644 0 0
-#md5-8b456ee13d95098166339912d7555f14  /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/nvpair/znvpair.ko
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/unicode 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/unicode/zunicode.ko /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/unicode/zunicode.ko 0644 0 0
-#md5-bafc18cc82ee0bfe517d6ab6a3c9c7f9  /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/unicode/zunicode.ko
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zcommon 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zcommon/zcommon.ko /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zcommon/zcommon.ko 0644 0 0
-#md5-df7f016c3530375ad4e331d6e06999ab  /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zcommon/zcommon.ko
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zfs 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zfs/zfs.ko /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zfs/zfs.ko 0644 0 0
-#md5-3d0ce9b85dff79432e0da915429b9bf4  /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zfs/zfs.ko
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zpios 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zpios/zpios.ko /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zpios/zpios.ko 0644 0 0
-#md5-38394d9639de6f88e328f5845af9a7bb  /lib/modules/2.6.32-220.el6.x86_64/addon/zfs/zpios/zpios.ko
-## zfs.Customized ##
-dir /lib64 0755 0 0
-file /lib64/libselinux.so.1 /root/sys-builder/zfs/deplibs/lib64/libselinux.so.1 0755 0 0
-#md5-ff4b579247e96f8bf2106fefd3b0059f  /root/sys-builder/zfs/deplibs/lib64/libselinux.so.1
-file /lib64/libz.so.1 /root/sys-builder/zfs/deplibs/lib64/libz.so.1 0755 0 0
-#md5-ebaefbd732bf6ce0006a108f24a6e621  /root/sys-builder/zfs/deplibs/lib64/libz.so.1
-file /lib64/libdl.so.2 /root/sys-builder/zfs/deplibs/lib64/libdl.so.2 0755 0 0
-#md5-6509f5635cbd38d37f4f9d2d9aab61bf  /root/sys-builder/zfs/deplibs/lib64/libdl.so.2
-file /lib64/libuuid.so.1 /root/sys-builder/zfs/deplibs/lib64/libuuid.so.1 0755 0 0
-#md5-d3d9db3c604cc6e3f1a9cabcf8799758  /root/sys-builder/zfs/deplibs/lib64/libuuid.so.1
-file /lib64/libpthread.so.0 /root/sys-builder/zfs/deplibs/lib64/libpthread.so.0 0755 0 0
-#md5-fc053d6cd69cf523cdfe404cec7cbb3b  /root/sys-builder/zfs/deplibs/lib64/libpthread.so.0
-file /lib64/librt.so.1 /root/sys-builder/zfs/deplibs/lib64/librt.so.1 0755 0 0
-#md5-99535312e462e38976037f15b2c76ea1  /root/sys-builder/zfs/deplibs/lib64/librt.so.1
-file /lib64/libm.so.6 /root/sys-builder/zfs/deplibs/lib64/libm.so.6 0755 0 0
-#md5-1ace38bd1959ab2d4d4eeb6cd45cde86  /root/sys-builder/zfs/deplibs/lib64/libm.so.6
-file /lib64/libc.so.6 /root/sys-builder/zfs/deplibs/lib64/libc.so.6 0755 0 0
-#md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/zfs/deplibs/lib64/libc.so.6
 
 #
 #@@ Meta of package [ perl ] @@
@@ -16357,349 +15860,6 @@ file /usr/lib64/libnssutil3.so /root/sys-builder/netboot/deplibs/usr/lib64/libns
 #md5-49c8bc011632d44e5cff551824ebc8e2  /root/sys-builder/netboot/deplibs/usr/lib64/libnssutil3.so
 
 #
-#@@ Meta of package [ vnetwork ] @@
-#
-## Defined by vnetwork.01.layout ##
-## Defined by vnetwork.02.rpm.packages ##
-#rpm package openvswitch-1.7.1-1.x86_64
-file /fakeroot/etc/init.d/openvswitch /etc/init.d/openvswitch 0755 0 0
-#md5-28bd33de372494400a633712e21c9dee  /etc/init.d/openvswitch
-file /fakeroot/etc/logrotate.d/openvswitch /etc/logrotate.d/openvswitch 0644 0 0
-#md5-693278d635987962fa161b3ef4390b24  /etc/logrotate.d/openvswitch
-file /fakeroot/etc/sysconfig/network-scripts/ifdown-ovs /etc/sysconfig/network-scripts/ifdown-ovs 0755 0 0
-#md5-b7014fc2025dce28b7bac95a56464649  /etc/sysconfig/network-scripts/ifdown-ovs
-file /fakeroot/etc/sysconfig/network-scripts/ifup-ovs /etc/sysconfig/network-scripts/ifup-ovs 0755 0 0
-#md5-660a956ffed4617f6ab1c60680b955fb  /etc/sysconfig/network-scripts/ifup-ovs
-file /fakeroot/usr/bin/ovs-appctl /usr/bin/ovs-appctl 0755 0 0
-#md5-99343658a811aea2bc4eb3c2876360ff  /usr/bin/ovs-appctl
-file /fakeroot/usr/bin/ovs-benchmark /usr/bin/ovs-benchmark 0755 0 0
-#md5-6da5648efbed2130565bc82214119796  /usr/bin/ovs-benchmark
-file /fakeroot/usr/bin/ovs-dpctl /usr/bin/ovs-dpctl 0755 0 0
-#md5-ffda345eee46b190039409e061641abf  /usr/bin/ovs-dpctl
-file /fakeroot/usr/bin/ovs-ofctl /usr/bin/ovs-ofctl 0755 0 0
-#md5-5a6c3b3c648288f49aa1e9b796c7af0d  /usr/bin/ovs-ofctl
-file /fakeroot/usr/bin/ovs-parse-leaks /usr/bin/ovs-parse-leaks 0755 0 0
-#md5-4eda700a240e52a8a003bc92c70fb56d  /usr/bin/ovs-parse-leaks
-file /fakeroot/usr/bin/ovs-pcap /usr/bin/ovs-pcap 0755 0 0
-#md5-222e3f708f646866162218a0a196854e  /usr/bin/ovs-pcap
-file /fakeroot/usr/bin/ovs-pki /usr/bin/ovs-pki 0755 0 0
-#md5-270e0e564e7485b08a15611972d0ae13  /usr/bin/ovs-pki
-file /fakeroot/usr/bin/ovs-tcpundump /usr/bin/ovs-tcpundump 0755 0 0
-#md5-3300180d06ac39aaa717331cb0df2a0a  /usr/bin/ovs-tcpundump
-file /fakeroot/usr/bin/ovs-vlan-test /usr/bin/ovs-vlan-test 0755 0 0
-#md5-c509319aac4aba51a9a74a50514ca817  /usr/bin/ovs-vlan-test
-file /fakeroot/usr/bin/ovs-vsctl /usr/bin/ovs-vsctl 0755 0 0
-#md5-6fea8a88bd8bfa5afa93c6b07b0e3265  /usr/bin/ovs-vsctl
-file /fakeroot/usr/bin/ovsdb-client /usr/bin/ovsdb-client 0755 0 0
-#md5-76a404d535b62e3f8d2e905e1f39d404  /usr/bin/ovsdb-client
-file /fakeroot/usr/bin/ovsdb-tool /usr/bin/ovsdb-tool 0755 0 0
-#md5-c1a312b0f223c7662c5a6289f232eb16  /usr/bin/ovsdb-tool
-file /fakeroot/usr/sbin/ovs-brcompatd /usr/sbin/ovs-brcompatd 0755 0 0
-#md5-542b21a29ba6cd1f742ded69a97f1a0d  /usr/sbin/ovs-brcompatd
-file /fakeroot/usr/sbin/ovs-bugtool /usr/sbin/ovs-bugtool 0755 0 0
-#md5-54202b68a98b1eca908c2672925f8d13  /usr/sbin/ovs-bugtool
-file /fakeroot/usr/sbin/ovs-vswitchd /usr/sbin/ovs-vswitchd 0755 0 0
-#md5-0366c340fe3e51a08d7fb7b3f19f2cf0  /usr/sbin/ovs-vswitchd
-file /fakeroot/usr/sbin/ovsdb-server /usr/sbin/ovsdb-server 0755 0 0
-#md5-fbac7f508aa0596946ef1d28f4cc9c82  /usr/sbin/ovsdb-server
-dir /fakeroot/usr/share/openvswitch/bugtool-plugins 0755 0 0
-dir /fakeroot/usr/share/openvswitch/bugtool-plugins/kernel-info 0755 0 0
-file /fakeroot/usr/share/openvswitch/bugtool-plugins/kernel-info/openvswitch.xml /usr/share/openvswitch/bugtool-plugins/kernel-info/openvswitch.xml 0644 0 0
-#md5-70591fc4448a684a02544cce6d1fbf48  /usr/share/openvswitch/bugtool-plugins/kernel-info/openvswitch.xml
-dir /fakeroot/usr/share/openvswitch/bugtool-plugins/network-status 0755 0 0
-file /fakeroot/usr/share/openvswitch/bugtool-plugins/network-status/openvswitch.xml /usr/share/openvswitch/bugtool-plugins/network-status/openvswitch.xml 0644 0 0
-#md5-bc9c53c42adc9aad5e1e6c7be07cead8  /usr/share/openvswitch/bugtool-plugins/network-status/openvswitch.xml
-dir /fakeroot/usr/share/openvswitch/bugtool-plugins/system-configuration 0755 0 0
-file /fakeroot/usr/share/openvswitch/bugtool-plugins/system-configuration.xml /usr/share/openvswitch/bugtool-plugins/system-configuration.xml 0644 0 0
-#md5-b52b42b16cf1357077b652431a5ccaa5  /usr/share/openvswitch/bugtool-plugins/system-configuration.xml
-file /fakeroot/usr/share/openvswitch/bugtool-plugins/system-configuration/openvswitch.xml /usr/share/openvswitch/bugtool-plugins/system-configuration/openvswitch.xml 0644 0 0
-#md5-f35aa77f16ab84669ec6d0ed6c2a36ab  /usr/share/openvswitch/bugtool-plugins/system-configuration/openvswitch.xml
-dir /fakeroot/usr/share/openvswitch/bugtool-plugins/system-logs 0755 0 0
-file /fakeroot/usr/share/openvswitch/bugtool-plugins/system-logs/openvswitch.xml /usr/share/openvswitch/bugtool-plugins/system-logs/openvswitch.xml 0644 0 0
-#md5-d349399fb587cc310aadd9f282bc8711  /usr/share/openvswitch/bugtool-plugins/system-logs/openvswitch.xml
-dir /fakeroot/usr/share/openvswitch/python 0755 0 0
-file /fakeroot/usr/share/openvswitch/python/argparse.py /usr/share/openvswitch/python/argparse.py 0755 0 0
-#md5-8633961a55885692eb1229959bebbe25  /usr/share/openvswitch/python/argparse.py
-file /fakeroot/usr/share/openvswitch/python/argparse.pyc /usr/share/openvswitch/python/argparse.pyc 0644 0 0
-#md5-35d422d8afbe3b0bedc4edb65c593964  /usr/share/openvswitch/python/argparse.pyc
-file /fakeroot/usr/share/openvswitch/python/argparse.pyo /usr/share/openvswitch/python/argparse.pyo 0644 0 0
-#md5-2e30f357f5e67e3153e643a53bc8ae2b  /usr/share/openvswitch/python/argparse.pyo
-dir /fakeroot/usr/share/openvswitch/python/ovs 0755 0 0
-file /fakeroot/usr/share/openvswitch/python/ovs/__init__.py /usr/share/openvswitch/python/ovs/__init__.py 0644 0 0
-#md5-f271e225645716b62f57d667cbc26867  /usr/share/openvswitch/python/ovs/__init__.py
-file /fakeroot/usr/share/openvswitch/python/ovs/__init__.pyc /usr/share/openvswitch/python/ovs/__init__.pyc 0644 0 0
-#md5-70aec1b497615fc53105f2b3646b5a8c  /usr/share/openvswitch/python/ovs/__init__.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/__init__.pyo /usr/share/openvswitch/python/ovs/__init__.pyo 0644 0 0
-#md5-70aec1b497615fc53105f2b3646b5a8c  /usr/share/openvswitch/python/ovs/__init__.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/daemon.py /usr/share/openvswitch/python/ovs/daemon.py 0644 0 0
-#md5-fb01b66b814978b59c2df7e37c008dfd  /usr/share/openvswitch/python/ovs/daemon.py
-file /fakeroot/usr/share/openvswitch/python/ovs/daemon.pyc /usr/share/openvswitch/python/ovs/daemon.pyc 0644 0 0
-#md5-7fe0ee6c117e9b85e715d8c972fb04d3  /usr/share/openvswitch/python/ovs/daemon.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/daemon.pyo /usr/share/openvswitch/python/ovs/daemon.pyo 0644 0 0
-#md5-8c97f35d4ffd731295c2f1bb3b80d251  /usr/share/openvswitch/python/ovs/daemon.pyo
-dir /fakeroot/usr/share/openvswitch/python/ovs/db 0755 0 0
-file /fakeroot/usr/share/openvswitch/python/ovs/db/__init__.py /usr/share/openvswitch/python/ovs/db/__init__.py 0644 0 0
-#md5-f271e225645716b62f57d667cbc26867  /usr/share/openvswitch/python/ovs/db/__init__.py
-file /fakeroot/usr/share/openvswitch/python/ovs/db/__init__.pyc /usr/share/openvswitch/python/ovs/db/__init__.pyc 0644 0 0
-#md5-485e51b896266c7055758477b18231a4  /usr/share/openvswitch/python/ovs/db/__init__.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/db/__init__.pyo /usr/share/openvswitch/python/ovs/db/__init__.pyo 0644 0 0
-#md5-485e51b896266c7055758477b18231a4  /usr/share/openvswitch/python/ovs/db/__init__.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/db/data.py /usr/share/openvswitch/python/ovs/db/data.py 0644 0 0
-#md5-9d625cfef5babd9cc5d5ccf7712f7108  /usr/share/openvswitch/python/ovs/db/data.py
-file /fakeroot/usr/share/openvswitch/python/ovs/db/data.pyc /usr/share/openvswitch/python/ovs/db/data.pyc 0644 0 0
-#md5-e4203205f537598126e278d89ee5de15  /usr/share/openvswitch/python/ovs/db/data.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/db/data.pyo /usr/share/openvswitch/python/ovs/db/data.pyo 0644 0 0
-#md5-1ef4711ce6ca5626830b7c8f6e3a71e8  /usr/share/openvswitch/python/ovs/db/data.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/db/error.py /usr/share/openvswitch/python/ovs/db/error.py 0644 0 0
-#md5-e2513b6b02d940b2c762e4d7be522469  /usr/share/openvswitch/python/ovs/db/error.py
-file /fakeroot/usr/share/openvswitch/python/ovs/db/error.pyc /usr/share/openvswitch/python/ovs/db/error.pyc 0644 0 0
-#md5-cfd0ce869c779bc37fe6458c3709049f  /usr/share/openvswitch/python/ovs/db/error.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/db/error.pyo /usr/share/openvswitch/python/ovs/db/error.pyo 0644 0 0
-#md5-cfd0ce869c779bc37fe6458c3709049f  /usr/share/openvswitch/python/ovs/db/error.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/db/idl.py /usr/share/openvswitch/python/ovs/db/idl.py 0644 0 0
-#md5-4e74eaf1a18090e3bcf01455eefe8f00  /usr/share/openvswitch/python/ovs/db/idl.py
-file /fakeroot/usr/share/openvswitch/python/ovs/db/idl.pyc /usr/share/openvswitch/python/ovs/db/idl.pyc 0644 0 0
-#md5-b77acab675b4be08443db1a3101e15c7  /usr/share/openvswitch/python/ovs/db/idl.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/db/idl.pyo /usr/share/openvswitch/python/ovs/db/idl.pyo 0644 0 0
-#md5-46a9bc91848f6e7ded37895241ba8488  /usr/share/openvswitch/python/ovs/db/idl.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/db/parser.py /usr/share/openvswitch/python/ovs/db/parser.py 0644 0 0
-#md5-6d474369de2149f9623f9ecc03b282d4  /usr/share/openvswitch/python/ovs/db/parser.py
-file /fakeroot/usr/share/openvswitch/python/ovs/db/parser.pyc /usr/share/openvswitch/python/ovs/db/parser.pyc 0644 0 0
-#md5-052e83369c0e5150d5996843fcc2c899  /usr/share/openvswitch/python/ovs/db/parser.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/db/parser.pyo /usr/share/openvswitch/python/ovs/db/parser.pyo 0644 0 0
-#md5-052e83369c0e5150d5996843fcc2c899  /usr/share/openvswitch/python/ovs/db/parser.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/db/schema.py /usr/share/openvswitch/python/ovs/db/schema.py 0644 0 0
-#md5-e79c7a3f2b9cfbaa3a3f7124320820aa  /usr/share/openvswitch/python/ovs/db/schema.py
-file /fakeroot/usr/share/openvswitch/python/ovs/db/schema.pyc /usr/share/openvswitch/python/ovs/db/schema.pyc 0644 0 0
-#md5-15821176a16d7c812bc1d3386e0f2464  /usr/share/openvswitch/python/ovs/db/schema.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/db/schema.pyo /usr/share/openvswitch/python/ovs/db/schema.pyo 0644 0 0
-#md5-15821176a16d7c812bc1d3386e0f2464  /usr/share/openvswitch/python/ovs/db/schema.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/db/types.py /usr/share/openvswitch/python/ovs/db/types.py 0644 0 0
-#md5-e368bb2e0ec29ae9499625905349feeb  /usr/share/openvswitch/python/ovs/db/types.py
-file /fakeroot/usr/share/openvswitch/python/ovs/db/types.pyc /usr/share/openvswitch/python/ovs/db/types.pyc 0644 0 0
-#md5-df9da5316d4b9c149c152a5b6b505235  /usr/share/openvswitch/python/ovs/db/types.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/db/types.pyo /usr/share/openvswitch/python/ovs/db/types.pyo 0644 0 0
-#md5-30bb314dc864a4d1e3e3ec5eb40fe271  /usr/share/openvswitch/python/ovs/db/types.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/dirs.py /usr/share/openvswitch/python/ovs/dirs.py 0644 0 0
-#md5-0e8a751b09499009d9d2fe412ab3f032  /usr/share/openvswitch/python/ovs/dirs.py
-file /fakeroot/usr/share/openvswitch/python/ovs/dirs.pyc /usr/share/openvswitch/python/ovs/dirs.pyc 0644 0 0
-#md5-71c8d4527c14363faf9fc35a300e97a2  /usr/share/openvswitch/python/ovs/dirs.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/dirs.pyo /usr/share/openvswitch/python/ovs/dirs.pyo 0644 0 0
-#md5-71c8d4527c14363faf9fc35a300e97a2  /usr/share/openvswitch/python/ovs/dirs.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/fatal_signal.py /usr/share/openvswitch/python/ovs/fatal_signal.py 0644 0 0
-#md5-272559f59047bc035163767fe5c230b8  /usr/share/openvswitch/python/ovs/fatal_signal.py
-file /fakeroot/usr/share/openvswitch/python/ovs/fatal_signal.pyc /usr/share/openvswitch/python/ovs/fatal_signal.pyc 0644 0 0
-#md5-1bc0dbdf828139647b7d6735de0f9534  /usr/share/openvswitch/python/ovs/fatal_signal.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/fatal_signal.pyo /usr/share/openvswitch/python/ovs/fatal_signal.pyo 0644 0 0
-#md5-1bc0dbdf828139647b7d6735de0f9534  /usr/share/openvswitch/python/ovs/fatal_signal.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/json.py /usr/share/openvswitch/python/ovs/json.py 0644 0 0
-#md5-7363525656e4e2563bacd64150c453c8  /usr/share/openvswitch/python/ovs/json.py
-file /fakeroot/usr/share/openvswitch/python/ovs/json.pyc /usr/share/openvswitch/python/ovs/json.pyc 0644 0 0
-#md5-75090a184486d1b31a8315d3eca4185d  /usr/share/openvswitch/python/ovs/json.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/json.pyo /usr/share/openvswitch/python/ovs/json.pyo 0644 0 0
-#md5-312344eb0ef1015f8ae76f76bd6448b3  /usr/share/openvswitch/python/ovs/json.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/jsonrpc.py /usr/share/openvswitch/python/ovs/jsonrpc.py 0644 0 0
-#md5-414dcd698ae6181e7fb80f52d1e1bbc1  /usr/share/openvswitch/python/ovs/jsonrpc.py
-file /fakeroot/usr/share/openvswitch/python/ovs/jsonrpc.pyc /usr/share/openvswitch/python/ovs/jsonrpc.pyc 0644 0 0
-#md5-ca5003000934f7dc90e6703f5c1b4541  /usr/share/openvswitch/python/ovs/jsonrpc.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/jsonrpc.pyo /usr/share/openvswitch/python/ovs/jsonrpc.pyo 0644 0 0
-#md5-5d39daf88026e2d4bfe83adb68d79ccd  /usr/share/openvswitch/python/ovs/jsonrpc.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/ovsuuid.py /usr/share/openvswitch/python/ovs/ovsuuid.py 0644 0 0
-#md5-255e8b709da419274b26a3d1ecdfaa74  /usr/share/openvswitch/python/ovs/ovsuuid.py
-file /fakeroot/usr/share/openvswitch/python/ovs/ovsuuid.pyc /usr/share/openvswitch/python/ovs/ovsuuid.pyc 0644 0 0
-#md5-cc813bab99f2064578ccc8e40af287a7  /usr/share/openvswitch/python/ovs/ovsuuid.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/ovsuuid.pyo /usr/share/openvswitch/python/ovs/ovsuuid.pyo 0644 0 0
-#md5-cc813bab99f2064578ccc8e40af287a7  /usr/share/openvswitch/python/ovs/ovsuuid.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/poller.py /usr/share/openvswitch/python/ovs/poller.py 0644 0 0
-#md5-f5d05ef44578f38a6461fff3557ce42a  /usr/share/openvswitch/python/ovs/poller.py
-file /fakeroot/usr/share/openvswitch/python/ovs/poller.pyc /usr/share/openvswitch/python/ovs/poller.pyc 0644 0 0
-#md5-52d62007001a01bcf7c379a3ace64d23  /usr/share/openvswitch/python/ovs/poller.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/poller.pyo /usr/share/openvswitch/python/ovs/poller.pyo 0644 0 0
-#md5-52d62007001a01bcf7c379a3ace64d23  /usr/share/openvswitch/python/ovs/poller.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/process.py /usr/share/openvswitch/python/ovs/process.py 0644 0 0
-#md5-a10d3d6627f7a4ac64dc50ee406866aa  /usr/share/openvswitch/python/ovs/process.py
-file /fakeroot/usr/share/openvswitch/python/ovs/process.pyc /usr/share/openvswitch/python/ovs/process.pyc 0644 0 0
-#md5-d4af57b9689c4a474f3473bf3becfcf5  /usr/share/openvswitch/python/ovs/process.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/process.pyo /usr/share/openvswitch/python/ovs/process.pyo 0644 0 0
-#md5-d4af57b9689c4a474f3473bf3becfcf5  /usr/share/openvswitch/python/ovs/process.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/reconnect.py /usr/share/openvswitch/python/ovs/reconnect.py 0644 0 0
-#md5-ecceaf74580de4c26b31b74a677dbf05  /usr/share/openvswitch/python/ovs/reconnect.py
-file /fakeroot/usr/share/openvswitch/python/ovs/reconnect.pyc /usr/share/openvswitch/python/ovs/reconnect.pyc 0644 0 0
-#md5-34f5fdce8d1c5bf909f4e38a2614e4f8  /usr/share/openvswitch/python/ovs/reconnect.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/reconnect.pyo /usr/share/openvswitch/python/ovs/reconnect.pyo 0644 0 0
-#md5-34f5fdce8d1c5bf909f4e38a2614e4f8  /usr/share/openvswitch/python/ovs/reconnect.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/socket_util.py /usr/share/openvswitch/python/ovs/socket_util.py 0644 0 0
-#md5-0621984af587851708a826bcc7f9d650  /usr/share/openvswitch/python/ovs/socket_util.py
-file /fakeroot/usr/share/openvswitch/python/ovs/socket_util.pyc /usr/share/openvswitch/python/ovs/socket_util.pyc 0644 0 0
-#md5-ee6006ff34aaebc4f43762036698ae7e  /usr/share/openvswitch/python/ovs/socket_util.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/socket_util.pyo /usr/share/openvswitch/python/ovs/socket_util.pyo 0644 0 0
-#md5-42a0dc0e74fb8955672926596a80f778  /usr/share/openvswitch/python/ovs/socket_util.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/stream.py /usr/share/openvswitch/python/ovs/stream.py 0644 0 0
-#md5-dcd2c040e8a887c5b69b1ce52a622e85  /usr/share/openvswitch/python/ovs/stream.py
-file /fakeroot/usr/share/openvswitch/python/ovs/stream.pyc /usr/share/openvswitch/python/ovs/stream.pyc 0644 0 0
-#md5-7feb619806dfde9b4ec6255fbcba6a0e  /usr/share/openvswitch/python/ovs/stream.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/stream.pyo /usr/share/openvswitch/python/ovs/stream.pyo 0644 0 0
-#md5-b28fda41405c1b6f26ec5c6a8a6d46ab  /usr/share/openvswitch/python/ovs/stream.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/timeval.py /usr/share/openvswitch/python/ovs/timeval.py 0644 0 0
-#md5-55f1fc2d753ca000f387119ec44ce1b2  /usr/share/openvswitch/python/ovs/timeval.py
-file /fakeroot/usr/share/openvswitch/python/ovs/timeval.pyc /usr/share/openvswitch/python/ovs/timeval.pyc 0644 0 0
-#md5-ed87e70b64af18dd3ed27d8f268c0455  /usr/share/openvswitch/python/ovs/timeval.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/timeval.pyo /usr/share/openvswitch/python/ovs/timeval.pyo 0644 0 0
-#md5-ed87e70b64af18dd3ed27d8f268c0455  /usr/share/openvswitch/python/ovs/timeval.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/unixctl.py /usr/share/openvswitch/python/ovs/unixctl.py 0644 0 0
-#md5-80003f4b53880ef58bed3d682a36d769  /usr/share/openvswitch/python/ovs/unixctl.py
-file /fakeroot/usr/share/openvswitch/python/ovs/unixctl.pyc /usr/share/openvswitch/python/ovs/unixctl.pyc 0644 0 0
-#md5-c396d4e9f133e85c891e2a8923fcfc45  /usr/share/openvswitch/python/ovs/unixctl.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/unixctl.pyo /usr/share/openvswitch/python/ovs/unixctl.pyo 0644 0 0
-#md5-bb1114acfd2b106f26a7908ff471a942  /usr/share/openvswitch/python/ovs/unixctl.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/util.py /usr/share/openvswitch/python/ovs/util.py 0644 0 0
-#md5-4d251868a321c6695bd3600eff09d2a6  /usr/share/openvswitch/python/ovs/util.py
-file /fakeroot/usr/share/openvswitch/python/ovs/util.pyc /usr/share/openvswitch/python/ovs/util.pyc 0644 0 0
-#md5-5389ef801748a40f42220e13085a83f1  /usr/share/openvswitch/python/ovs/util.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/util.pyo /usr/share/openvswitch/python/ovs/util.pyo 0644 0 0
-#md5-5389ef801748a40f42220e13085a83f1  /usr/share/openvswitch/python/ovs/util.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/version.py /usr/share/openvswitch/python/ovs/version.py 0644 0 0
-#md5-eaf7d431ec29f0450002fb47d02d6507  /usr/share/openvswitch/python/ovs/version.py
-file /fakeroot/usr/share/openvswitch/python/ovs/version.pyc /usr/share/openvswitch/python/ovs/version.pyc 0644 0 0
-#md5-9a211f7b5664c851f70e3d82a6148986  /usr/share/openvswitch/python/ovs/version.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/version.pyo /usr/share/openvswitch/python/ovs/version.pyo 0644 0 0
-#md5-9a211f7b5664c851f70e3d82a6148986  /usr/share/openvswitch/python/ovs/version.pyo
-file /fakeroot/usr/share/openvswitch/python/ovs/vlog.py /usr/share/openvswitch/python/ovs/vlog.py 0644 0 0
-#md5-7c929b3c12b8a667d3d4230b98b0aafc  /usr/share/openvswitch/python/ovs/vlog.py
-file /fakeroot/usr/share/openvswitch/python/ovs/vlog.pyc /usr/share/openvswitch/python/ovs/vlog.pyc 0644 0 0
-#md5-ecd5feb4d58ffc7a41e1349fdeda52f7  /usr/share/openvswitch/python/ovs/vlog.pyc
-file /fakeroot/usr/share/openvswitch/python/ovs/vlog.pyo /usr/share/openvswitch/python/ovs/vlog.pyo 0644 0 0
-#md5-7e5aa02bdd002ce73ced719ffb1e0118  /usr/share/openvswitch/python/ovs/vlog.pyo
-dir /fakeroot/usr/share/openvswitch/python/ovstest 0755 0 0
-file /fakeroot/usr/share/openvswitch/python/ovstest/__init__.py /usr/share/openvswitch/python/ovstest/__init__.py 0644 0 0
-#md5-f271e225645716b62f57d667cbc26867  /usr/share/openvswitch/python/ovstest/__init__.py
-file /fakeroot/usr/share/openvswitch/python/ovstest/__init__.pyc /usr/share/openvswitch/python/ovstest/__init__.pyc 0644 0 0
-#md5-c4415124c07febccced1696817171a3c  /usr/share/openvswitch/python/ovstest/__init__.pyc
-file /fakeroot/usr/share/openvswitch/python/ovstest/__init__.pyo /usr/share/openvswitch/python/ovstest/__init__.pyo 0644 0 0
-#md5-c4415124c07febccced1696817171a3c  /usr/share/openvswitch/python/ovstest/__init__.pyo
-file /fakeroot/usr/share/openvswitch/python/ovstest/args.py /usr/share/openvswitch/python/ovstest/args.py 0644 0 0
-#md5-dd3eda2554108defd3ad1719bf2a8199  /usr/share/openvswitch/python/ovstest/args.py
-file /fakeroot/usr/share/openvswitch/python/ovstest/args.pyc /usr/share/openvswitch/python/ovstest/args.pyc 0644 0 0
-#md5-76d68f1e306bd536643cd42e5aafde74  /usr/share/openvswitch/python/ovstest/args.pyc
-file /fakeroot/usr/share/openvswitch/python/ovstest/args.pyo /usr/share/openvswitch/python/ovstest/args.pyo 0644 0 0
-#md5-76d68f1e306bd536643cd42e5aafde74  /usr/share/openvswitch/python/ovstest/args.pyo
-file /fakeroot/usr/share/openvswitch/python/ovstest/rpcserver.py /usr/share/openvswitch/python/ovstest/rpcserver.py 0644 0 0
-#md5-c5fd00d7df0f4d1625034755e67fefe4  /usr/share/openvswitch/python/ovstest/rpcserver.py
-file /fakeroot/usr/share/openvswitch/python/ovstest/rpcserver.pyc /usr/share/openvswitch/python/ovstest/rpcserver.pyc 0644 0 0
-#md5-4465bbda73176c0d7f9b36fc73419af1  /usr/share/openvswitch/python/ovstest/rpcserver.pyc
-file /fakeroot/usr/share/openvswitch/python/ovstest/rpcserver.pyo /usr/share/openvswitch/python/ovstest/rpcserver.pyo 0644 0 0
-#md5-4465bbda73176c0d7f9b36fc73419af1  /usr/share/openvswitch/python/ovstest/rpcserver.pyo
-file /fakeroot/usr/share/openvswitch/python/ovstest/tcp.py /usr/share/openvswitch/python/ovstest/tcp.py 0644 0 0
-#md5-ef9df2cba4c7a87c58930c7fb1e8699e  /usr/share/openvswitch/python/ovstest/tcp.py
-file /fakeroot/usr/share/openvswitch/python/ovstest/tcp.pyc /usr/share/openvswitch/python/ovstest/tcp.pyc 0644 0 0
-#md5-1b6b7cdcdca7d3eb9ef2dfc5cd7d21a5  /usr/share/openvswitch/python/ovstest/tcp.pyc
-file /fakeroot/usr/share/openvswitch/python/ovstest/tcp.pyo /usr/share/openvswitch/python/ovstest/tcp.pyo 0644 0 0
-#md5-1b6b7cdcdca7d3eb9ef2dfc5cd7d21a5  /usr/share/openvswitch/python/ovstest/tcp.pyo
-file /fakeroot/usr/share/openvswitch/python/ovstest/udp.py /usr/share/openvswitch/python/ovstest/udp.py 0644 0 0
-#md5-f7f37ca5c5708b818b8fe879a948a9e1  /usr/share/openvswitch/python/ovstest/udp.py
-file /fakeroot/usr/share/openvswitch/python/ovstest/udp.pyc /usr/share/openvswitch/python/ovstest/udp.pyc 0644 0 0
-#md5-7f6fe06f3c75bf6360b0e43089bb7d35  /usr/share/openvswitch/python/ovstest/udp.pyc
-file /fakeroot/usr/share/openvswitch/python/ovstest/udp.pyo /usr/share/openvswitch/python/ovstest/udp.pyo 0644 0 0
-#md5-7f6fe06f3c75bf6360b0e43089bb7d35  /usr/share/openvswitch/python/ovstest/udp.pyo
-file /fakeroot/usr/share/openvswitch/python/ovstest/util.py /usr/share/openvswitch/python/ovstest/util.py 0644 0 0
-#md5-56427bcb9802b221f2e4fb93c063bf6a  /usr/share/openvswitch/python/ovstest/util.py
-file /fakeroot/usr/share/openvswitch/python/ovstest/util.pyc /usr/share/openvswitch/python/ovstest/util.pyc 0644 0 0
-#md5-fb3025f5c0f62f0e529ce5663d5b9a3b  /usr/share/openvswitch/python/ovstest/util.pyc
-file /fakeroot/usr/share/openvswitch/python/ovstest/util.pyo /usr/share/openvswitch/python/ovstest/util.pyo 0644 0 0
-#md5-fb3025f5c0f62f0e529ce5663d5b9a3b  /usr/share/openvswitch/python/ovstest/util.pyo
-file /fakeroot/usr/share/openvswitch/python/ovstest/vswitch.py /usr/share/openvswitch/python/ovstest/vswitch.py 0644 0 0
-#md5-5b4188ea7a648e24b323be9b4532b5f6  /usr/share/openvswitch/python/ovstest/vswitch.py
-file /fakeroot/usr/share/openvswitch/python/ovstest/vswitch.pyc /usr/share/openvswitch/python/ovstest/vswitch.pyc 0644 0 0
-#md5-62ba9d8378ab4eb86c4a9e9ddbb23178  /usr/share/openvswitch/python/ovstest/vswitch.pyc
-file /fakeroot/usr/share/openvswitch/python/ovstest/vswitch.pyo /usr/share/openvswitch/python/ovstest/vswitch.pyo 0644 0 0
-#md5-62ba9d8378ab4eb86c4a9e9ddbb23178  /usr/share/openvswitch/python/ovstest/vswitch.pyo
-file /fakeroot/usr/share/openvswitch/python/uuid.py /usr/share/openvswitch/python/uuid.py 0755 0 0
-#md5-d77cbc4f49cda3de59017e9154929aa0  /usr/share/openvswitch/python/uuid.py
-file /fakeroot/usr/share/openvswitch/python/uuid.pyc /usr/share/openvswitch/python/uuid.pyc 0644 0 0
-#md5-d6ed0e675d61331a56fe9192aa4eb7f7  /usr/share/openvswitch/python/uuid.pyc
-file /fakeroot/usr/share/openvswitch/python/uuid.pyo /usr/share/openvswitch/python/uuid.pyo 0644 0 0
-#md5-d6ed0e675d61331a56fe9192aa4eb7f7  /usr/share/openvswitch/python/uuid.pyo
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-bond-show /usr/share/openvswitch/scripts/ovs-bugtool-bond-show 0755 0 0
-#md5-fc96a2b6d2694eef74702103e94f4e82  /usr/share/openvswitch/scripts/ovs-bugtool-bond-show
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-cfm-show /usr/share/openvswitch/scripts/ovs-bugtool-cfm-show 0755 0 0
-#md5-a68a0610d0618fc9a1588b50b9b51ef1  /usr/share/openvswitch/scripts/ovs-bugtool-cfm-show
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-coverage-show /usr/share/openvswitch/scripts/ovs-bugtool-coverage-show 0755 0 0
-#md5-060dd10da41cf0d99696ff855661bd9d  /usr/share/openvswitch/scripts/ovs-bugtool-coverage-show
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-daemons-ver /usr/share/openvswitch/scripts/ovs-bugtool-daemons-ver 0755 0 0
-#md5-9908de90c78ec90eda5be7d289434802  /usr/share/openvswitch/scripts/ovs-bugtool-daemons-ver
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-lacp-show /usr/share/openvswitch/scripts/ovs-bugtool-lacp-show 0755 0 0
-#md5-cbe67751c2770765ef81b41d9d66ae0c  /usr/share/openvswitch/scripts/ovs-bugtool-lacp-show
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-ovsdb-dump /usr/share/openvswitch/scripts/ovs-bugtool-ovsdb-dump 0755 0 0
-#md5-8d3902ba4d83d7a1390c09541fc8a7d7  /usr/share/openvswitch/scripts/ovs-bugtool-ovsdb-dump
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-tc-class-show /usr/share/openvswitch/scripts/ovs-bugtool-tc-class-show 0755 0 0
-#md5-1fa021351720200fc52053e3b0c13f0e  /usr/share/openvswitch/scripts/ovs-bugtool-tc-class-show
-file /fakeroot/usr/share/openvswitch/scripts/ovs-bugtool-vsctl-show /usr/share/openvswitch/scripts/ovs-bugtool-vsctl-show 0755 0 0
-#md5-92171e8bd5374e73580ba8c9e0dbd733  /usr/share/openvswitch/scripts/ovs-bugtool-vsctl-show
-file /fakeroot/usr/share/openvswitch/scripts/ovs-check-dead-ifs /usr/share/openvswitch/scripts/ovs-check-dead-ifs 0755 0 0
-#md5-569920f0bea973e7244dcdecf9bee9d6  /usr/share/openvswitch/scripts/ovs-check-dead-ifs
-file /fakeroot/usr/share/openvswitch/scripts/ovs-ctl /usr/share/openvswitch/scripts/ovs-ctl 0755 0 0
-#md5-24e6e64cc71b5a875f7764d34b2a0786  /usr/share/openvswitch/scripts/ovs-ctl
-file /fakeroot/usr/share/openvswitch/scripts/ovs-lib /usr/share/openvswitch/scripts/ovs-lib 0644 0 0
-#md5-0c17b77b167c3328d197aa89336776e6  /usr/share/openvswitch/scripts/ovs-lib
-file /fakeroot/usr/share/openvswitch/scripts/ovs-save /usr/share/openvswitch/scripts/ovs-save 0755 0 0
-#md5-63e01ad091c3abd70a323d1642967545  /usr/share/openvswitch/scripts/ovs-save
-file /fakeroot/usr/share/openvswitch/scripts/sysconfig.template /usr/share/openvswitch/scripts/sysconfig.template 0644 0 0
-#md5-ca4d2acaf748ec11c606c74042850ba0  /usr/share/openvswitch/scripts/sysconfig.template
-file /fakeroot/usr/share/openvswitch/vswitch.ovsschema /usr/share/openvswitch/vswitch.ovsschema 0644 0 0
-#md5-4a639f6bc7add35a692ad7a6ce01ac90  /usr/share/openvswitch/vswitch.ovsschema
-dir /fakeroot/var/lib/openvswitch 0755 0 0
-dir /fakeroot/var/lib/openvswitch/pki 0755 0 0
-#rpm package kmod-openvswitch-1.7.1-1.el6.x86_64
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64 0755 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra 0755 0 0
-dir /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra/openvswitch 0755 0 0
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra/openvswitch/brcompat.ko /lib/modules/2.6.32-220.el6.x86_64/extra/openvswitch/brcompat.ko 0644 0 0
-#md5-83b426679b76665dc00a769a30a6eee4  /lib/modules/2.6.32-220.el6.x86_64/extra/openvswitch/brcompat.ko
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra/openvswitch/openvswitch.ko /lib/modules/2.6.32-220.el6.x86_64/extra/openvswitch/openvswitch.ko 0644 0 0
-#md5-377f1ceb261cff1f7a6743759330fca6  /lib/modules/2.6.32-220.el6.x86_64/extra/openvswitch/openvswitch.ko
-## vnetwork.Customized ##
-dir /domain 0755 0 0
-dir /domain/etc 0755 0 0
-dir /domain/etc/rc.bootupconfig.d 0755 0 0
-file /domain/etc/rc.bootupconfig.d/00.vnetwork /root/sys-builder/vnetwork/customized/domain/etc/rc.bootupconfig.d/00.vnetwork 0755 0 0
-#md5-afbf6616efd8363f8979f8768e9d7ed4  /root/sys-builder/vnetwork/customized/domain/etc/rc.bootupconfig.d/00.vnetwork
-dir /lib64 0755 0 0
-file /lib64/libselinux.so.1 /root/sys-builder/vnetwork/deplibs/lib64/libselinux.so.1 0755 0 0
-#md5-ff4b579247e96f8bf2106fefd3b0059f  /root/sys-builder/vnetwork/deplibs/lib64/libselinux.so.1
-file /lib64/libgssapi_krb5.so.2 /root/sys-builder/vnetwork/deplibs/lib64/libgssapi_krb5.so.2 0755 0 0
-#md5-46eab5b51dfd603a657301ccb32d9d72  /root/sys-builder/vnetwork/deplibs/lib64/libgssapi_krb5.so.2
-file /lib64/libk5crypto.so.3 /root/sys-builder/vnetwork/deplibs/lib64/libk5crypto.so.3 0755 0 0
-#md5-be534f73d617dc7d358bb626d4da66d3  /root/sys-builder/vnetwork/deplibs/lib64/libk5crypto.so.3
-file /lib64/libz.so.1 /root/sys-builder/vnetwork/deplibs/lib64/libz.so.1 0755 0 0
-#md5-ebaefbd732bf6ce0006a108f24a6e621  /root/sys-builder/vnetwork/deplibs/lib64/libz.so.1
-file /lib64/libdl.so.2 /root/sys-builder/vnetwork/deplibs/lib64/libdl.so.2 0755 0 0
-#md5-6509f5635cbd38d37f4f9d2d9aab61bf  /root/sys-builder/vnetwork/deplibs/lib64/libdl.so.2
-file /lib64/libcom_err.so.2 /root/sys-builder/vnetwork/deplibs/lib64/libcom_err.so.2 0755 0 0
-#md5-f3354f09547700b11b6e565758089d97  /root/sys-builder/vnetwork/deplibs/lib64/libcom_err.so.2
-file /lib64/libkrb5support.so.0 /root/sys-builder/vnetwork/deplibs/lib64/libkrb5support.so.0 0755 0 0
-#md5-9854f6e13d726c42cccc72121fda00d8  /root/sys-builder/vnetwork/deplibs/lib64/libkrb5support.so.0
-file /lib64/libpthread.so.0 /root/sys-builder/vnetwork/deplibs/lib64/libpthread.so.0 0755 0 0
-#md5-fc053d6cd69cf523cdfe404cec7cbb3b  /root/sys-builder/vnetwork/deplibs/lib64/libpthread.so.0
-file /lib64/librt.so.1 /root/sys-builder/vnetwork/deplibs/lib64/librt.so.1 0755 0 0
-#md5-99535312e462e38976037f15b2c76ea1  /root/sys-builder/vnetwork/deplibs/lib64/librt.so.1
-file /lib64/libm.so.6 /root/sys-builder/vnetwork/deplibs/lib64/libm.so.6 0755 0 0
-#md5-1ace38bd1959ab2d4d4eeb6cd45cde86  /root/sys-builder/vnetwork/deplibs/lib64/libm.so.6
-file /lib64/libc.so.6 /root/sys-builder/vnetwork/deplibs/lib64/libc.so.6 0755 0 0
-#md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/vnetwork/deplibs/lib64/libc.so.6
-file /lib64/libkeyutils.so.1 /root/sys-builder/vnetwork/deplibs/lib64/libkeyutils.so.1 0755 0 0
-#md5-3815de6da8b98a0c0f55f6c5d1038321  /root/sys-builder/vnetwork/deplibs/lib64/libkeyutils.so.1
-file /lib64/libresolv.so.2 /root/sys-builder/vnetwork/deplibs/lib64/libresolv.so.2 0755 0 0
-#md5-c76be86a823a9656bb67e11df1799a2c  /root/sys-builder/vnetwork/deplibs/lib64/libresolv.so.2
-file /lib64/libkrb5.so.3 /root/sys-builder/vnetwork/deplibs/lib64/libkrb5.so.3 0755 0 0
-#md5-341c6befae6e675ae7537e6417ca574b  /root/sys-builder/vnetwork/deplibs/lib64/libkrb5.so.3
-dir /usr 0755 0 0
-dir /usr/lib64 0755 0 0
-file /usr/lib64/libssl.so.10 /root/sys-builder/vnetwork/deplibs/usr/lib64/libssl.so.10 0755 0 0
-#md5-257f25cc989353d8134280f7c1ad7072  /root/sys-builder/vnetwork/deplibs/usr/lib64/libssl.so.10
-file /usr/lib64/libcrypto.so.10 /root/sys-builder/vnetwork/deplibs/usr/lib64/libcrypto.so.10 0755 0 0
-#md5-f96a35e6dbb25845fc8ab7b89941d01c  /root/sys-builder/vnetwork/deplibs/usr/lib64/libcrypto.so.10
-
-#
 #@@ Meta of package [ locale ] @@
 #
 ## Defined by locale.01.layout ##
@@ -17285,243 +16445,118 @@ file /lib64/libc.so.6 /root/sys-builder/scst/deplibs/lib64/libc.so.6 0755 0 0
 #md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/scst/deplibs/lib64/libc.so.6
 
 #
-#@@ Meta of package [ gdemo2 ] @@
-#
-## Defined by gdemo2.01.layout ##
-## Defined by gdemo2.02.rpm.packages ##
-#rpm package sysstat-9.0.4-18.el6.x86_64
-file /fakeroot/etc/cron.d/sysstat /etc/cron.d/sysstat 0644 0 0
-#md5-5c700067b01708b6ab5a1087b9d3695c  /etc/cron.d/sysstat
-file /fakeroot/etc/rc.d/init.d/sysstat /etc/rc.d/init.d/sysstat 0755 0 0
-#md5-ffccc5ef5b77f93f28b312561d4ff537  /etc/rc.d/init.d/sysstat
-file /fakeroot/etc/sysconfig/sysstat /etc/sysconfig/sysstat 0644 0 0
-#md5-f193b9c32e94309df4156731589baa1f  /etc/sysconfig/sysstat
-file /fakeroot/etc/sysconfig/sysstat.ioconf /etc/sysconfig/sysstat.ioconf 0644 0 0
-#md5-97cf6dc340361efd5ab7c3c715b15a53  /etc/sysconfig/sysstat.ioconf
-file /fakeroot/usr/bin/cifsiostat /usr/bin/cifsiostat 0755 0 0
-#md5-ffa68cf67f0a344cf49de6bd5c4e55d4  /usr/bin/cifsiostat
-file /fakeroot/usr/bin/iostat /usr/bin/iostat 0755 0 0
-#md5-601148387c21ea2d07be281525884d79  /usr/bin/iostat
-file /fakeroot/usr/bin/mpstat /usr/bin/mpstat 0755 0 0
-#md5-4c17037136448fe3049d357e9dcc2121  /usr/bin/mpstat
-file /fakeroot/usr/bin/pidstat /usr/bin/pidstat 0755 0 0
-#md5-9c434d44afa3d9433aaf2c3b4575eace  /usr/bin/pidstat
-file /fakeroot/usr/bin/sadf /usr/bin/sadf 0755 0 0
-#md5-1b8882a52de68cd72f8712486974d548  /usr/bin/sadf
-file /fakeroot/usr/bin/sar /usr/bin/sar 0755 0 0
-#md5-9b4d83caf262293f1eb26f0332bb097c  /usr/bin/sar
-dir /fakeroot/usr/lib64/sa 0755 0 0
-file /fakeroot/usr/lib64/sa/sa1 /usr/lib64/sa/sa1 0755 0 0
-#md5-b51751c959d1355c971b999cc1111745  /usr/lib64/sa/sa1
-file /fakeroot/usr/lib64/sa/sa2 /usr/lib64/sa/sa2 0755 0 0
-#md5-4c6a2aa6cd09af6ad233fcd3ae3856f2  /usr/lib64/sa/sa2
-file /fakeroot/usr/lib64/sa/sadc /usr/lib64/sa/sadc 0755 0 0
-#md5-758cff474778abcb9d27c3789bf259e6  /usr/lib64/sa/sadc
-dir /fakeroot/var/log/sa 0755 0 0
-#rpm package keyutils-1.4-3.el6.x86_64
-file /fakeroot/bin/keyctl /bin/keyctl 0755 0 0
-#md5-b298355c036dfabe740440ff737aa1cf  /bin/keyctl
-file /fakeroot/etc/request-key.conf /etc/request-key.conf 0644 0 0
-#md5-76f512b9fd3756c1c18a693e2d80ab04  /etc/request-key.conf
-file /fakeroot/sbin/request-key /sbin/request-key 0755 0 0
-#md5-d486a361c451c3a9b9c27e4e033795b6  /sbin/request-key
-dir /fakeroot/usr/share/keyutils 0755 0 0
-file /fakeroot/usr/share/keyutils/request-key-debug.sh /usr/share/keyutils/request-key-debug.sh 0755 0 0
-#md5-738c1d4c2c763040c6e47e5b19861292  /usr/share/keyutils/request-key-debug.sh
-#rpm package cifs-utils-4.8.1-5.el6.x86_64
-file /fakeroot/sbin/mount.cifs /sbin/mount.cifs 0755 0 0
-#md5-e5cc1100fa89a006a469572f5ed03843  /sbin/mount.cifs
-file /fakeroot/usr/sbin/cifs.upcall /usr/sbin/cifs.upcall 0755 0 0
-#md5-9d04ce878cec7c5662c1e7040dca3ef1  /usr/sbin/cifs.upcall
-## Defined by gdemo2.03.mod.cifs ##
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko 0744 0 0 
-#md5-3462fdfd577bd913215acd9958ec24e2  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko
-#modinfo [ cifs ]
-#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko
-#modinfo version:        1.68
-#modinfo description:    VFS to access servers complying with the SNIA CIFS Specification e.g. Samba and Windows
-#modinfo license:        GPL
-#modinfo author:         Steve French <sfrench@us.ibm.com>
-#modinfo srcversion:     82F5F4F8BCD5F792DE20400
-#modinfo depends:        
-#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-#modinfo parm:           CIFSMaxBufSize:Network buffer size (not including header). Default: 16384 Range: 8192 to 130048 (int)
-#modinfo parm:           cifs_min_rcv:Network buffers in pool. Default: 4 Range: 1 to 64 (int)
-#modinfo parm:           cifs_min_small:Small network buffers in pool. Default: 30 Range: 2 to 256 (int)
-#modinfo parm:           cifs_max_pending:Simultaneous requests to server. Default: 50 Range: 2 to 256 (int)
-#modinfo parm:           echo_retries:Number of echo attempts before giving up and reconnecting server. Default: 5. 0 means never reconnect. (ushort)
-file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko 0744 0 0 
-#md5-a1cf4800a711d375b7aa89b16353304e  /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko
-#modinfo [ des_generic ]
-#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko
-#modinfo alias:          des
-#modinfo author:         Dag Arne Osvik <da@osvik.no>
-#modinfo description:    DES & Triple DES EDE Cipher Algorithms
-#modinfo license:        GPL
-#modinfo alias:          des3_ede
-#modinfo srcversion:     D2DFC765A5561C506C8B728
-#modinfo depends:        
-#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
-cifs
-des_generic
-ecb
-md4
-## gdemo2.Customized ##
-dir /domain 0755 0 0
-dir /domain/sbin 0755 0 0
-file /domain/sbin/iotune.cfq /root/sys-builder/gdemo2/customized/domain/sbin/iotune.cfq 0755 0 0
-#md5-0284e874bd6e5383335bcb5a88277efa  /root/sys-builder/gdemo2/customized/domain/sbin/iotune.cfq
-dir /domain/etc 0755 0 0
-dir /domain/etc/tune 0755 0 0
-dir /domain/etc/tune/samba 0755 0 0
-file /domain/etc/tune/samba/performance.shared /root/sys-builder/gdemo2/customized/domain/etc/tune/samba/performance.shared 0644 0 0
-#md5-4e72127388bb11aa05106dda9e4b98e7  /root/sys-builder/gdemo2/customized/domain/etc/tune/samba/performance.shared
-file /domain/etc/tune/samba/performance /root/sys-builder/gdemo2/customized/domain/etc/tune/samba/performance 0644 0 0
-#md5-968e2fe63da90e192a8cf32653e59f9a  /root/sys-builder/gdemo2/customized/domain/etc/tune/samba/performance
-dir /domain/etc/rc.cleanup.d 0755 0 0
-file /domain/etc/rc.cleanup.d/welcome /root/sys-builder/gdemo2/customized/domain/etc/rc.cleanup.d/welcome 0755 0 0
-#md5-972807b87d31356109e235fb05669ed2  /root/sys-builder/gdemo2/customized/domain/etc/rc.cleanup.d/welcome
-dir /domain/etc/rc.shutdown.d 0755 0 0
-slink /domain/etc/rc.shutdown.d/05.demostop ../rc.reboot.d/05.demostop 0755 0 0
-dir /domain/etc/rc.startservice.d 0755 0 0
-file /domain/etc/rc.startservice.d/01.startdemo /root/sys-builder/gdemo2/customized/domain/etc/rc.startservice.d/01.startdemo 0755 0 0
-#md5-56da897033da2587b74454a7ee6d64ef  /root/sys-builder/gdemo2/customized/domain/etc/rc.startservice.d/01.startdemo
-file /domain/etc/rc.startservice.d/00.0.tune /root/sys-builder/gdemo2/customized/domain/etc/rc.startservice.d/00.0.tune 0755 0 0
-#md5-0b46ff02dedba4804b7f2c4b36d47ae3  /root/sys-builder/gdemo2/customized/domain/etc/rc.startservice.d/00.0.tune
-dir /domain/etc/rc.bootupconfig.d 0755 0 0
-file /domain/etc/rc.bootupconfig.d/01.demo-setup /root/sys-builder/gdemo2/customized/domain/etc/rc.bootupconfig.d/01.demo-setup 0755 0 0
-#md5-b0bfb2ed2baa8f837e1b36534aa74a39  /root/sys-builder/gdemo2/customized/domain/etc/rc.bootupconfig.d/01.demo-setup
-file /domain/etc/product.name /root/sys-builder/gdemo2/customized/domain/etc/product.name 0644 0 0
-#md5-5acebef482478113df2ab406943c055d  /root/sys-builder/gdemo2/customized/domain/etc/product.name
-dir /domain/etc/rc.reboot.d 0755 0 0
-file /domain/etc/rc.reboot.d/05.demostop /root/sys-builder/gdemo2/customized/domain/etc/rc.reboot.d/05.demostop 0755 0 0
-#md5-caaa8ac1b48562f49d12c381f6820f9b  /root/sys-builder/gdemo2/customized/domain/etc/rc.reboot.d/05.demostop
-dir /fakeroot 0755 0 0
-dir /fakeroot/etc 0755 0 0
-dir /fakeroot/etc/samba 0755 0 0
-slink /fakeroot/etc/samba/performance.shared /domain/etc/tune/samba/performance.shared 0755 1 0
-slink /fakeroot/etc/samba/performance /domain/etc/tune/samba/performance 0755 1 0
-dir /fakeroot/bin 0755 0 0
-file /fakeroot/bin/netmon /root/sys-builder/gdemo2/customized/fakeroot/bin/netmon 0755 0 0
-#md5-159806effbf932b9529266f06604624f  /root/sys-builder/gdemo2/customized/fakeroot/bin/netmon
-dir /lib64 0755 0 0
-file /lib64/libselinux.so.1 /root/sys-builder/gdemo2/deplibs/lib64/libselinux.so.1 0755 0 0
-#md5-ff4b579247e96f8bf2106fefd3b0059f  /root/sys-builder/gdemo2/deplibs/lib64/libselinux.so.1
-file /lib64/libk5crypto.so.3 /root/sys-builder/gdemo2/deplibs/lib64/libk5crypto.so.3 0755 0 0
-#md5-be534f73d617dc7d358bb626d4da66d3  /root/sys-builder/gdemo2/deplibs/lib64/libk5crypto.so.3
-file /lib64/libdl.so.2 /root/sys-builder/gdemo2/deplibs/lib64/libdl.so.2 0755 0 0
-#md5-6509f5635cbd38d37f4f9d2d9aab61bf  /root/sys-builder/gdemo2/deplibs/lib64/libdl.so.2
-file /lib64/libcom_err.so.2 /root/sys-builder/gdemo2/deplibs/lib64/libcom_err.so.2 0755 0 0
-#md5-f3354f09547700b11b6e565758089d97  /root/sys-builder/gdemo2/deplibs/lib64/libcom_err.so.2
-file /lib64/libcrypt.so.1 /root/sys-builder/gdemo2/deplibs/lib64/libcrypt.so.1 0755 0 0
-#md5-5e4181d53026413cd932b68a578dad31  /root/sys-builder/gdemo2/deplibs/lib64/libcrypt.so.1
-file /lib64/libkrb5support.so.0 /root/sys-builder/gdemo2/deplibs/lib64/libkrb5support.so.0 0755 0 0
-#md5-9854f6e13d726c42cccc72121fda00d8  /root/sys-builder/gdemo2/deplibs/lib64/libkrb5support.so.0
-file /lib64/libpthread.so.0 /root/sys-builder/gdemo2/deplibs/lib64/libpthread.so.0 0755 0 0
-#md5-fc053d6cd69cf523cdfe404cec7cbb3b  /root/sys-builder/gdemo2/deplibs/lib64/libpthread.so.0
-file /lib64/librt.so.1 /root/sys-builder/gdemo2/deplibs/lib64/librt.so.1 0755 0 0
-#md5-99535312e462e38976037f15b2c76ea1  /root/sys-builder/gdemo2/deplibs/lib64/librt.so.1
-file /lib64/libc.so.6 /root/sys-builder/gdemo2/deplibs/lib64/libc.so.6 0755 0 0
-#md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/gdemo2/deplibs/lib64/libc.so.6
-file /lib64/libcap-ng.so.0 /root/sys-builder/gdemo2/deplibs/lib64/libcap-ng.so.0 0755 0 0
-#md5-f26e9f40ec421f736db386cb0132fc5c  /root/sys-builder/gdemo2/deplibs/lib64/libcap-ng.so.0
-file /lib64/libfreebl3.so /root/sys-builder/gdemo2/deplibs/lib64/libfreebl3.so 0755 0 0
-#md5-b80049140468fa14e68d43b969d48e55  /root/sys-builder/gdemo2/deplibs/lib64/libfreebl3.so
-file /lib64/libkeyutils.so.1 /root/sys-builder/gdemo2/deplibs/lib64/libkeyutils.so.1 0755 0 0
-#md5-3815de6da8b98a0c0f55f6c5d1038321  /root/sys-builder/gdemo2/deplibs/lib64/libkeyutils.so.1
-file /lib64/libresolv.so.2 /root/sys-builder/gdemo2/deplibs/lib64/libresolv.so.2 0755 0 0
-#md5-c76be86a823a9656bb67e11df1799a2c  /root/sys-builder/gdemo2/deplibs/lib64/libresolv.so.2
-file /lib64/libkrb5.so.3 /root/sys-builder/gdemo2/deplibs/lib64/libkrb5.so.3 0755 0 0
-#md5-341c6befae6e675ae7537e6417ca574b  /root/sys-builder/gdemo2/deplibs/lib64/libkrb5.so.3
-dir /usr 0755 0 0
-dir /usr/lib64 0755 0 0
-file /usr/lib64/libtalloc.so.2 /root/sys-builder/gdemo2/deplibs/usr/lib64/libtalloc.so.2 0755 0 0
-#md5-6c67eb54188e87bf379c2de7a9623719  /root/sys-builder/gdemo2/deplibs/usr/lib64/libtalloc.so.2
-
-#
 #@@ Meta of package [ debug ] @@
 #
 ## Defined by debug.01.layout ##
 ## Defined by debug.02.rpm.packages ##
-#rpm package tcpdump-4.0.0-3.20090921gitdf3cb4.1.el6.x86_64
-file /fakeroot/usr/sbin/tcpdump /usr/sbin/tcpdump 0755 0 0
-#md5-a79e107046e620d7c371ace2510cf400  /usr/sbin/tcpdump
-file /fakeroot/usr/sbin/tcpslice /usr/sbin/tcpslice 0755 0 0
-#md5-c62c5834ad7041e1643dee2d2f9009f8  /usr/sbin/tcpslice
-#rpm package strace-4.5.19-1.10.el6.x86_64
-file /fakeroot/usr/bin/strace /usr/bin/strace 0755 0 0
-#md5-8d9d19c8a5afe67c33b9a1604754fbe2  /usr/bin/strace
-#rpm package iptraf-3.0.1-13.el6.x86_64
-file /fakeroot/etc/logrotate.d/iptraf /etc/logrotate.d/iptraf 0644 0 0
-#md5-77b8644d0c736dddd0a4166eb5b8ab2c  /etc/logrotate.d/iptraf
-file /fakeroot/usr/bin/iptraf /usr/bin/iptraf 0755 0 0
-#md5-e877f8b6989c0142ab0aac5cab685e8c  /usr/bin/iptraf
-file /fakeroot/usr/bin/rvnamed /usr/bin/rvnamed 0755 0 0
-#md5-80d16a479521e7b90b8e90df70875a50  /usr/bin/rvnamed
-dir /fakeroot/var/lib/iptraf 0755 0 0
-dir /fakeroot/var/lock/iptraf 0755 0 0
-dir /fakeroot/var/log/iptraf 0755 0 0
-#rpm package iotop-0.3.2-3.el6.noarch
-file /fakeroot/usr/bin/iotop /usr/bin/iotop 0755 0 0
-#md5-499a9e94531d048c776b7611526027e5  /usr/bin/iotop
-dir /fakeroot/usr/lib/python2.6/site-packages/iotop 0755 0 0
-dir /fakeroot/usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info 0755 0 0
-file /fakeroot/usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/PKG-INFO /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/PKG-INFO 0644 0 0
-#md5-77007532b2b7431c3d1a1e22d0d6960b  /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/PKG-INFO
-file /fakeroot/usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/SOURCES.txt /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/SOURCES.txt 0644 0 0
-#md5-1fcc6b8a98cdf1c9e9f9b78a61e00ef7  /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/SOURCES.txt
-file /fakeroot/usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/dependency_links.txt /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/dependency_links.txt 0644 0 0
-#md5-68b329da9893e34099c7d8ad5cb9c940  /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/dependency_links.txt
-file /fakeroot/usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/top_level.txt /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/top_level.txt 0644 0 0
-#md5-9085805f98b89905d86b3fd6af4176dd  /usr/lib/python2.6/site-packages/iotop-0.3.2-py2.6.egg-info/top_level.txt
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/__init__.py /usr/lib/python2.6/site-packages/iotop/__init__.py 0644 0 0
-#md5-d41d8cd98f00b204e9800998ecf8427e  /usr/lib/python2.6/site-packages/iotop/__init__.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/__init__.pyc /usr/lib/python2.6/site-packages/iotop/__init__.pyc 0644 0 0
-#md5-af4a426252522082c9dbdf7fc1c95fcd  /usr/lib/python2.6/site-packages/iotop/__init__.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/__init__.pyo /usr/lib/python2.6/site-packages/iotop/__init__.pyo 0644 0 0
-#md5-af4a426252522082c9dbdf7fc1c95fcd  /usr/lib/python2.6/site-packages/iotop/__init__.pyo
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/data.py /usr/lib/python2.6/site-packages/iotop/data.py 0644 0 0
-#md5-15e44eff6c9814c53a8c3b5dd4c7c35f  /usr/lib/python2.6/site-packages/iotop/data.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/data.pyc /usr/lib/python2.6/site-packages/iotop/data.pyc 0644 0 0
-#md5-8aee6a5e44abad380380d95afc2825ed  /usr/lib/python2.6/site-packages/iotop/data.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/data.pyo /usr/lib/python2.6/site-packages/iotop/data.pyo 0644 0 0
-#md5-5c726c7dad954cac2d48d20df91ff76b  /usr/lib/python2.6/site-packages/iotop/data.pyo
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/genetlink.py /usr/lib/python2.6/site-packages/iotop/genetlink.py 0644 0 0
-#md5-d42c4737fdc6be6d8b5925b8bf343d9a  /usr/lib/python2.6/site-packages/iotop/genetlink.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/genetlink.pyc /usr/lib/python2.6/site-packages/iotop/genetlink.pyc 0644 0 0
-#md5-5eeb3902342027631c8e8b01413e79df  /usr/lib/python2.6/site-packages/iotop/genetlink.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/genetlink.pyo /usr/lib/python2.6/site-packages/iotop/genetlink.pyo 0644 0 0
-#md5-5eeb3902342027631c8e8b01413e79df  /usr/lib/python2.6/site-packages/iotop/genetlink.pyo
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/ioprio.py /usr/lib/python2.6/site-packages/iotop/ioprio.py 0644 0 0
-#md5-7d3639ffa8d3a452ba90bbc847d19976  /usr/lib/python2.6/site-packages/iotop/ioprio.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/ioprio.pyc /usr/lib/python2.6/site-packages/iotop/ioprio.pyc 0644 0 0
-#md5-2197fa808ea8efb2483dcfd3f8556e60  /usr/lib/python2.6/site-packages/iotop/ioprio.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/ioprio.pyo /usr/lib/python2.6/site-packages/iotop/ioprio.pyo 0644 0 0
-#md5-2197fa808ea8efb2483dcfd3f8556e60  /usr/lib/python2.6/site-packages/iotop/ioprio.pyo
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/netlink.py /usr/lib/python2.6/site-packages/iotop/netlink.py 0644 0 0
-#md5-c754002ea181ff507f1048d586506fda  /usr/lib/python2.6/site-packages/iotop/netlink.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/netlink.pyc /usr/lib/python2.6/site-packages/iotop/netlink.pyc 0644 0 0
-#md5-e74916b93063815ba0510252bb1f397b  /usr/lib/python2.6/site-packages/iotop/netlink.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/netlink.pyo /usr/lib/python2.6/site-packages/iotop/netlink.pyo 0644 0 0
-#md5-e74916b93063815ba0510252bb1f397b  /usr/lib/python2.6/site-packages/iotop/netlink.pyo
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/ui.py /usr/lib/python2.6/site-packages/iotop/ui.py 0644 0 0
-#md5-c9c080e8887b0f0632dfdfbc1aa88dc3  /usr/lib/python2.6/site-packages/iotop/ui.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/ui.pyc /usr/lib/python2.6/site-packages/iotop/ui.pyc 0644 0 0
-#md5-8bbdf844cf104b04dec73a6a2c1c466c  /usr/lib/python2.6/site-packages/iotop/ui.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/ui.pyo /usr/lib/python2.6/site-packages/iotop/ui.pyo 0644 0 0
-#md5-8bbdf844cf104b04dec73a6a2c1c466c  /usr/lib/python2.6/site-packages/iotop/ui.pyo
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/version.py /usr/lib/python2.6/site-packages/iotop/version.py 0644 0 0
-#md5-eda280d68332df66c65f7d9e55830ec0  /usr/lib/python2.6/site-packages/iotop/version.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/version.pyc /usr/lib/python2.6/site-packages/iotop/version.pyc 0644 0 0
-#md5-754f6ac8ab7dad7f01df262433d6de84  /usr/lib/python2.6/site-packages/iotop/version.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/version.pyo /usr/lib/python2.6/site-packages/iotop/version.pyo 0644 0 0
-#md5-754f6ac8ab7dad7f01df262433d6de84  /usr/lib/python2.6/site-packages/iotop/version.pyo
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/vmstat.py /usr/lib/python2.6/site-packages/iotop/vmstat.py 0644 0 0
-#md5-5e46c2b7a03b64385ff3edcd5e73b8ef  /usr/lib/python2.6/site-packages/iotop/vmstat.py
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/vmstat.pyc /usr/lib/python2.6/site-packages/iotop/vmstat.pyc 0644 0 0
-#md5-bd7f721e63d3abf251622543c1ac28b3  /usr/lib/python2.6/site-packages/iotop/vmstat.pyc
-file /fakeroot/usr/lib/python2.6/site-packages/iotop/vmstat.pyo /usr/lib/python2.6/site-packages/iotop/vmstat.pyo 0644 0 0
-#md5-bd7f721e63d3abf251622543c1ac28b3  /usr/lib/python2.6/site-packages/iotop/vmstat.pyo
+#rpm package sg3_utils-1.28-4.el6.x86_64
+file /fakeroot/usr/bin/rescan-scsi-bus.sh /usr/bin/rescan-scsi-bus.sh 0755 0 0
+#md5-eb120880d4e9e87d5a61b23b4ca39568  /usr/bin/rescan-scsi-bus.sh
+slink /fakeroot/usr/bin/scsi-rescan rescan-scsi-bus.sh 0755 0 0
+file /fakeroot/usr/bin/sg_dd /usr/bin/sg_dd 0755 0 0
+#md5-0bda214ccd73eacf6aefb07747e6b960  /usr/bin/sg_dd
+file /fakeroot/usr/bin/sg_emc_trespass /usr/bin/sg_emc_trespass 0755 0 0
+#md5-e9f1f2b61ae24aa6f6b538cedd36f04a  /usr/bin/sg_emc_trespass
+file /fakeroot/usr/bin/sg_format /usr/bin/sg_format 0755 0 0
+#md5-25770f196d30087f0022f773c1e8eb75  /usr/bin/sg_format
+file /fakeroot/usr/bin/sg_get_config /usr/bin/sg_get_config 0755 0 0
+#md5-aed9703b0a93f76eed7c42961cbc8a1b  /usr/bin/sg_get_config
+file /fakeroot/usr/bin/sg_get_lba_status /usr/bin/sg_get_lba_status 0755 0 0
+#md5-f826432200a2e283900c5fe740ce9465  /usr/bin/sg_get_lba_status
+file /fakeroot/usr/bin/sg_ident /usr/bin/sg_ident 0755 0 0
+#md5-93025e1a0c1617f9b171ee1a42298aa1  /usr/bin/sg_ident
+file /fakeroot/usr/bin/sg_inq /usr/bin/sg_inq 0755 0 0
+#md5-54b6acf1071481cce71edff0a61130fa  /usr/bin/sg_inq
+file /fakeroot/usr/bin/sg_logs /usr/bin/sg_logs 0755 0 0
+#md5-51ecf92ec65904f8744ac87d55f29ab0  /usr/bin/sg_logs
+file /fakeroot/usr/bin/sg_luns /usr/bin/sg_luns 0755 0 0
+#md5-65ac752ffc18e405cf0b7546cd9d135b  /usr/bin/sg_luns
+file /fakeroot/usr/bin/sg_map /usr/bin/sg_map 0755 0 0
+#md5-578a33d7ddb16fc4c641b58abe436994  /usr/bin/sg_map
+file /fakeroot/usr/bin/sg_map26 /usr/bin/sg_map26 0755 0 0
+#md5-68e5f09a487de20e49bc54b597b499c7  /usr/bin/sg_map26
+file /fakeroot/usr/bin/sg_modes /usr/bin/sg_modes 0755 0 0
+#md5-b2fca32161405e35cc2c268f21f71be1  /usr/bin/sg_modes
+file /fakeroot/usr/bin/sg_opcodes /usr/bin/sg_opcodes 0755 0 0
+#md5-48280311e387601a4df89f88c3fc57e8  /usr/bin/sg_opcodes
+file /fakeroot/usr/bin/sg_persist /usr/bin/sg_persist 0755 0 0
+#md5-5614f896d6d4c0dd22dd10526fe887e5  /usr/bin/sg_persist
+file /fakeroot/usr/bin/sg_prevent /usr/bin/sg_prevent 0755 0 0
+#md5-28109d4e1a0880ecd65c393e240c574a  /usr/bin/sg_prevent
+file /fakeroot/usr/bin/sg_raw /usr/bin/sg_raw 0755 0 0
+#md5-6647f311e03e1fa4c149636239a283d7  /usr/bin/sg_raw
+file /fakeroot/usr/bin/sg_rbuf /usr/bin/sg_rbuf 0755 0 0
+#md5-aa1f69921f4d53fa97bad69f3067b58a  /usr/bin/sg_rbuf
+file /fakeroot/usr/bin/sg_rdac /usr/bin/sg_rdac 0755 0 0
+#md5-f61dfdb8688cd4c83b9636f43d9a9f38  /usr/bin/sg_rdac
+file /fakeroot/usr/bin/sg_read /usr/bin/sg_read 0755 0 0
+#md5-5c652b83d6d36c0f03d43fa7e951dd3e  /usr/bin/sg_read
+file /fakeroot/usr/bin/sg_read_block_limits /usr/bin/sg_read_block_limits 0755 0 0
+#md5-b9d130b375bc7cd51ee7f5ffaffe9226  /usr/bin/sg_read_block_limits
+file /fakeroot/usr/bin/sg_read_buffer /usr/bin/sg_read_buffer 0755 0 0
+#md5-c171c348f39027df18e5385c94dd3f77  /usr/bin/sg_read_buffer
+file /fakeroot/usr/bin/sg_read_long /usr/bin/sg_read_long 0755 0 0
+#md5-b0e8d5b6cc8bb3eb2481851025941185  /usr/bin/sg_read_long
+file /fakeroot/usr/bin/sg_readcap /usr/bin/sg_readcap 0755 0 0
+#md5-00bcdcfb29fb96b9392f709f8824e110  /usr/bin/sg_readcap
+file /fakeroot/usr/bin/sg_reassign /usr/bin/sg_reassign 0755 0 0
+#md5-a504713d2509e908324e5fdb12a543f5  /usr/bin/sg_reassign
+file /fakeroot/usr/bin/sg_requests /usr/bin/sg_requests 0755 0 0
+#md5-a8c01c3184ccf529600ed927a59511cd  /usr/bin/sg_requests
+file /fakeroot/usr/bin/sg_reset /usr/bin/sg_reset 0755 0 0
+#md5-c491f1f414ee1a5137b33ee0154c6bb9  /usr/bin/sg_reset
+file /fakeroot/usr/bin/sg_rmsn /usr/bin/sg_rmsn 0755 0 0
+#md5-f1329d27727f893f96e469b5243fa892  /usr/bin/sg_rmsn
+file /fakeroot/usr/bin/sg_rtpg /usr/bin/sg_rtpg 0755 0 0
+#md5-9c0f94a94688b52a74d05ace517d650a  /usr/bin/sg_rtpg
+file /fakeroot/usr/bin/sg_safte /usr/bin/sg_safte 0755 0 0
+#md5-3f227e49ff760ebe4338c0f2301cc7d3  /usr/bin/sg_safte
+file /fakeroot/usr/bin/sg_sat_identify /usr/bin/sg_sat_identify 0755 0 0
+#md5-f8f1369123b12d01511b91107db87f62  /usr/bin/sg_sat_identify
+file /fakeroot/usr/bin/sg_sat_phy_event /usr/bin/sg_sat_phy_event 0755 0 0
+#md5-ab6c6fedaae66bca2a8b6b8e6ce3dd43  /usr/bin/sg_sat_phy_event
+file /fakeroot/usr/bin/sg_sat_set_features /usr/bin/sg_sat_set_features 0755 0 0
+#md5-ad13409ce5267873ca85cb2a63289fe2  /usr/bin/sg_sat_set_features
+file /fakeroot/usr/bin/sg_scan /usr/bin/sg_scan 0755 0 0
+#md5-915477a3425d473b77848ace37bc3287  /usr/bin/sg_scan
+file /fakeroot/usr/bin/sg_senddiag /usr/bin/sg_senddiag 0755 0 0
+#md5-554ecb38f16e0441b34e0646250c4f0a  /usr/bin/sg_senddiag
+file /fakeroot/usr/bin/sg_ses /usr/bin/sg_ses 0755 0 0
+#md5-ec5986acc16b4a8a298b48ca6ef64c54  /usr/bin/sg_ses
+file /fakeroot/usr/bin/sg_start /usr/bin/sg_start 0755 0 0
+#md5-536c47ba9462942113f82a95c062500e  /usr/bin/sg_start
+file /fakeroot/usr/bin/sg_stpg /usr/bin/sg_stpg 0755 0 0
+#md5-af0d69646933f5ee5d317b0f7a925595  /usr/bin/sg_stpg
+file /fakeroot/usr/bin/sg_sync /usr/bin/sg_sync 0755 0 0
+#md5-fb6a8c5585316005f5b4f42cd4ab41a3  /usr/bin/sg_sync
+file /fakeroot/usr/bin/sg_test_rwbuf /usr/bin/sg_test_rwbuf 0755 0 0
+#md5-c79794ce3ac7740e401fa07a84cdbb0e  /usr/bin/sg_test_rwbuf
+file /fakeroot/usr/bin/sg_turs /usr/bin/sg_turs 0755 0 0
+#md5-602fa3ae1f8cae2e91a402cfd5bd8e67  /usr/bin/sg_turs
+file /fakeroot/usr/bin/sg_unmap /usr/bin/sg_unmap 0755 0 0
+#md5-858971c43761540c8abf0815c06ba213  /usr/bin/sg_unmap
+file /fakeroot/usr/bin/sg_verify /usr/bin/sg_verify 0755 0 0
+#md5-a9b4fa5caf3e285d52b23c8fe9eb9031  /usr/bin/sg_verify
+file /fakeroot/usr/bin/sg_vpd /usr/bin/sg_vpd 0755 0 0
+#md5-110f3ffc940e0e9c740066104d23b71b  /usr/bin/sg_vpd
+file /fakeroot/usr/bin/sg_wr_mode /usr/bin/sg_wr_mode 0755 0 0
+#md5-50a4923f576736b4c25734e686087e07  /usr/bin/sg_wr_mode
+file /fakeroot/usr/bin/sg_write_buffer /usr/bin/sg_write_buffer 0755 0 0
+#md5-bbac869d491d616fd1f9bc098b81a6d9  /usr/bin/sg_write_buffer
+file /fakeroot/usr/bin/sg_write_long /usr/bin/sg_write_long 0755 0 0
+#md5-008c1cc433a22996c37e979e0f47a9e0  /usr/bin/sg_write_long
+file /fakeroot/usr/bin/sg_write_same /usr/bin/sg_write_same 0755 0 0
+#md5-c9836b535e033f3dd868483bd5590795  /usr/bin/sg_write_same
+file /fakeroot/usr/bin/sginfo /usr/bin/sginfo 0755 0 0
+#md5-7f27956a9591eaf6bb04a7d492be4522  /usr/bin/sginfo
+file /fakeroot/usr/bin/sgm_dd /usr/bin/sgm_dd 0755 0 0
+#md5-df721b937cdea3bca2b9c05a1bdb0fb4  /usr/bin/sgm_dd
+file /fakeroot/usr/bin/sgp_dd /usr/bin/sgp_dd 0755 0 0
+#md5-2a7078a0f0a7d974f2f6a3ad375d3240  /usr/bin/sgp_dd
+#rpm package sg3_utils-libs-1.28-4.el6.x86_64
+slink /fakeroot/usr/lib64/libsgutils2.so.2 libsgutils2.so.2.0.0 0755 0 0
+file /fakeroot/usr/lib64/libsgutils2.so.2.0.0 /usr/lib64/libsgutils2.so.2.0.0 0755 0 0
+#md5-6839c679e8fffc474e7e391ce94e93c0  /usr/lib64/libsgutils2.so.2.0.0
 ## Defined by debug.03.files ##
 file /fakeroot/usr/bin/netperf /usr/bin/netperf 0755 0 0
 file /fakeroot/usr/bin/netserver /usr/bin/netserver 0755 0 0
@@ -17550,11 +16585,8 @@ file /fakeroot/usr/bin/btt /usr/bin/btt 0755 0 0
 file /fakeroot/usr/bin/verify_blkparse /usr/bin/verify_blkparse 0755 0 0
 #md5-032d4caedaff126272246587200311ad  /usr/bin/verify_blkparse
 ## debug.Customized ##
+dir /testfiles 0755 0 0
 dir /lib64 0755 0 0
-file /lib64/libtinfo.so.5 /root/sys-builder/debug/deplibs/lib64/libtinfo.so.5 0755 0 0
-#md5-5f1e1f799168acbd9bda62738f224132  /root/sys-builder/debug/deplibs/lib64/libtinfo.so.5
-file /lib64/libz.so.1 /root/sys-builder/debug/deplibs/lib64/libz.so.1 0755 0 0
-#md5-ebaefbd732bf6ce0006a108f24a6e621  /root/sys-builder/debug/deplibs/lib64/libz.so.1
 file /lib64/libdl.so.2 /root/sys-builder/debug/deplibs/lib64/libdl.so.2 0755 0 0
 #md5-6509f5635cbd38d37f4f9d2d9aab61bf  /root/sys-builder/debug/deplibs/lib64/libdl.so.2
 file /lib64/libpthread.so.0 /root/sys-builder/debug/deplibs/lib64/libpthread.so.0 0755 0 0
@@ -17563,20 +16595,14 @@ file /lib64/librt.so.1 /root/sys-builder/debug/deplibs/lib64/librt.so.1 0755 0 0
 #md5-99535312e462e38976037f15b2c76ea1  /root/sys-builder/debug/deplibs/lib64/librt.so.1
 file /lib64/libm.so.6 /root/sys-builder/debug/deplibs/lib64/libm.so.6 0755 0 0
 #md5-1ace38bd1959ab2d4d4eeb6cd45cde86  /root/sys-builder/debug/deplibs/lib64/libm.so.6
+file /lib64/libgcc_s.so.1 /root/sys-builder/debug/deplibs/lib64/libgcc_s.so.1 0755 0 0
+#md5-4276dd408dad97a15046753195f4cd06  /root/sys-builder/debug/deplibs/lib64/libgcc_s.so.1
 file /lib64/libc.so.6 /root/sys-builder/debug/deplibs/lib64/libc.so.6 0755 0 0
 #md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/debug/deplibs/lib64/libc.so.6
 file /lib64/libaio.so.1 /root/sys-builder/debug/deplibs/lib64/libaio.so.1 0755 0 0
 #md5-ab81ee5643498e37893405eb08dc541e  /root/sys-builder/debug/deplibs/lib64/libaio.so.1
-file /lib64/libncursesw.so.5 /root/sys-builder/debug/deplibs/lib64/libncursesw.so.5 0755 0 0
-#md5-adc2f2e05ec18a8b97cf11f4f7af8cd7  /root/sys-builder/debug/deplibs/lib64/libncursesw.so.5
 dir /usr 0755 0 0
 dir /usr/lib64 0755 0 0
-file /usr/lib64/libcrypto.so.10 /root/sys-builder/debug/deplibs/usr/lib64/libcrypto.so.10 0755 0 0
-#md5-f96a35e6dbb25845fc8ab7b89941d01c  /root/sys-builder/debug/deplibs/usr/lib64/libcrypto.so.10
-file /usr/lib64/libpcap.so.1 /root/sys-builder/debug/deplibs/usr/lib64/libpcap.so.1 0755 0 0
-#md5-94218eaf9350472d362d36aefe8ad36b  /root/sys-builder/debug/deplibs/usr/lib64/libpcap.so.1
-file /usr/lib64/libpanelw.so.5 /root/sys-builder/debug/deplibs/usr/lib64/libpanelw.so.5 0755 0 0
-#md5-d8be8fc7c70a3675aba23d38dc4b5634  /root/sys-builder/debug/deplibs/usr/lib64/libpanelw.so.5
 file /usr/lib64/libibverbs.so.1 /root/sys-builder/debug/deplibs/usr/lib64/libibverbs.so.1 0755 0 0
 #md5-eed4927892062699c98706ffab16f2e8  /root/sys-builder/debug/deplibs/usr/lib64/libibverbs.so.1
 

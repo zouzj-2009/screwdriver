@@ -17,6 +17,7 @@ e100
 e1000
 e1000e
 ext3
+ext4
 fat
 ioatdma
 jbd

@@ -4,6 +4,8 @@ debugconsole /dev/tty9 >/dev/null 2>/dev/null &
 rmmod e1000e
 modprobe e1000e TxAbsIntDelay=10 TxIntDelay=4
 
+cp /domain/testfiles/vfs_glusterfs.so /usr/lib64/samba/vfs/glusterfs.so
+
 
 modprobe megaraid_sas
 modprobe mptsas

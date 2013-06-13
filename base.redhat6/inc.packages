@@ -1,16 +1,20 @@
+##
+#for target develop
+#
+#
 libs
 php64
 #iwm-svr
 lc
 unionfs
 modularize
-#mod-shell
+mod-shell
 #mod-testnode
 samba
 python
-glfs
+#glfs
 fss
-zfs
+#zfs
 perl
 #mod-nasnode
 #mod-stornode
@@ -19,8 +23,8 @@ install
 netboot
 #pythonpkgs
 #libvirt
-vnetwork
+#vnetwork
 locale
 scst
-gdemo2
+#gdemo2
 debug

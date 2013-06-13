@@ -1,2 +1,5 @@
 file /fakeroot/usr/bin/netperf /usr/bin/netperf 0755 0 0
 file /fakeroot/usr/bin/netserver /usr/bin/netserver 0755 0 0
+slink /fakeroot/usr/lib64/libgfapi.so libgfapi.so.0.0.0 0755 0 0
+slink /fakeroot/usr/lib64/libgfapi.so.0 libgfapi.so.0.0.0 0755 0 0
+file /fakeroot/usr/lib64/libgfapi.so.0.0.0 /usr/lib64/libgfapi.so.0.0.0 0755 0 0
