@@ -1,0 +1,28 @@
+#!/bin/sh
+#########################################################################
+#
+# Name:     UnLoad
+# Purpose:  UnLoad Panther Device Driver 
+#
+#########################################################################
+
+module="dre_drv"
+device="hifn_pan"
+conf_file="driver.cfg"
+mode="664"
+virtCardNum="32"
+
+# Remove module
+/sbin/rmmod  $module || exit 1
+
+# Remove stale nodes.
+#rm -f /dev/${device}${virtCardNum}
+
+
+
+#########################################################################
+#
+# END:  UnLoad script 
+#
+#########################################################################
+

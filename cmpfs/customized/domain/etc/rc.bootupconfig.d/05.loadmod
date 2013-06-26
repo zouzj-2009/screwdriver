@@ -1,0 +1,8 @@
+#!/bin/bash
+echo -n "Load compressed storage module ... "
+/sbin/Load
+[ $? -ne 0 ] && echo " FAIL!" && exit 1
+modprobe qa_dc
+[ $? -ne 0 ] && echo " FAIL!" && exit 1
+echo " OK!"
+

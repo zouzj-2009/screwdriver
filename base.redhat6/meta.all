@@ -7924,7 +7924,7 @@ file /domain/etc/init/container /root/sys-builder/modularize/customized/domain/e
 #md5-93469ab5c0e25e52d53d9e3e687e2324  /root/sys-builder/modularize/customized/domain/etc/init/container
 dir /domain/etc/rc.startmodules.d 0755 0 0
 file /domain/etc/rc.startmodules.d/01.start-modules /root/sys-builder/modularize/customized/domain/etc/rc.startmodules.d/01.start-modules 0755 0 0
-#md5-973507b9b52a730c1f36ba974ef649df  /root/sys-builder/modularize/customized/domain/etc/rc.startmodules.d/01.start-modules
+#md5-ad04cad8279e0ed48a63d38cffd66829  /root/sys-builder/modularize/customized/domain/etc/rc.startmodules.d/01.start-modules
 file /domain/etc/rc.startmodules /root/sys-builder/modularize/customized/domain/etc/rc.startmodules 0755 0 0
 #md5-a4b60c81390211f316a917c017038f2e  /root/sys-builder/modularize/customized/domain/etc/rc.startmodules
 dir /domain/etc/container 0755 0 0
@@ -7948,12 +7948,14 @@ slink /mroots domain/rootfs/ 0755 0 0
 ## mod-shell.Customized ##
 dir /croots 0755 0 0
 dir /croots/shell 0755 0 0
+dir /croots/shell/pools 0755 0 0
 dir /croots/shell/etc 0755 0 0
 file /croots/shell/etc/inittab /root/sys-builder/mod-shell/customized/croots/shell/etc/inittab 0644 0 0
 #md5-a679295a094e928fd60c1890241ab50e  /root/sys-builder/mod-shell/customized/croots/shell/etc/inittab
 file /croots/shell/etc/rc.local /root/sys-builder/mod-shell/customized/croots/shell/etc/rc.local 0755 0 0
 #md5-62813ceac5a2ad1e6baa30895a9017c7  /root/sys-builder/mod-shell/customized/croots/shell/etc/rc.local
 dir /domain 0755 0 0
+slink /domain/pools /domain/rootfs/shell/pools 0755 1 0
 dir /domain/etc 0755 0 0
 dir /domain/etc/init 0755 0 0
 dir /domain/etc/init/startups 0755 0 0
@@ -16217,6 +16219,23 @@ file /lib64/libc.so.6 /root/sys-builder/locale/deplibs/lib64/libc.so.6 0755 0 0
 #
 ## Defined by scst.01.layout ##
 ## Defined by scst.05.rpm.deps ##
+#rpm package ql2100-firmware-1.19.38-3.1.el6.noarch
+file /fakeroot/lib/firmware/ql2100_fw.bin /lib/firmware/ql2100_fw.bin 0644 0 0
+#md5-12c35a92429131323f9ed2764fc457df  /lib/firmware/ql2100_fw.bin
+#rpm package ql23xx-firmware-3.03.27-3.1.el6.noarch
+file /fakeroot/lib/firmware/ql2300_fw.bin /lib/firmware/ql2300_fw.bin 0644 0 0
+#md5-abf204379bae8763b0a2b4a3c56f04ea  /lib/firmware/ql2300_fw.bin
+file /fakeroot/lib/firmware/ql2322_fw.bin /lib/firmware/ql2322_fw.bin 0644 0 0
+#md5-aa544c7712fe24c78f26e02d4f57893b  /lib/firmware/ql2322_fw.bin
+#rpm package ql2400-firmware-5.06.02-1.el6.noarch
+file /fakeroot/lib/firmware/ql2400_fw.bin /lib/firmware/ql2400_fw.bin 0644 0 0
+#md5-54f95d593cd14beb750ae723ad9beab1  /lib/firmware/ql2400_fw.bin
+#rpm package ql2200-firmware-2.02.08-3.1.el6.noarch
+file /fakeroot/lib/firmware/ql2200_fw.bin /lib/firmware/ql2200_fw.bin 0644 0 0
+#md5-44567f365ce6f668c69c6c40279cd878  /lib/firmware/ql2200_fw.bin
+#rpm package ql2500-firmware-5.06.02-1.el6.noarch
+file /fakeroot/lib/firmware/ql2500_fw.bin /lib/firmware/ql2500_fw.bin 0644 0 0
+#md5-0f425a7e01a9e6978c7842a15d2a1feb  /lib/firmware/ql2500_fw.bin
 ## Defined by scst.07.mod.scst ##
 file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra/iscsi-scst.ko /lib/modules/2.6.32-220.el6.x86_64/extra/iscsi-scst.ko 0744 0 0 
 #md5-505d8b0b343c3be3b539da7a37534382  /lib/modules/2.6.32-220.el6.x86_64/extra/iscsi-scst.ko
@@ -16440,119 +16459,259 @@ file /fakeroot/docs/man/iscsi-scstd.conf.txt /root/sys-builder/scst/customized/f
 #md5-081425e80c6addb2bea97b21989e5d05  /root/sys-builder/scst/customized/fakeroot/docs/man/iscsi-scstd.conf.txt
 dir /lib64 0755 0 0
 file /lib64/libpthread.so.0 /root/sys-builder/scst/deplibs/lib64/libpthread.so.0 0755 0 0
-#md5-fc053d6cd69cf523cdfe404cec7cbb3b  /root/sys-builder/scst/deplibs/lib64/libpthread.so.0
+#md5-246481ac0a17643ecd750a212b5a1bf2  /root/sys-builder/scst/deplibs/lib64/libpthread.so.0
 file /lib64/libc.so.6 /root/sys-builder/scst/deplibs/lib64/libc.so.6 0755 0 0
 #md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/scst/deplibs/lib64/libc.so.6
+
+#
+#@@ Meta of package [ cmpfs ] @@
+#
+## Defined by cmpfs.01.layout ##
+## Defined by cmpfs.02.mod.compressfs ##
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko /lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko 0744 0 0 
+#md5-12f5a8ab72847455c833253c318a12d3  /lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko
+#modinfo [ btrfs ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko
+#modinfo license:        GPL
+#modinfo srcversion:     1FE9869BBD80F755D978194
+#modinfo depends:        libcrc32c,dre_drv,zlib_deflate,lzo_compress,lzo_decompress
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/dre_drv.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/dre_drv.ko 0744 0 0 
+#md5-9be42475364caf70eb7f1942a6f70707  /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/dre_drv.ko
+#modinfo [ dre_drv ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/dre_drv.ko
+#modinfo alias:          pci:v000013A3d00000033sv*sd*bc*sc*i*
+#modinfo alias:          pci:v000013A3d00000034sv*sd*bc*sc*i*
+#modinfo alias:          pci:v000013A3d00000035sv*sd*bc*sc*i*
+#modinfo alias:          pci:v000013A3d00000037sv*sd*bc*sc*i*
+#modinfo license:        GPL
+#modinfo description:    This is panther card driver, only support 2.6.* kernel version.
+#modinfo srcversion:     D1276BFEAE7E61933EDED79
+#modinfo depends:        
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+#modinfo parm:           DRE_drvCfName:configuration file name (charp)
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_compress.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_compress.ko 0744 0 0 
+#md5-39880036d450d7283601dee24e494ff2  /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_compress.ko
+#modinfo [ lzo_compress ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_compress.ko
+#modinfo description:    LZO1X-1 Compressor
+#modinfo license:        GPL
+#modinfo srcversion:     E56BD2754AFA960FCB88B58
+#modinfo depends:        
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_decompress.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_decompress.ko 0744 0 0 
+#md5-63f07a82ac5ef1cb0cc901e7b0fb841d  /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_decompress.ko
+#modinfo [ lzo_decompress ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/lib/lzo/lzo_decompress.ko
+#modinfo description:    LZO1X Decompressor
+#modinfo license:        GPL
+#modinfo srcversion:     8BD9E4B53431C69CBDF5ED8
+#modinfo depends:        
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra/qa_dc.ko /lib/modules/2.6.32-220.el6.x86_64/extra/qa_dc.ko 0744 0 0 
+#md5-3436f1979fc2374e532027f22f231c98  /lib/modules/2.6.32-220.el6.x86_64/extra/qa_dc.ko
+#modinfo [ qa_dc ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/extra/qa_dc.ko
+#modinfo license:        GPL
+#modinfo description:    QA DC module, only support 2.6.* kernel version.
+#modinfo srcversion:     659C0DAC26D5EBDDCD8C038
+#modinfo depends:        dre_drv
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+## Defined by cmpfs.02.rpm.packages ##
+#rpm package btrfs-progs-0.19-12.el6.x86_64
+file /fakeroot/sbin/btrfs /sbin/btrfs 0755 0 0
+#md5-a177f500bfe2efc25f62dc54f5b9054f  /sbin/btrfs
+file /fakeroot/sbin/btrfs-convert /sbin/btrfs-convert 0755 0 0
+#md5-874109a7b45c073feb19937e96f27178  /sbin/btrfs-convert
+file /fakeroot/sbin/btrfs-debug-tree /sbin/btrfs-debug-tree 0755 0 0
+#md5-7b6c613f663603e1f1e7af66a9e30e5a  /sbin/btrfs-debug-tree
+file /fakeroot/sbin/btrfs-image /sbin/btrfs-image 0755 0 0
+#md5-fce663d164006c82bfd69bb508d3348a  /sbin/btrfs-image
+file /fakeroot/sbin/btrfs-map-logical /sbin/btrfs-map-logical 0755 0 0
+#md5-cae3ba22880f3575caefdd435d0d4737  /sbin/btrfs-map-logical
+file /fakeroot/sbin/btrfs-show /sbin/btrfs-show 0755 0 0
+#md5-21459060cfe9dee4ca917276bfd7e1a7  /sbin/btrfs-show
+file /fakeroot/sbin/btrfs-vol /sbin/btrfs-vol 0755 0 0
+#md5-fa21f8f2fea0f23bd11b73f91eaacb43  /sbin/btrfs-vol
+file /fakeroot/sbin/btrfsck /sbin/btrfsck 0755 0 0
+#md5-97e6eadad1229eea4cc24ff08b7e4111  /sbin/btrfsck
+file /fakeroot/sbin/btrfsctl /sbin/btrfsctl 0755 0 0
+#md5-40b01ec883953f3c274a358df3e3d1a5  /sbin/btrfsctl
+file /fakeroot/sbin/btrfstune /sbin/btrfstune 0755 0 0
+#md5-1621b0db7b7601b32ce29cc63d5bbad5  /sbin/btrfstune
+file /fakeroot/sbin/mkfs.btrfs /sbin/mkfs.btrfs 0755 0 0
+#md5-b97ebc61349fd823a4c98955030926b5  /sbin/mkfs.btrfs
+## cmpfs.Customized ##
+dir /domain 0755 0 0
+dir /domain/etc 0755 0 0
+dir /domain/etc/rc.bootupconfig.d 0755 0 0
+file /domain/etc/rc.bootupconfig.d/05.loadmod /root/sys-builder/cmpfs/customized/domain/etc/rc.bootupconfig.d/05.loadmod 0755 0 0
+#md5-b98a743b5052c44267ca42481a6f698b  /root/sys-builder/cmpfs/customized/domain/etc/rc.bootupconfig.d/05.loadmod
+dir /testfiles 0755 0 0
+file /testfiles/btrfs.ko /root/sys-builder/cmpfs/customized/testfiles/btrfs.ko 0644 0 0
+#md5-b3deb856d2496de493db5337d442ffda  /root/sys-builder/cmpfs/customized/testfiles/btrfs.ko
+dir /fakeroot 0755 0 0
+dir /fakeroot/sbin 0755 0 0
+file /fakeroot/sbin/Load /root/sys-builder/cmpfs/customized/fakeroot/sbin/Load 0755 0 0
+#md5-fc5711b636706656eb2c6b6f1b3abd00  /root/sys-builder/cmpfs/customized/fakeroot/sbin/Load
+file /fakeroot/sbin/UnLoad /root/sys-builder/cmpfs/customized/fakeroot/sbin/UnLoad 0755 0 0
+#md5-3a9e3d2febfb567ea1fa7bb3120bd39e  /root/sys-builder/cmpfs/customized/fakeroot/sbin/UnLoad
+dir /fakeroot/etc 0755 0 0
+dir /fakeroot/etc/exar 0755 0 0
+file /fakeroot/etc/exar/driver.cfg /root/sys-builder/cmpfs/customized/fakeroot/etc/exar/driver.cfg 0644 0 0
+#md5-e1a48dc53754d13306c25acfb346df19  /root/sys-builder/cmpfs/customized/fakeroot/etc/exar/driver.cfg
+dir /lib64 0755 0 0
+file /lib64/libz.so.1 /root/sys-builder/cmpfs/deplibs/lib64/libz.so.1 0755 0 0
+#md5-ebaefbd732bf6ce0006a108f24a6e621  /root/sys-builder/cmpfs/deplibs/lib64/libz.so.1
+file /lib64/libcom_err.so.2 /root/sys-builder/cmpfs/deplibs/lib64/libcom_err.so.2 0755 0 0
+#md5-b4369d9861f316c2a72f284026b77d9b  /root/sys-builder/cmpfs/deplibs/lib64/libcom_err.so.2
+file /lib64/libuuid.so.1 /root/sys-builder/cmpfs/deplibs/lib64/libuuid.so.1 0755 0 0
+#md5-d3d9db3c604cc6e3f1a9cabcf8799758  /root/sys-builder/cmpfs/deplibs/lib64/libuuid.so.1
+file /lib64/libext2fs.so.2 /root/sys-builder/cmpfs/deplibs/lib64/libext2fs.so.2 0755 0 0
+#md5-9aeea3dbe107916746b4956ab8083efe  /root/sys-builder/cmpfs/deplibs/lib64/libext2fs.so.2
+file /lib64/libpthread.so.0 /root/sys-builder/cmpfs/deplibs/lib64/libpthread.so.0 0755 0 0
+#md5-246481ac0a17643ecd750a212b5a1bf2  /root/sys-builder/cmpfs/deplibs/lib64/libpthread.so.0
+file /lib64/libc.so.6 /root/sys-builder/cmpfs/deplibs/lib64/libc.so.6 0755 0 0
+#md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/cmpfs/deplibs/lib64/libc.so.6
 
 #
 #@@ Meta of package [ debug ] @@
 #
 ## Defined by debug.01.layout ##
 ## Defined by debug.02.rpm.packages ##
+#rpm package sysstat-9.0.4-18.el6.x86_64
+file /fakeroot/etc/cron.d/sysstat /etc/cron.d/sysstat 0644 0 0
+#md5-5c700067b01708b6ab5a1087b9d3695c  /etc/cron.d/sysstat
+file /fakeroot/etc/rc.d/init.d/sysstat /etc/rc.d/init.d/sysstat 0755 0 0
+#md5-ffccc5ef5b77f93f28b312561d4ff537  /etc/rc.d/init.d/sysstat
+file /fakeroot/etc/sysconfig/sysstat /etc/sysconfig/sysstat 0644 0 0
+#md5-f193b9c32e94309df4156731589baa1f  /etc/sysconfig/sysstat
+file /fakeroot/etc/sysconfig/sysstat.ioconf /etc/sysconfig/sysstat.ioconf 0644 0 0
+#md5-97cf6dc340361efd5ab7c3c715b15a53  /etc/sysconfig/sysstat.ioconf
+file /fakeroot/usr/bin/cifsiostat /usr/bin/cifsiostat 0755 0 0
+#md5-ffa68cf67f0a344cf49de6bd5c4e55d4  /usr/bin/cifsiostat
+file /fakeroot/usr/bin/iostat /usr/bin/iostat 0755 0 0
+#md5-601148387c21ea2d07be281525884d79  /usr/bin/iostat
+file /fakeroot/usr/bin/mpstat /usr/bin/mpstat 0755 0 0
+#md5-4c17037136448fe3049d357e9dcc2121  /usr/bin/mpstat
+file /fakeroot/usr/bin/pidstat /usr/bin/pidstat 0755 0 0
+#md5-9c434d44afa3d9433aaf2c3b4575eace  /usr/bin/pidstat
+file /fakeroot/usr/bin/sadf /usr/bin/sadf 0755 0 0
+#md5-1b8882a52de68cd72f8712486974d548  /usr/bin/sadf
+file /fakeroot/usr/bin/sar /usr/bin/sar 0755 0 0
+#md5-9b4d83caf262293f1eb26f0332bb097c  /usr/bin/sar
+dir /fakeroot/usr/lib64/sa 0755 0 0
+file /fakeroot/usr/lib64/sa/sa1 /usr/lib64/sa/sa1 0755 0 0
+#md5-b51751c959d1355c971b999cc1111745  /usr/lib64/sa/sa1
+file /fakeroot/usr/lib64/sa/sa2 /usr/lib64/sa/sa2 0755 0 0
+#md5-4c6a2aa6cd09af6ad233fcd3ae3856f2  /usr/lib64/sa/sa2
+file /fakeroot/usr/lib64/sa/sadc /usr/lib64/sa/sadc 0755 0 0
+#md5-758cff474778abcb9d27c3789bf259e6  /usr/lib64/sa/sadc
+dir /fakeroot/var/log/sa 0755 0 0
 #rpm package sg3_utils-1.28-4.el6.x86_64
 file /fakeroot/usr/bin/rescan-scsi-bus.sh /usr/bin/rescan-scsi-bus.sh 0755 0 0
 #md5-eb120880d4e9e87d5a61b23b4ca39568  /usr/bin/rescan-scsi-bus.sh
 slink /fakeroot/usr/bin/scsi-rescan rescan-scsi-bus.sh 0755 0 0
 file /fakeroot/usr/bin/sg_dd /usr/bin/sg_dd 0755 0 0
-#md5-0bda214ccd73eacf6aefb07747e6b960  /usr/bin/sg_dd
+#md5-9603564533101b8455aaa29ceed4df05  /usr/bin/sg_dd
 file /fakeroot/usr/bin/sg_emc_trespass /usr/bin/sg_emc_trespass 0755 0 0
-#md5-e9f1f2b61ae24aa6f6b538cedd36f04a  /usr/bin/sg_emc_trespass
+#md5-ab010e5fafc5ca12915843794407acc6  /usr/bin/sg_emc_trespass
 file /fakeroot/usr/bin/sg_format /usr/bin/sg_format 0755 0 0
-#md5-25770f196d30087f0022f773c1e8eb75  /usr/bin/sg_format
+#md5-b988d64114a6c47b420985a8ffcd6e4f  /usr/bin/sg_format
 file /fakeroot/usr/bin/sg_get_config /usr/bin/sg_get_config 0755 0 0
-#md5-aed9703b0a93f76eed7c42961cbc8a1b  /usr/bin/sg_get_config
+#md5-519ba7abd14c17ffc72a20e534b75853  /usr/bin/sg_get_config
 file /fakeroot/usr/bin/sg_get_lba_status /usr/bin/sg_get_lba_status 0755 0 0
-#md5-f826432200a2e283900c5fe740ce9465  /usr/bin/sg_get_lba_status
+#md5-35384154a4a56b0e8c59e91f0b28a1f6  /usr/bin/sg_get_lba_status
 file /fakeroot/usr/bin/sg_ident /usr/bin/sg_ident 0755 0 0
-#md5-93025e1a0c1617f9b171ee1a42298aa1  /usr/bin/sg_ident
+#md5-c52d4100cc605c2d3d91a271090fd651  /usr/bin/sg_ident
 file /fakeroot/usr/bin/sg_inq /usr/bin/sg_inq 0755 0 0
-#md5-54b6acf1071481cce71edff0a61130fa  /usr/bin/sg_inq
+#md5-e61012d9401f04bf1c8dd0d76826d8ab  /usr/bin/sg_inq
 file /fakeroot/usr/bin/sg_logs /usr/bin/sg_logs 0755 0 0
-#md5-51ecf92ec65904f8744ac87d55f29ab0  /usr/bin/sg_logs
+#md5-afc6007d5a6fa0be733a04d142ff0586  /usr/bin/sg_logs
 file /fakeroot/usr/bin/sg_luns /usr/bin/sg_luns 0755 0 0
-#md5-65ac752ffc18e405cf0b7546cd9d135b  /usr/bin/sg_luns
+#md5-3e4c403d3507ee653587f7262fad7c5a  /usr/bin/sg_luns
 file /fakeroot/usr/bin/sg_map /usr/bin/sg_map 0755 0 0
-#md5-578a33d7ddb16fc4c641b58abe436994  /usr/bin/sg_map
+#md5-d8c06c4ca577c74b0c7a75ca01f8e956  /usr/bin/sg_map
 file /fakeroot/usr/bin/sg_map26 /usr/bin/sg_map26 0755 0 0
-#md5-68e5f09a487de20e49bc54b597b499c7  /usr/bin/sg_map26
+#md5-63964b1799dd481668a7c144a8e51073  /usr/bin/sg_map26
 file /fakeroot/usr/bin/sg_modes /usr/bin/sg_modes 0755 0 0
-#md5-b2fca32161405e35cc2c268f21f71be1  /usr/bin/sg_modes
+#md5-4e893111745a72c85d578219f06bb8f5  /usr/bin/sg_modes
 file /fakeroot/usr/bin/sg_opcodes /usr/bin/sg_opcodes 0755 0 0
-#md5-48280311e387601a4df89f88c3fc57e8  /usr/bin/sg_opcodes
+#md5-880419c43e4684f7e7dd685be09647c0  /usr/bin/sg_opcodes
 file /fakeroot/usr/bin/sg_persist /usr/bin/sg_persist 0755 0 0
-#md5-5614f896d6d4c0dd22dd10526fe887e5  /usr/bin/sg_persist
+#md5-5f2aadec9332a68855f6aa1a117566f2  /usr/bin/sg_persist
 file /fakeroot/usr/bin/sg_prevent /usr/bin/sg_prevent 0755 0 0
-#md5-28109d4e1a0880ecd65c393e240c574a  /usr/bin/sg_prevent
+#md5-4ccafe37fa42dfef5451f1912e1beb56  /usr/bin/sg_prevent
 file /fakeroot/usr/bin/sg_raw /usr/bin/sg_raw 0755 0 0
-#md5-6647f311e03e1fa4c149636239a283d7  /usr/bin/sg_raw
+#md5-77326272d639491132549fd03bbfd2d9  /usr/bin/sg_raw
 file /fakeroot/usr/bin/sg_rbuf /usr/bin/sg_rbuf 0755 0 0
-#md5-aa1f69921f4d53fa97bad69f3067b58a  /usr/bin/sg_rbuf
+#md5-314a9507a09a598d99c599710da63357  /usr/bin/sg_rbuf
 file /fakeroot/usr/bin/sg_rdac /usr/bin/sg_rdac 0755 0 0
-#md5-f61dfdb8688cd4c83b9636f43d9a9f38  /usr/bin/sg_rdac
+#md5-1a36c8c193aa72f9c2e84d72f6f570cc  /usr/bin/sg_rdac
 file /fakeroot/usr/bin/sg_read /usr/bin/sg_read 0755 0 0
-#md5-5c652b83d6d36c0f03d43fa7e951dd3e  /usr/bin/sg_read
+#md5-45b2891102c2dd61e747f9a7f228d9c3  /usr/bin/sg_read
 file /fakeroot/usr/bin/sg_read_block_limits /usr/bin/sg_read_block_limits 0755 0 0
-#md5-b9d130b375bc7cd51ee7f5ffaffe9226  /usr/bin/sg_read_block_limits
+#md5-0065b2bab52061b8b33a93e2e2610ca8  /usr/bin/sg_read_block_limits
 file /fakeroot/usr/bin/sg_read_buffer /usr/bin/sg_read_buffer 0755 0 0
-#md5-c171c348f39027df18e5385c94dd3f77  /usr/bin/sg_read_buffer
+#md5-1a803814a2804f06eeea623988bd8c8f  /usr/bin/sg_read_buffer
 file /fakeroot/usr/bin/sg_read_long /usr/bin/sg_read_long 0755 0 0
-#md5-b0e8d5b6cc8bb3eb2481851025941185  /usr/bin/sg_read_long
+#md5-d15dcbff44448eb48155d9449a4860e8  /usr/bin/sg_read_long
 file /fakeroot/usr/bin/sg_readcap /usr/bin/sg_readcap 0755 0 0
-#md5-00bcdcfb29fb96b9392f709f8824e110  /usr/bin/sg_readcap
+#md5-7818f0a9a88296d33835d028a90f00cd  /usr/bin/sg_readcap
 file /fakeroot/usr/bin/sg_reassign /usr/bin/sg_reassign 0755 0 0
-#md5-a504713d2509e908324e5fdb12a543f5  /usr/bin/sg_reassign
+#md5-2684e6399037ef9eac2db5fcdc464d7c  /usr/bin/sg_reassign
 file /fakeroot/usr/bin/sg_requests /usr/bin/sg_requests 0755 0 0
-#md5-a8c01c3184ccf529600ed927a59511cd  /usr/bin/sg_requests
+#md5-ed4cd3a56b0e982a9a1f2b50d6a9dbcd  /usr/bin/sg_requests
 file /fakeroot/usr/bin/sg_reset /usr/bin/sg_reset 0755 0 0
-#md5-c491f1f414ee1a5137b33ee0154c6bb9  /usr/bin/sg_reset
+#md5-53b7fa2d138b8c0977acda1e4f58078f  /usr/bin/sg_reset
 file /fakeroot/usr/bin/sg_rmsn /usr/bin/sg_rmsn 0755 0 0
-#md5-f1329d27727f893f96e469b5243fa892  /usr/bin/sg_rmsn
+#md5-bf6f899f370ecb46aa15debff4595c3e  /usr/bin/sg_rmsn
 file /fakeroot/usr/bin/sg_rtpg /usr/bin/sg_rtpg 0755 0 0
-#md5-9c0f94a94688b52a74d05ace517d650a  /usr/bin/sg_rtpg
+#md5-9cfebe36604fcb9321042926ad9aecf7  /usr/bin/sg_rtpg
 file /fakeroot/usr/bin/sg_safte /usr/bin/sg_safte 0755 0 0
-#md5-3f227e49ff760ebe4338c0f2301cc7d3  /usr/bin/sg_safte
+#md5-8af8e3c97a7c944d289980f96d143b10  /usr/bin/sg_safte
 file /fakeroot/usr/bin/sg_sat_identify /usr/bin/sg_sat_identify 0755 0 0
-#md5-f8f1369123b12d01511b91107db87f62  /usr/bin/sg_sat_identify
+#md5-540f4470056a9c3d53df30eec3909820  /usr/bin/sg_sat_identify
 file /fakeroot/usr/bin/sg_sat_phy_event /usr/bin/sg_sat_phy_event 0755 0 0
-#md5-ab6c6fedaae66bca2a8b6b8e6ce3dd43  /usr/bin/sg_sat_phy_event
+#md5-f1fe6ca1fc42b49093dc106ebc5c9f74  /usr/bin/sg_sat_phy_event
 file /fakeroot/usr/bin/sg_sat_set_features /usr/bin/sg_sat_set_features 0755 0 0
-#md5-ad13409ce5267873ca85cb2a63289fe2  /usr/bin/sg_sat_set_features
+#md5-f12a9d064d326b0b3a88d0a72320ec3e  /usr/bin/sg_sat_set_features
 file /fakeroot/usr/bin/sg_scan /usr/bin/sg_scan 0755 0 0
-#md5-915477a3425d473b77848ace37bc3287  /usr/bin/sg_scan
+#md5-7a6cffff339563b17df5fbf632396c04  /usr/bin/sg_scan
 file /fakeroot/usr/bin/sg_senddiag /usr/bin/sg_senddiag 0755 0 0
-#md5-554ecb38f16e0441b34e0646250c4f0a  /usr/bin/sg_senddiag
+#md5-9528bb8094481da3f56874a10f5df843  /usr/bin/sg_senddiag
 file /fakeroot/usr/bin/sg_ses /usr/bin/sg_ses 0755 0 0
-#md5-ec5986acc16b4a8a298b48ca6ef64c54  /usr/bin/sg_ses
+#md5-a5a06cf609fcedf7c8c4cccb809f51b9  /usr/bin/sg_ses
 file /fakeroot/usr/bin/sg_start /usr/bin/sg_start 0755 0 0
-#md5-536c47ba9462942113f82a95c062500e  /usr/bin/sg_start
+#md5-8a67b68dbdaa9e25a5b1973a90e6f85b  /usr/bin/sg_start
 file /fakeroot/usr/bin/sg_stpg /usr/bin/sg_stpg 0755 0 0
-#md5-af0d69646933f5ee5d317b0f7a925595  /usr/bin/sg_stpg
+#md5-0bc34f93a0a05be556290518e9a3d4b5  /usr/bin/sg_stpg
 file /fakeroot/usr/bin/sg_sync /usr/bin/sg_sync 0755 0 0
-#md5-fb6a8c5585316005f5b4f42cd4ab41a3  /usr/bin/sg_sync
+#md5-718bf0cfa5b5c260acb15b4adc2d0ea8  /usr/bin/sg_sync
 file /fakeroot/usr/bin/sg_test_rwbuf /usr/bin/sg_test_rwbuf 0755 0 0
-#md5-c79794ce3ac7740e401fa07a84cdbb0e  /usr/bin/sg_test_rwbuf
+#md5-7d6e4b5d81c210145993be54c6164fa5  /usr/bin/sg_test_rwbuf
 file /fakeroot/usr/bin/sg_turs /usr/bin/sg_turs 0755 0 0
-#md5-602fa3ae1f8cae2e91a402cfd5bd8e67  /usr/bin/sg_turs
+#md5-39fb68e061ed238bcebb85bcf66e5c4f  /usr/bin/sg_turs
 file /fakeroot/usr/bin/sg_unmap /usr/bin/sg_unmap 0755 0 0
-#md5-858971c43761540c8abf0815c06ba213  /usr/bin/sg_unmap
+#md5-2e49d1b2eaa0914331f00f0ce05b0aad  /usr/bin/sg_unmap
 file /fakeroot/usr/bin/sg_verify /usr/bin/sg_verify 0755 0 0
-#md5-a9b4fa5caf3e285d52b23c8fe9eb9031  /usr/bin/sg_verify
+#md5-39dfd79c2757743607a6f05e70ddb53c  /usr/bin/sg_verify
 file /fakeroot/usr/bin/sg_vpd /usr/bin/sg_vpd 0755 0 0
-#md5-110f3ffc940e0e9c740066104d23b71b  /usr/bin/sg_vpd
+#md5-ab1718dc390568b5f2cc70f318afe1c7  /usr/bin/sg_vpd
 file /fakeroot/usr/bin/sg_wr_mode /usr/bin/sg_wr_mode 0755 0 0
-#md5-50a4923f576736b4c25734e686087e07  /usr/bin/sg_wr_mode
+#md5-f76cdb831a507bc167ebb6496691b582  /usr/bin/sg_wr_mode
 file /fakeroot/usr/bin/sg_write_buffer /usr/bin/sg_write_buffer 0755 0 0
-#md5-bbac869d491d616fd1f9bc098b81a6d9  /usr/bin/sg_write_buffer
+#md5-09cbf4d16353762f0ae9c921a80c1ed3  /usr/bin/sg_write_buffer
 file /fakeroot/usr/bin/sg_write_long /usr/bin/sg_write_long 0755 0 0
-#md5-008c1cc433a22996c37e979e0f47a9e0  /usr/bin/sg_write_long
+#md5-3673c24a58d4c012bc02c18f4fbbdc8f  /usr/bin/sg_write_long
 file /fakeroot/usr/bin/sg_write_same /usr/bin/sg_write_same 0755 0 0
-#md5-c9836b535e033f3dd868483bd5590795  /usr/bin/sg_write_same
+#md5-e663f6e5787f4820cf34d9632dc9527b  /usr/bin/sg_write_same
 file /fakeroot/usr/bin/sginfo /usr/bin/sginfo 0755 0 0
-#md5-7f27956a9591eaf6bb04a7d492be4522  /usr/bin/sginfo
+#md5-69ea4fbf7adbe3e4e61316b870f6a9b5  /usr/bin/sginfo
 file /fakeroot/usr/bin/sgm_dd /usr/bin/sgm_dd 0755 0 0
-#md5-df721b937cdea3bca2b9c05a1bdb0fb4  /usr/bin/sgm_dd
+#md5-df010a3071cd8d5a60fc8409a885c793  /usr/bin/sgm_dd
 file /fakeroot/usr/bin/sgp_dd /usr/bin/sgp_dd 0755 0 0
-#md5-2a7078a0f0a7d974f2f6a3ad375d3240  /usr/bin/sgp_dd
+#md5-987bb82a88315af994c8635eb426dc0f  /usr/bin/sgp_dd
 #rpm package sg3_utils-libs-1.28-4.el6.x86_64
 slink /fakeroot/usr/lib64/libsgutils2.so.2 libsgutils2.so.2.0.0 0755 0 0
 file /fakeroot/usr/lib64/libsgutils2.so.2.0.0 /usr/lib64/libsgutils2.so.2.0.0 0755 0 0
@@ -16565,13 +16724,13 @@ file /fakeroot/usr/bin/fio_generate_plots /usr/local/bin/fio_generate_plots 0755
 ## Defined by debug.04.rpm.tunetools ##
 #rpm package blktrace-1.0.1-6.el6.x86_64
 file /fakeroot/usr/bin/blkiomon /usr/bin/blkiomon 0755 0 0
-#md5-ecd120205d068061eb1c1993c479dc6a  /usr/bin/blkiomon
+#md5-4c75beb2c17b0a37cf848b79abf0b031  /usr/bin/blkiomon
 file /fakeroot/usr/bin/blkparse /usr/bin/blkparse 0755 0 0
 #md5-c7de17c50844f8175662737dd5c841aa  /usr/bin/blkparse
 file /fakeroot/usr/bin/blkrawverify /usr/bin/blkrawverify 0755 0 0
 #md5-b9e69b4144e680b349717a0569e82509  /usr/bin/blkrawverify
 file /fakeroot/usr/bin/blktrace /usr/bin/blktrace 0755 0 0
-#md5-ba01aa731ad0e4079fc4c71be7300741  /usr/bin/blktrace
+#md5-56eb94240714d9f0855dccb6de40a72e  /usr/bin/blktrace
 file /fakeroot/usr/bin/bno_plot.py /usr/bin/bno_plot.py 0755 0 0
 #md5-f3bca62067db100fedd85b0621235275  /usr/bin/bno_plot.py
 file /fakeroot/usr/bin/btrace /usr/bin/btrace 0755 0 0
@@ -16579,7 +16738,7 @@ file /fakeroot/usr/bin/btrace /usr/bin/btrace 0755 0 0
 file /fakeroot/usr/bin/btrecord /usr/bin/btrecord 0755 0 0
 #md5-56fd219cd4a431a4a3834f6cffa52d7d  /usr/bin/btrecord
 file /fakeroot/usr/bin/btreplay /usr/bin/btreplay 0755 0 0
-#md5-0743686cf2288ae9a2a61f644cfff0b5  /usr/bin/btreplay
+#md5-9fd1b266ed5451223c6cbba15c1b72fe  /usr/bin/btreplay
 file /fakeroot/usr/bin/btt /usr/bin/btt 0755 0 0
 #md5-cc44565bb2261616593e7faba4f9a8d4  /usr/bin/btt
 file /fakeroot/usr/bin/verify_blkparse /usr/bin/verify_blkparse 0755 0 0
@@ -16590,9 +16749,9 @@ dir /lib64 0755 0 0
 file /lib64/libdl.so.2 /root/sys-builder/debug/deplibs/lib64/libdl.so.2 0755 0 0
 #md5-6509f5635cbd38d37f4f9d2d9aab61bf  /root/sys-builder/debug/deplibs/lib64/libdl.so.2
 file /lib64/libpthread.so.0 /root/sys-builder/debug/deplibs/lib64/libpthread.so.0 0755 0 0
-#md5-fc053d6cd69cf523cdfe404cec7cbb3b  /root/sys-builder/debug/deplibs/lib64/libpthread.so.0
+#md5-246481ac0a17643ecd750a212b5a1bf2  /root/sys-builder/debug/deplibs/lib64/libpthread.so.0
 file /lib64/librt.so.1 /root/sys-builder/debug/deplibs/lib64/librt.so.1 0755 0 0
-#md5-99535312e462e38976037f15b2c76ea1  /root/sys-builder/debug/deplibs/lib64/librt.so.1
+#md5-b5b8264463377d86b53ebc7229e6cf44  /root/sys-builder/debug/deplibs/lib64/librt.so.1
 file /lib64/libm.so.6 /root/sys-builder/debug/deplibs/lib64/libm.so.6 0755 0 0
 #md5-1ace38bd1959ab2d4d4eeb6cd45cde86  /root/sys-builder/debug/deplibs/lib64/libm.so.6
 file /lib64/libgcc_s.so.1 /root/sys-builder/debug/deplibs/lib64/libgcc_s.so.1 0755 0 0

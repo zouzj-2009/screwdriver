@@ -27,4 +27,5 @@ netboot
 locale
 scst
 #gdemo2
+cmpfs
 debug

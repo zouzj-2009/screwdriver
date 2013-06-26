@@ -1,0 +1,42 @@
+#!/bin/sh
+#########################################################################
+#
+# Name:     Load
+# Purpose:  Load Panther Device Driver 
+#
+#########################################################################
+
+module="dre_drv"
+device="hifn_pan"
+conf_file="/etc/exar/driver.cfg"
+mode="664"
+virtCardNum="32"
+
+# Remove module
+already_load=`cat /proc/modules | awk "\\$1==\"$module\" {print \\$1}"`
+if [ ! -z $already_load ]
+then
+/sbin/rmmod  $module || exit 1
+fi
+
+# Remove stale nodes.
+#rm -f /dev/${device}${virtCardNum}
+
+#Insmod module
+modprobe $module DRE_drvCfName=${conf_file} || exit 1
+
+#major=`cat /proc/devices | awk "\\$2==\"$module\" {print \\$1}"`
+
+#Create nodes
+#mknod /dev/${device}${virtCardNum} c ${major} $virtCardNum
+#mknod /dev/${device}0  c ${major} 0
+
+
+
+
+#########################################################################
+#
+# END:  Load script 
+#
+#########################################################################
+
