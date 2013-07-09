@@ -1,0 +1,22 @@
+#!/bin/bash
+dest=$2
+file=$1
+if [ -d $file ];then
+	echo "link dir $file->$dest/$file"
+	mkdir -p $dest/$file
+elif [ -L $file ];then
+	dir=`dirname $file`
+	mkdir -p $dest/$dir
+	echo "link symbol $file->$dest/$file"
+	cp -a $file $dest/$dir
+elif [ -f $file ];then
+	dir=`dirname $file`
+	mkdir -p $dest/$dir
+	echo "link hard $file->$dest/$file"
+	ln $file $dest/$file -f
+else
+	echo "skip, non-regular file $file." >&2
+fi
+exit 0
+
+

@@ -1,0 +1,88 @@
+#!/bin/bash
+OLDPATH=$PATH
+
+clear
+cat /etc/product.banner 2>/dev/null
+
+echo Mounting proc filesystem
+mount -t proc proc /proc
+rm /etc/mtab 2>/dev/null
+ln -s /proc/mounts /etc/mtab
+echo Creating /dev
+mount -o mode=0755 -t tmpfs dev /dev
+mkdir /dev/pts
+mkdir /dev/shm
+mkdir /dev/mapper
+echo Creating initial device nodes
+mknod /dev/null c 1 3
+mknod /dev/zero c 1 5
+mknod /dev/systty c 4 0
+mknod /dev/tty c 5 0
+mknod /dev/console c 5 1
+mknod /dev/ptmx c 5 2
+#mknod /dev/rtc c 10 135
+mknod /dev/tty0 c 4 0
+mknod /dev/tty1 c 4 1
+mknod /dev/tty2 c 4 2
+mknod /dev/tty3 c 4 3
+mknod /dev/tty4 c 4 4
+mknod /dev/tty5 c 4 5
+mknod /dev/tty6 c 4 6
+mknod /dev/tty7 c 4 7
+mknod /dev/tty8 c 4 8
+mknod /dev/tty9 c 4 9
+mknod /dev/tty10 c 4 10
+mknod /dev/tty11 c 4 11
+mknod /dev/tty12 c 4 12
+mknod /dev/ttyS0 c 4 64
+mknod /dev/ttyS1 c 4 65
+mknod /dev/ttyS2 c 4 66
+mknod /dev/ttyS3 c 4 67
+
+echo Mounting sysfs filesystem
+mount -t sysfs sys /sys
+
+#if [ ! -f /booting-up ];then
+#	mkdir /newroot
+#	for file in `ls /`
+#	do
+#		[ $file = "newroot" ] && continue
+#		[ $file = "proc" ] && continue
+#		[ $file = "sys" ] && continue
+#		[ $file = "dev" ] && continue
+#		cp -a $file /newroot
+#	done
+#	mkdir /newroot/{proc,sys,dev}
+#	touch /newroot/booting-up
+#/bin/bash
+#	exec /sbin/switch_root /newroot /init
+#failed?!
+#/bin/bash
+#else
+#	read -p "after swiched ..."
+#/bin/bash
+#	rm /booting-up
+#	rm /etc/rcS >/dev/null 2>/dev/null
+#fi
+
+ifconfig lo 127.0.0.1 up
+#modlues && udev stuff
+
+[ -f /modules.tgz ] && (
+	echo -n "Setup modules ..." && tar zxf /modules.tgz -C / 2>/dev/null >/dev/null && echo " OK!" || echo " Fail!"
+	rm /modules.tgz 2>/dev/null
+)
+
+#disable noise printk
+printk=`cat /proc/sys/kernel/printk`
+[ -z "`grep BOOTDEBUG /proc/cmdline`" ]  && echo 1 >/proc/sys/kernel/printk
+start_udev
+[ -z "`grep BOOTDEBUG /proc/cmdline`" ]  && echo $printk >/proc/sys/kernel/printk
+
+#mount auxfs
+mount shmfs
+mount devpts
+#check rootdisk
+
+cat /etc/welcome 2>/dev/null
+/bin/busybox setconsole /dev/tty0

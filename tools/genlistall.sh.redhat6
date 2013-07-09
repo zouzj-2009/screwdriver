@@ -21,7 +21,7 @@ do
 	fi
 	#get kernel modules from list 
 	[ ! -z "`echo $file|grep '^[0-9]*\.mod\.'`" ] && (
-		for mod in `cat meta/$file|sort|uniq`
+		for mod in `cat $meta/$file|sort|uniq`
 		do
 			[ -z "$mod" ] && continue
 			echo mod[ $mod ] >&2

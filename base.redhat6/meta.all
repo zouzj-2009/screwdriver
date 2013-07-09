@@ -16469,11 +16469,11 @@ file /lib64/libc.so.6 /root/sys-builder/scst/deplibs/lib64/libc.so.6 0755 0 0
 ## Defined by cmpfs.01.layout ##
 ## Defined by cmpfs.02.mod.compressfs ##
 file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko /lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko 0744 0 0 
-#md5-12f5a8ab72847455c833253c318a12d3  /lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko
+#md5-598116e8ef2695f2897d377bb29fc2af  /lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko
 #modinfo [ btrfs ]
 #modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/extra/btrfs.ko
 #modinfo license:        GPL
-#modinfo srcversion:     1FE9869BBD80F755D978194
+#modinfo srcversion:     73EDF1C83034766CA48B689
 #modinfo depends:        libcrc32c,dre_drv,zlib_deflate,lzo_compress,lzo_decompress
 #modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
 file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/dre_drv.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/drivers/char/dre_drv.ko 0744 0 0 
@@ -16764,6 +16764,66 @@ dir /usr 0755 0 0
 dir /usr/lib64 0755 0 0
 file /usr/lib64/libibverbs.so.1 /root/sys-builder/debug/deplibs/usr/lib64/libibverbs.so.1 0755 0 0
 #md5-eed4927892062699c98706ffab16f2e8  /root/sys-builder/debug/deplibs/usr/lib64/libibverbs.so.1
+
+#
+#@@ Meta of package [ sdemo ] @@
+#
+## Defined by sdemo.01.layout ##
+## Defined by sdemo.02.rpm.packages ##
+## Defined by sdemo.03.mod.cifs ##
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko 0744 0 0 
+#md5-3462fdfd577bd913215acd9958ec24e2  /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko
+#modinfo [ cifs ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/fs/cifs/cifs.ko
+#modinfo version:        1.68
+#modinfo description:    VFS to access servers complying with the SNIA CIFS Specification e.g. Samba and Windows
+#modinfo license:        GPL
+#modinfo author:         Steve French <sfrench@us.ibm.com>
+#modinfo srcversion:     82F5F4F8BCD5F792DE20400
+#modinfo depends:        
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+#modinfo parm:           CIFSMaxBufSize:Network buffer size (not including header). Default: 16384 Range: 8192 to 130048 (int)
+#modinfo parm:           cifs_min_rcv:Network buffers in pool. Default: 4 Range: 1 to 64 (int)
+#modinfo parm:           cifs_min_small:Small network buffers in pool. Default: 30 Range: 2 to 256 (int)
+#modinfo parm:           cifs_max_pending:Simultaneous requests to server. Default: 50 Range: 2 to 256 (int)
+#modinfo parm:           echo_retries:Number of echo attempts before giving up and reconnecting server. Default: 5. 0 means never reconnect. (ushort)
+file /fakeroot/lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko 0744 0 0 
+#md5-a1cf4800a711d375b7aa89b16353304e  /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko
+#modinfo [ des_generic ]
+#modinfo filename:       /lib/modules/2.6.32-220.el6.x86_64/kernel/crypto/des_generic.ko
+#modinfo alias:          des
+#modinfo author:         Dag Arne Osvik <da@osvik.no>
+#modinfo description:    DES & Triple DES EDE Cipher Algorithms
+#modinfo license:        GPL
+#modinfo alias:          des3_ede
+#modinfo srcversion:     D2DFC765A5561C506C8B728
+#modinfo depends:        
+#modinfo vermagic:       2.6.32-220.el6.x86_64 SMP mod_unload modversions 
+cifs
+des_generic
+ecb
+md4
+## sdemo.Customized ##
+dir /domain 0755 0 0
+dir /domain/etc 0755 0 0
+dir /domain/etc/tune 0755 0 0
+dir /domain/etc/rc.cleanup.d 0755 0 0
+file /domain/etc/rc.cleanup.d/welcome /root/sys-builder/sdemo/customized/domain/etc/rc.cleanup.d/welcome 0755 0 0
+#md5-fcadc89c0b35fd93e3e33907925d4a01  /root/sys-builder/sdemo/customized/domain/etc/rc.cleanup.d/welcome
+dir /domain/etc/rc.shutdown.d 0755 0 0
+dir /domain/etc/rc.startservice.d 0755 0 0
+dir /domain/etc/rc.bootupconfig.d 0755 0 0
+file /domain/etc/product.name /root/sys-builder/sdemo/customized/domain/etc/product.name 0644 0 0
+#md5-f13d765d11d63efe5eb54cb7697e7718  /root/sys-builder/sdemo/customized/domain/etc/product.name
+dir /domain/etc/rc.reboot.d 0755 0 0
+dir /fakeroot 0755 0 0
+dir /fakeroot/etc 0755 0 0
+dir /fakeroot/bin 0755 0 0
+file /fakeroot/bin/netmon /root/sys-builder/sdemo/customized/fakeroot/bin/netmon 0755 0 0
+#md5-159806effbf932b9529266f06604624f  /root/sys-builder/sdemo/customized/fakeroot/bin/netmon
+dir /lib64 0755 0 0
+file /lib64/libc.so.6 /root/sys-builder/sdemo/deplibs/lib64/libc.so.6 0755 0 0
+#md5-357531a044b1553f847fa532ceea1bed  /root/sys-builder/sdemo/deplibs/lib64/libc.so.6
 
 #
 #@@ Meta of package [ zzpack ] @@

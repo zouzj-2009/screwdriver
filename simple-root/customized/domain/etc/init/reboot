@@ -1,0 +1,8 @@
+#!/bin/bash
+exec 2>/var/log/reboot
+logger -t domain "System REBOOT"
+/domain/sbin/run_dir /domain/etc/rc.reboot.d
+/domain/etc/rc.domainsvcs stop
+/sbin/swapoff -a
+/bin/umount -a 
+/bin/busybox reboot

@@ -1,0 +1,9 @@
+#!/bin/bash
+[ ! -d $1 ] && echo "dir $1 not exists!" && exit
+for rc in `ls $1`
+do
+	[ -d $1/$rc ] && continue
+	[ ! -f $1/$rc ] && continue
+	[ ! -x $1/$rc ] && continue
+	$1/$rc
+done

@@ -1,0 +1,5 @@
+#!/bin/bash
+cat >/etc/welcome <<EOF
+This is a DEMO-CD, for product version, please contact ....
+EOF
+/domain/sbin/run_dir /domain/etc/rc.cleanup.d

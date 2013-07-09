@@ -1,0 +1,2 @@
+#!/bin/bash
+/domain/sbin/run_dir /domain/etc/rc.startservice.d
