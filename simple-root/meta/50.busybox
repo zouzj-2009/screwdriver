@@ -1,6 +1,6 @@
 slink /fakeroot/linuxrc bin/busybox 0755 0 0
 slink /fakeroot/bin/grep busybox 0755 0 0
-slink /fakeroot/bin/ls busybox 0755 0 0
+#slink /fakeroot/bin/ls busybox 0755 0 0
 slink /fakeroot/bin/more busybox 0755 0 0
 slink /fakeroot/bin/ping6 busybox 0755 0 0
 slink /fakeroot/bin/lsattr busybox 0755 0 0
